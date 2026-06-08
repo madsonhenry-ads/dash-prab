@@ -3,9 +3,10 @@ import crypto from 'crypto';
 const CLIENT_ID = process.env.EASYTRACKER_CLIENT_ID || 'e145f0b5-0bbc-44b8-ac1b-9125f38abc29';
 const AUTH_URL = 'https://api.easytracker.digital/api/oauth/mcp/authorize';
 const TOKEN_URL = 'https://api.easytracker.digital/api/oauth/mcp/token';
-const REDIRECT_URI = process.env.EASYTRACKER_REDIRECT_URI || process.env.RAILWAY_PUBLIC_URL
-  ? `${process.env.RAILWAY_PUBLIC_URL}/api/auth/easytracker/callback`
-  : 'http://localhost:3001/api/auth/easytracker/callback';
+const REDIRECT_URI = process.env.EASYTRACKER_REDIRECT_URI
+  || (process.env.RAILWAY_PUBLIC_URL
+    ? `${process.env.RAILWAY_PUBLIC_URL}/api/auth/easytracker/callback`
+    : 'http://localhost:3001/api/auth/easytracker/callback');
 
 // In-memory token store (persisted to file in production)
 interface TokenStore {
