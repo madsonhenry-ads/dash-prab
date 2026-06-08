@@ -47,13 +47,18 @@ app.use('/api/filters', authMiddleware, filtersRoutes);
 app.use('/api/mcp', authMiddleware, mcpRoutes);
 app.use('/api/cache', authMiddleware, cacheRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
+// Serve static files
+const path = require('path');
+const fs = require('fs');
+const distPath = path.join(__dirname, '../../client/dist');
+if (fs.existsSync(distPath)) {
+  console.log('[Server] Serving static files from', distPath);
+  app.use(express.static(distPath));
   app.get('*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+    res.sendFile(path.join(distPath, 'index.html'));
   });
+} else {
+  console.log('[Server] Static files not found at', distPath);
 }
 
 // Error handler
