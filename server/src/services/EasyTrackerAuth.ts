@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
 const CLIENT_ID = process.env.EASYTRACKER_CLIENT_ID || 'e145f0b5-0bbc-44b8-ac1b-9125f38abc29';
+const CLIENT_SECRET = process.env.EASYTRACKER_CLIENT_SECRET || '';
 const AUTH_URL = 'https://api.easytracker.digital/api/oauth/mcp/authorize';
 const TOKEN_URL = 'https://api.easytracker.digital/api/oauth/mcp/token';
 const REDIRECT_URI = process.env.EASYTRACKER_REDIRECT_URI
@@ -66,6 +67,7 @@ export async function exchangeCodeForToken(code: string, codeVerifier: string): 
     code,
     code_verifier: codeVerifier,
     client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
     redirect_uri: REDIRECT_URI,
   });
 
@@ -125,6 +127,7 @@ export async function refreshAccessToken(): Promise<string | null> {
     grant_type: 'refresh_token',
     refresh_token: tokenStore.refreshToken,
     client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
   });
 
   try {
