@@ -80,7 +80,7 @@ export async function exchangeCodeForToken(code: string, codeVerifier: string): 
     throw new Error(`Token exchange failed (${resp.status}): ${text}`);
   }
 
-  const data = await resp.json();
+  const data = await resp.json() as { access_token: string; refresh_token?: string; expires_in?: number };
   const store: TokenStore = {
     accessToken: data.access_token,
     refreshToken: data.refresh_token,
@@ -136,7 +136,7 @@ export async function refreshAccessToken(): Promise<string | null> {
 
     if (!resp.ok) return null;
 
-    const data = await resp.json();
+    const data = await resp.json() as { access_token: string; refresh_token?: string; expires_in?: number };
     tokenStore.accessToken = data.access_token;
     if (data.refresh_token) tokenStore.refreshToken = data.refresh_token;
     if (data.expires_in) tokenStore.expiresAt = Date.now() + data.expires_in * 1000;
