@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
 
-type CacheKey = 'tools' | 'kpis' | 'funnel' | 'salesByHour' | 'salesByDay' | 'salesByCountry' | 'salesByPayment' | 'creatives' | 'adAccounts' | 'products' | 'campaigns' | 'adSets' | 'ads' | 'trafficChannels';
+type CacheKey = 'tools' | 'kpis' | 'funnel' | 'salesByHour' | 'salesByDay' | 'salesByCountry' | 'salesByPayment' | 'topCampaigns' | 'creatives' | 'adAccounts' | 'products' | 'campaigns' | 'adSets' | 'ads' | 'trafficChannels';
 
 const TTL: Record<CacheKey, number> = {
   tools: 86400,
@@ -10,6 +10,7 @@ const TTL: Record<CacheKey, number> = {
   salesByDay: 300,
   salesByCountry: 300,
   salesByPayment: 300,
+  topCampaigns: 300,
   creatives: 300,
   adAccounts: 1800,
   products: 1800,

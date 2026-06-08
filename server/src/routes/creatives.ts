@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { AuthRequest } from '../middleware/auth';
-import { mcpService } from '../services/McpService';
 import { cacheService } from '../services/CacheService';
+import { fromCacheOrMCP } from '../services/SyncHelper';
 import type { Creative } from '../types';
 
 const router = Router();
@@ -21,8 +21,7 @@ router.get('/', async (req: AuthRequest, res: any) => {
     let data = cacheService.get<Creative[]>('creatives', suffix);
 
     if (!data) {
-      data = await mcpService.callTool('easytracker_list_ads', { period }) as Creative[];
-      cacheService.set('creatives', data, suffix);
+      data = await fromCacheOrMCP<Creative[]>('creatives', suffix, 'easytracker_list_ads', { period });
     }
 
     let result = [...data];
@@ -79,7 +78,7 @@ router.get('/export', async (req: AuthRequest, res: any) => {
     const period = (req.query.period as string) || 'today';
     let data = cacheService.get<Creative[]>('creatives', period);
     if (!data) {
-      data = await mcpService.callTool('easytracker_list_ads', { period }) as Creative[];
+      data = await fromCacheOrMCP<Creative[]>('creatives', period, 'easytracker_list_ads', { period });
     }
 
     const headers = ['Nome', 'Status', 'Data Veiculação', 'Gastos', 'Faturamento', 'Lucro', 'ROAS', 'CPA', 'CPC', 'CTR', 'Hook Rate', 'Hold Rate', 'Vendas', 'Add to Cart'];

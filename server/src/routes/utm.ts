@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { AuthRequest } from '../middleware/auth';
-import { mcpService } from '../services/McpService';
 import { cacheService } from '../services/CacheService';
+import { fromCacheOrMCP } from '../services/SyncHelper';
 import type { Campaign, AdSet, AdCreative } from '../types';
 
 const router = Router();
@@ -17,11 +17,7 @@ router.get('/campaigns', async (req: AuthRequest, res: any) => {
     const sortBy = (req.query.sortBy as string) || '';
     const sortOrder = (req.query.sortOrder as string) || 'desc';
 
-    let data = cacheService.get<Campaign[]>('campaigns', period);
-    if (!data) {
-      data = await mcpService.callTool('easytracker_list_campaigns', {}) as Campaign[];
-      cacheService.set('campaigns', data, period);
-    }
+    const data = await fromCacheOrMCP<Campaign[]>('campaigns', period, 'easytracker_list_campaigns', {});
 
     let result = [...data];
     if (search) result = result.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
@@ -63,11 +59,7 @@ router.get('/ad-sets', async (req: AuthRequest, res: any) => {
     const sortBy = (req.query.sortBy as string) || '';
     const sortOrder = (req.query.sortOrder as string) || 'desc';
 
-    let data = cacheService.get<AdSet[]>('adSets', period);
-    if (!data) {
-      data = await mcpService.callTool('easytracker_list_ad_sets', {}) as AdSet[];
-      cacheService.set('adSets', data, period);
-    }
+    const data = await fromCacheOrMCP<AdSet[]>('adSets', period, 'easytracker_list_ad_sets', {});
 
     let result = [...data];
     if (campaignId) result = result.filter(a => a.campaignId === campaignId);
@@ -110,11 +102,7 @@ router.get('/ads', async (req: AuthRequest, res: any) => {
     const sortBy = (req.query.sortBy as string) || '';
     const sortOrder = (req.query.sortOrder as string) || 'desc';
 
-    let data = cacheService.get<AdCreative[]>('ads', period);
-    if (!data) {
-      data = await mcpService.callTool('easytracker_list_ads', { period }) as AdCreative[];
-      cacheService.set('ads', data, period);
-    }
+    const data = await fromCacheOrMCP<AdCreative[]>('ads', period, 'easytracker_list_ads', { period });
 
     let result = [...data];
     if (status) result = result.filter(a => a.status === status);
@@ -152,10 +140,7 @@ router.get('/ads', async (req: AuthRequest, res: any) => {
 router.get('/campaigns/export', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    let data = cacheService.get<Campaign[]>('campaigns', period);
-    if (!data) {
-      data = await mcpService.callTool('easytracker_list_campaigns', {}) as Campaign[];
-    }
+    const data = await fromCacheOrMCP<Campaign[]>('campaigns', period, 'easytracker_list_campaigns', {});
 
     const headers = ['Nome', 'Status', 'Orçamento', 'Gastos', 'Impressões', 'Cliques', 'Faturamento', 'Lucro', 'ROAS', 'CPA', 'CTR', 'Vendas'];
     const rows = data.map(c => [c.name, c.status, c.budget, c.spend, c.impressions, c.clicks, c.revenue, c.profit, c.roas, c.cpa, c.ctr, c.sales]);
@@ -173,10 +158,7 @@ router.get('/campaigns/export', async (req: AuthRequest, res: any) => {
 router.get('/ads/export', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    let data = cacheService.get<AdCreative[]>('ads', period);
-    if (!data) {
-      data = await mcpService.callTool('easytracker_list_ads', { period }) as AdCreative[];
-    }
+    const data = await fromCacheOrMCP<AdCreative[]>('ads', period, 'easytracker_list_ads', { period });
 
     const headers = ['Nome', 'Status', 'Data Início', 'Gastos', 'Faturamento', 'Lucro', 'ROAS', 'CPA', 'CPC', 'CTR', 'Hook Rate', 'Hold Rate', 'Vendas', 'Add to Cart', 'Impressões', 'Cliques'];
     const rows = data.map(a => [a.name, a.status, a.startDate, a.spend, a.revenue, a.profit, a.roas, a.cpa, a.cpc, a.ctr, a.hookRate, a.holdRate, a.sales, a.addToCart, a.impressions, a.clicks]);

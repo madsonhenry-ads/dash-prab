@@ -12,6 +12,7 @@ import creativesRoutes from './routes/creatives';
 import filtersRoutes from './routes/filters';
 import mcpRoutes from './routes/mcp';
 import cacheRoutes from './routes/cache';
+import syncRoutes from './routes/sync';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -40,6 +41,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 // Protected routes
+app.use('/api/sync', syncRoutes);
 app.use('/api/dashboard', authMiddleware, dashboardRoutes);
 app.use('/api/campaigns-report', authMiddleware, campaignsRoutes);
 app.use('/api/creatives', authMiddleware, creativesRoutes);
