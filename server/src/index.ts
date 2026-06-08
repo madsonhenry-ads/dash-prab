@@ -4,6 +4,7 @@ import cors from 'cors';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { mcpService } from './services/McpService';
+import { isAuthenticated } from './services/EasyTrackerAuth';
 import authRoutes from './routes/auth';
 import dashboardRoutes from './routes/dashboard';
 import campaignsRoutes from './routes/utm';
@@ -24,13 +25,15 @@ app.use('/api/auth', authRoutes);
 
 // Health check (public)
 app.get('/api/health', (_req, res) => {
+  const isMock = process.env.MCP_MOCK === 'true';
   res.json({
     success: true,
     data: {
       status: 'ok',
       version: '1.0.0',
-      mcpConnected: mcpService.isConnected(),
-      mcpMode: process.env.MCP_MOCK === 'true' ? 'mock' : 'real',
+      mcpConnected: isMock || mcpService.isConnected(),
+      mcpMode: isMock ? 'mock' : 'real',
+      easytrackerAuth: isMock || isAuthenticated(),
       uptime: process.uptime(),
     },
   });

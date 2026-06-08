@@ -1,6 +1,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { cacheService } from './CacheService';
+import { getAccessToken, refreshAccessToken, isAuthenticated } from './EasyTrackerAuth';
 import type { McpTool } from '../types';
 
 class McpRealClient {
@@ -20,7 +21,6 @@ class McpRealClient {
 
   async connect(): Promise<void> {
     const url = process.env.EASYTRACKER_MCP_URL || 'https://api.easytracker.digital/api/mcp/v1';
-    const token = process.env.EASYTRACKER_ACCESS_TOKEN;
 
     // Check if cached
     const cached = cacheService.get<McpTool[]>('tools');
@@ -30,9 +30,9 @@ class McpRealClient {
       return;
     }
 
-    // For now, if no token, set as mock
+    const token = getAccessToken();
     if (!token) {
-      throw new Error('EASYTRACKER_ACCESS_TOKEN not configured');
+      throw new Error('EasyTracker não autenticado. Acesse /api/auth/easytracker/login para autorizar.');
     }
 
     try {
@@ -66,23 +66,45 @@ class McpRealClient {
       await this.connect();
     }
 
-    const result = await this.client.callTool({
-      name,
-      arguments: args,
-    });
+    try {
+      const result = await this.client.callTool({
+        name,
+        arguments: args,
+      });
 
-    // Parse content from MCP response
-    if (result.content && Array.isArray(result.content)) {
-      const textContent = result.content.find(c => c.type === 'text');
-      if (textContent?.text) {
-        try {
-          return JSON.parse(textContent.text);
-        } catch {
-          return textContent.text;
+      // Parse content from MCP response
+      if (result.content && Array.isArray(result.content)) {
+        const textContent = result.content.find(c => c.type === 'text');
+        if (textContent?.text) {
+          try {
+            return JSON.parse(textContent.text);
+          } catch {
+            return textContent.text;
+          }
         }
       }
+      return result;
+    } catch (err: any) {
+      // If unauthorized, try refreshing the token and reconnecting
+      if (err.message?.includes('401') || err.message?.includes('unauthorized') || err.message?.includes('invalid_token')) {
+        console.log('[MCP] Token expired, attempting refresh...');
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          this.connected = false;
+          await this.connect();
+          // Retry the call
+          const result = await this.client.callTool({ name, arguments: args });
+          if (result.content && Array.isArray(result.content)) {
+            const textContent = result.content.find(c => c.type === 'text');
+            if (textContent?.text) {
+              try { return JSON.parse(textContent.text); } catch { return textContent.text; }
+            }
+          }
+          return result;
+        }
+      }
+      throw err;
     }
-    return result;
   }
 
   isConnected(): boolean {

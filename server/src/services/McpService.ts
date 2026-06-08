@@ -19,11 +19,17 @@ class McpService {
 
   async connect(): Promise<void> {
     try {
+      if (process.env.MCP_MOCK === 'true') {
+        await this.service.connect();
+        console.log('[MCP] Mock connected');
+        return;
+      }
       await this.service.connect();
       console.log('[MCP] Connected successfully');
     } catch (err) {
       console.error('[MCP] Connection failed:', err);
-      throw err;
+      // Don't throw — allow server to start without MCP
+      // The /api/auth/easytracker/login route will handle auth
     }
   }
 
