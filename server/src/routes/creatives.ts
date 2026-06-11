@@ -60,6 +60,12 @@ router.get('/', async (req: AuthRequest, res: any) => {
       cpa: result.reduce((s, c) => s + (c.sales > 0 ? c.spend / c.sales : 0), 0) / (result.filter(c => c.sales > 0).length || 1),
       hookRate: result.reduce((s, c) => s + c.hookRate, 0) / (result.length || 1),
       holdRate: result.reduce((s, c) => s + c.holdRate, 0) / (result.length || 1),
+      ctr: result.reduce((s, c) => s + c.ctr, 0) / (result.length || 1),
+      bounce_rate: result.reduce((s, c) => s + (c.bounce_rate || 0), 0) / (result.length || 1),
+      landing_views: result.reduce((s, c) => s + (c.landing_views || 0), 0),
+      landing_clicks: result.reduce((s, c) => s + (c.landing_clicks || 0), 0),
+      avg_ticket: result.reduce((s, c) => s + (c.avg_ticket || 0), 0) / (result.length || 1),
+      cic: result.filter(c => (c.landing_clicks || 0) > 0).reduce((s, c) => s + ((c.landing_clicks || 0) > 0 ? c.spend / c.landing_clicks : 0), 0) / (result.filter(c => (c.landing_clicks || 0) > 0).length || 1),
     };
 
     res.json({

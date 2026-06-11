@@ -189,6 +189,8 @@ class McpMockService {
       const impressions = Math.floor(spend / 100 * (3000 + Math.random() * 12000));
       const clicks = Math.floor(impressions * (0.008 + Math.random() * 0.04));
       const sales = status === 'active' ? Math.floor(revenue / (30 + Math.random() * 80)) : 0;
+      const landingClicks = Math.floor(clicks * (0.2 + Math.random() * 0.3));
+      const landingViews = Math.floor(clicks * (0.5 + Math.random() * 0.3));
       return {
         id: `ad_${i + 1}`,
         name,
@@ -210,6 +212,11 @@ class McpMockService {
         addToCart: Math.floor(sales * (1.2 + Math.random() * 1.8)),
         impressions,
         clicks,
+        bounce_rate: Math.round((10 + Math.random() * 50) * 100) / 100,
+        landing_views: landingViews,
+        landing_clicks: landingClicks,
+        avg_ticket: sales > 0 ? Math.round((revenue / sales) * 100) / 100 : 0,
+        cic: landingClicks > 0 ? Math.round((spend / landingClicks) * 100) / 100 : 0,
       };
     });
   }

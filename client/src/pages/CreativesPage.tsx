@@ -24,6 +24,11 @@ const COLUMNS = [
   { key: 'holdRate', label: 'Hold Rate' },
   { key: 'sales', label: 'Vendas' },
   { key: 'addToCart', label: 'Add to Cart' },
+  { key: 'landing_clicks', label: 'IC (Landing Click)' },
+  { key: 'cic', label: 'CIC (Custo / IC)' },
+  { key: 'bounce_rate', label: 'Bounce Rate' },
+  { key: 'landing_views', label: 'Landing Views' },
+  { key: 'avg_ticket', label: 'Avg Ticket' },
 ];
 
 const STATUS_FILTERS = [
@@ -71,9 +76,9 @@ export function CreativesPage() {
     }
     if (key === 'profit') return <span className={row.profit < 0 ? 'text-brand-red' : 'text-brand-green'}>{formatCurrency(row.profit)}</span>;
     if (key === 'roas') return <span className={row.roas < roasGoal ? 'text-brand-yellow' : ''}>{row.roas.toFixed(2)}</span>;
-    if (['ctr', 'hookRate', 'holdRate'].includes(key)) return <span>{(row as any)[key]}%</span>;
-    if (['cpa', 'cpc', 'spend', 'revenue'].includes(key)) return <span>{formatCurrency((row as any)[key])}</span>;
-    if (['sales', 'addToCart'].includes(key)) return <span>{formatNumber((row as any)[key])}</span>;
+    if (['ctr', 'hookRate', 'holdRate', 'bounce_rate'].includes(key)) return <span>{(row as any)[key]}%</span>;
+    if (['cpa', 'cpc', 'cic', 'spend', 'revenue', 'avg_ticket'].includes(key)) return <span>{formatCurrency((row as any)[key])}</span>;
+    if (['sales', 'addToCart', 'landing_views', 'landing_clicks'].includes(key)) return <span>{formatNumber((row as any)[key])}</span>;
     if (key === 'startDate') return <span className="text-dark-400">{new Date(row.startDate + 'T00:00:00').toLocaleDateString('pt-BR')}</span>;
     return <span>{(row as any)[key] ?? '—'}</span>;
   };
@@ -141,6 +146,11 @@ export function CreativesPage() {
                 <td className="px-4 py-3 font-medium text-white">{data.footer.holdRate?.toFixed(1)}%</td>
                 <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.sales)}</td>
                 <td className="px-4 py-3 text-dark-400">—</td>
+                <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.landing_clicks || 0)}</td>
+                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.cic || 0)}</td>
+                <td className="px-4 py-3 font-medium text-white">{data.footer.bounce_rate?.toFixed(1)}%</td>
+                <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.landing_views || 0)}</td>
+                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.avg_ticket || 0)}</td>
               </tr>
             </tfoot>
           )}

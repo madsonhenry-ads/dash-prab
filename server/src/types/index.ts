@@ -102,6 +102,11 @@ export interface Creative {
   addToCart: number;
   impressions: number;
   clicks: number;
+  bounce_rate: number;
+  landing_views: number;
+  landing_clicks: number;
+  avg_ticket: number;
+  cic: number;
   thumbnail?: string;
 }
 
@@ -182,6 +187,11 @@ export interface AdCreative {
   addToCart: number;
   impressions: number;
   clicks: number;
+  bounce_rate: number;
+  landing_views: number;
+  landing_clicks: number;
+  avg_ticket: number;
+  cic: number;
 }
 
 export interface AdAccount {
