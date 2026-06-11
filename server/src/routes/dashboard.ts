@@ -15,6 +15,13 @@ function getDates(req: any): { beginDate: string; endDate: string } {
   return proxy.periodToDates(req.query.period as string || 'today');
 }
 
+function getPeriodKey(req: any): string {
+  if (req.query.beginDate && req.query.endDate) {
+    return `${req.query.beginDate}_${req.query.endDate}`;
+  }
+  return req.query.period as string || 'today';
+}
+
 function getChannelFilter(req: any): string | undefined {
   const channels = req.query.channels as string;
   return channels && channels !== 'all' && channels !== '' ? channels : undefined;
@@ -82,12 +89,11 @@ router.get('/sales-by-hour', async (req: AuthRequest, res: any) => {
     const data = await proxy.getSalesByHour(beginDate, endDate);
     if (data.length > 0) return res.json({ success: true, data });
   } catch {}
-  // Fallback: mock/cache
-  const period = req.query.period as string;
-  const cached = cacheService.get<any>('salesByHour', period);
+  const periodKey = getPeriodKey(req);
+  const cached = cacheService.get<any>('salesByHour', periodKey);
   if (cached) { res.json({ success: true, data: cached }); return; }
-  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: period || 'today' }, 'salesByHour', period);
-  cacheService.set('salesByHour', report.salesByHour || [], period);
+  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: req.query.period as string || 'today' }, 'salesByHour', periodKey);
+  cacheService.set('salesByHour', report.salesByHour || [], periodKey);
   res.json({ success: true, data: report.salesByHour || [] });
 });
 
@@ -103,14 +109,14 @@ router.get('/sales-by-day', async (req: AuthRequest, res: any) => {
       return res.json({ success: true, data });
     }
   } catch {}
-  const period = req.query.period as string;
-  const cached = cacheService.get<any>('salesByDay', period);
+  const periodKey = getPeriodKey(req);
+  const cached = cacheService.get<any>('salesByDay', periodKey);
   if (cached) { res.json({ success: true, data: cached }); return; }
-  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: period || 'today' }, 'salesByDay', period);
+  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: req.query.period as string || 'today' }, 'salesByDay', periodKey);
   const data = report.salesByDay || [];
   const total = data.reduce((s: number, d: any) => s + d.sales, 0);
   data.forEach((d: any) => { d.percentage = Math.round((d.sales / total) * 10000) / 100; });
-  cacheService.set('salesByDay', data, period);
+  cacheService.set('salesByDay', data, periodKey);
   res.json({ success: true, data });
 });
 
@@ -126,11 +132,11 @@ router.get('/sales-by-country', async (req: AuthRequest, res: any) => {
       return res.json({ success: true, data });
     }
   } catch {}
-  const period = req.query.period as string;
-  const cached = cacheService.get<any>('salesByCountry', period);
+  const periodKey = getPeriodKey(req);
+  const cached = cacheService.get<any>('salesByCountry', periodKey);
   if (cached) { res.json({ success: true, data: cached }); return; }
-  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: period || 'today' }, 'salesByCountry', period);
-  cacheService.set('salesByCountry', report.salesByCountry || [], period);
+  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: req.query.period as string || 'today' }, 'salesByCountry', periodKey);
+  cacheService.set('salesByCountry', report.salesByCountry || [], periodKey);
   res.json({ success: true, data: report.salesByCountry || [] });
 });
 
@@ -140,11 +146,11 @@ router.get('/sales-by-payment', async (req: AuthRequest, res: any) => {
     const data = await proxy.getSalesByPayment(beginDate, endDate);
     if (data.length > 0) return res.json({ success: true, data });
   } catch {}
-  const period = req.query.period as string;
-  const cached = cacheService.get<any>('salesByPayment', period);
+  const periodKey = getPeriodKey(req);
+  const cached = cacheService.get<any>('salesByPayment', periodKey);
   if (cached) { res.json({ success: true, data: cached }); return; }
-  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: period || 'today' }, 'salesByPayment', period);
-  cacheService.set('salesByPayment', report.salesByPayment || [], period);
+  const report = await mcpOrCache<any>('easytracker_get_dashboard_report', { period: req.query.period as string || 'today' }, 'salesByPayment', periodKey);
+  cacheService.set('salesByPayment', report.salesByPayment || [], periodKey);
   res.json({ success: true, data: report.salesByPayment || [] });
 });
 
@@ -162,8 +168,8 @@ router.get('/top-campaigns', async (req: AuthRequest, res: any) => {
         return res.json({ success: true, data });
       }
     } catch {}
-    const period = req.query.period as string;
-    const suffix = `${period || 'today'}:all`;
+    const periodKey = getPeriodKey(req);
+    const suffix = `${periodKey}:all`;
     const campaigns = await mcpOrCache<any>('easytracker_list_campaigns', {}, 'campaigns', suffix);
     const data = (campaigns as any[] || []).map((c: any) => ({
       name: c.name, spend: c.spend, revenue: c.revenue, roas: c.roas,
