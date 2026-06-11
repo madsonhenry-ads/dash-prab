@@ -10,7 +10,7 @@ interface Props {
 export function SalesByHourChart({ data }: Props) {
   return (
     <div className="card">
-      <h3 className="text-sm font-semibold text-gray-200 mb-4">Vendas por Hora</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-4">Sales by Hour</h3>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
@@ -21,7 +21,7 @@ export function SalesByHourChart({ data }: Props) {
             labelStyle={{ color: '#e0e0e0' }}
             formatter={(value: number) => [formatCurrency(value), undefined]}
           />
-          <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Faturamento" />
+          <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Revenue" />
         </BarChart>
       </ResponsiveContainer>
     </div>

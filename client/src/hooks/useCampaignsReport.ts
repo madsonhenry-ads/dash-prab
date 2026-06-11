@@ -10,6 +10,9 @@ interface CampaignsParams {
   campaignId?: string;
   sortBy?: string;
   sortOrder?: string;
+  channels?: string;
+  beginDate?: string;
+  endDate?: string;
 }
 
 export function useCampaigns(params: CampaignsParams) {

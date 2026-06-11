@@ -7,11 +7,11 @@ interface PeriodSelectorProps {
 }
 
 const periods: { value: Period; label: string }[] = [
-  { value: 'today', label: 'Hoje' },
-  { value: 'yesterday', label: 'Ontem' },
-  { value: 'last_7', label: 'Últimos 7 dias' },
-  { value: 'last_30', label: 'Últimos 30 dias' },
-  { value: 'custom', label: 'Personalizado' },
+  { value: 'today', label: 'Today' },
+  { value: 'yesterday', label: 'Yesterday' },
+  { value: 'last_7', label: 'Last 7 days' },
+  { value: 'last_30', label: 'Last 30 days' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {

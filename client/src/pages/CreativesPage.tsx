@@ -9,34 +9,33 @@ import { formatCurrency, formatNumber, statusLabel, statusBadgeClass, perfIndica
 import type { Period, AdCreative } from '../types';
 
 const COLUMNS = [
-  { key: 'name', label: 'Nome do Criativo' },
-  { key: 'campaignName', label: 'Campanha' },
+  { key: 'name', label: 'Creative Name' },
+  { key: 'campaignName', label: 'Campaign' },
   { key: 'status', label: 'Status' },
-  { key: 'startDate', label: 'Data Veiculação' },
-  { key: 'spend', label: 'Gastos' },
-  { key: 'revenue', label: 'Faturamento' },
-  { key: 'profit', label: 'Lucro / Prejuízo' },
+  { key: 'startDate', label: 'Start Date' },
+  { key: 'spend', label: 'Spend' },
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'profit', label: 'Profit / Loss' },
   { key: 'roas', label: 'ROAS' },
   { key: 'cpa', label: 'CPA' },
   { key: 'cpc', label: 'CPC' },
   { key: 'ctr', label: 'CTR' },
   { key: 'hookRate', label: 'Hook Rate' },
   { key: 'holdRate', label: 'Hold Rate' },
-  { key: 'sales', label: 'Vendas' },
-  { key: 'addToCart', label: 'Add to Cart' },
-  { key: 'landing_clicks', label: 'IC (Landing Click)' },
-  { key: 'cic', label: 'CIC (Custo / IC)' },
+  { key: 'sales', label: 'Sales' },
+  { key: 'landing_clicks', label: 'Landing Clicks (IC)' },
+  { key: 'cic', label: 'CIC (Cost / IC)' },
   { key: 'bounce_rate', label: 'Bounce Rate' },
   { key: 'landing_views', label: 'Landing Views' },
   { key: 'avg_ticket', label: 'Avg Ticket' },
 ];
 
 const STATUS_FILTERS = [
-  { value: '', label: 'Todos' },
-  { value: 'active', label: 'Ativos' },
-  { value: 'rejected', label: 'Rejeitados' },
-  { value: 'paused', label: 'Pausados' },
-  { value: 'no_data', label: 'Sem dados' },
+  { value: '', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'rejected', label: 'Rejected' },
+  { value: 'paused', label: 'Paused' },
+  { value: 'no_data', label: 'No data' },
 ];
 
 export function CreativesPage() {
@@ -79,20 +78,20 @@ export function CreativesPage() {
     if (['ctr', 'hookRate', 'holdRate', 'bounce_rate'].includes(key)) return <span>{(row as any)[key]}%</span>;
     if (['cpa', 'cpc', 'cic', 'spend', 'revenue', 'avg_ticket'].includes(key)) return <span>{formatCurrency((row as any)[key])}</span>;
     if (['sales', 'addToCart', 'landing_views', 'landing_clicks'].includes(key)) return <span>{formatNumber((row as any)[key])}</span>;
-    if (key === 'startDate') return <span className="text-dark-400">{new Date(row.startDate + 'T00:00:00').toLocaleDateString('pt-BR')}</span>;
+    if (key === 'startDate') return <span className="text-dark-400">{new Date(row.startDate + 'T00:00:00').toLocaleDateString('en-US')}</span>;
     return <span>{(row as any)[key] ?? '—'}</span>;
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-white">Controle de Criativos</h2>
-        <button onClick={handleExport} className="btn-secondary text-xs">Exportar CSV</button>
+        <h2 className="text-lg font-bold text-white">Creative Control</h2>
+        <button onClick={handleExport} className="btn-secondary text-xs">Export CSV</button>
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
         <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} />
-        <input type="text" placeholder="Buscar criativo..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
+        <input type="text" placeholder="Search creative..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
         <div className="flex items-center gap-1 bg-dark-800 rounded-lg p-1 border border-dark-700">
           {STATUS_FILTERS.map(sf => (
             <button key={sf.value} onClick={() => { setStatus(sf.value); setPage(1); }}
@@ -107,7 +106,7 @@ export function CreativesPage() {
       </div>
 
       {isLoading ? <TableSkeleton rows={10} /> :
-       error ? <ErrorState message="Erro ao carregar criativos" onRetry={() => refetch()} /> :
+       error ? <ErrorState message="Error loading creatives" onRetry={() => refetch()} /> :
       <div className="card !p-0 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -126,13 +125,13 @@ export function CreativesPage() {
               </tr>
             ))}
             {(!data?.data || data.data.length === 0) && (
-              <tr><td colSpan={COLUMNS.length} className="px-4 py-8 text-center text-dark-400">Nenhum criativo encontrado</td></tr>
+              <tr><td colSpan={COLUMNS.length} className="px-4 py-8 text-center text-dark-400">No creatives found</td></tr>
             )}
           </tbody>
           {data?.footer && (
             <tfoot className="border-t border-dark-600">
               <tr>
-                <td className="px-4 py-3 font-medium text-white" colSpan={2}>Totais / Médias</td>
+                <td className="px-4 py-3 font-medium text-white" colSpan={2}>Totals / Averages</td>
                 <td className="px-4 py-3 text-dark-400">—</td>
                 <td className="px-4 py-3 text-dark-400">—</td>
                 <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.spend)}</td>
@@ -145,7 +144,6 @@ export function CreativesPage() {
                 <td className="px-4 py-3 font-medium text-white">{data.footer.hookRate?.toFixed(1)}%</td>
                 <td className="px-4 py-3 font-medium text-white">{data.footer.holdRate?.toFixed(1)}%</td>
                 <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.sales)}</td>
-                <td className="px-4 py-3 text-dark-400">—</td>
                 <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.landing_clicks || 0)}</td>
                 <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.cic || 0)}</td>
                 <td className="px-4 py-3 font-medium text-white">{data.footer.bounce_rate?.toFixed(1)}%</td>
@@ -157,11 +155,11 @@ export function CreativesPage() {
         </table>
         {data?.meta && data.meta.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-dark-700">
-            <span className="text-xs text-dark-400">Mostrando {(page - 1) * 50 + 1}-{Math.min(page * 50, data.meta.total)} de {data.meta.total}</span>
+            <span className="text-xs text-dark-400">Showing {(page - 1) * 50 + 1}-{Math.min(page * 50, data.meta.total)} of {data.meta.total}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="btn-secondary text-xs">Anterior</button>
-              <span className="text-xs text-dark-400">Página {page} de {data.meta.totalPages}</span>
-              <button disabled={page >= data.meta.totalPages} onClick={() => setPage(p => p + 1)} className="btn-secondary text-xs">Próxima</button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="btn-secondary text-xs">Previous</button>
+              <span className="text-xs text-dark-400">Page {page} of {data.meta.totalPages}</span>
+              <button disabled={page >= data.meta.totalPages} onClick={() => setPage(p => p + 1)} className="btn-secondary text-xs">Next</button>
             </div>
           </div>
         )}

@@ -11,54 +11,54 @@ import type { Period, Campaign, AdSet, AdCreative } from '../types';
 type TabType = 'campaigns' | 'adsets' | 'ads';
 
 const TABS: { key: TabType; label: string }[] = [
-  { key: 'campaigns', label: 'Campanhas' },
-  { key: 'adsets', label: 'Conjuntos de Anúncios' },
-  { key: 'ads', label: 'Anúncios' },
+  { key: 'campaigns', label: 'Campaigns' },
+  { key: 'adsets', label: 'Ad Sets' },
+  { key: 'ads', label: 'Ads' },
 ];
 
 const CAMPAIGN_COLUMNS = [
-  { key: 'name', label: 'Campanha' },
+  { key: 'name', label: 'Campaign' },
   { key: 'status', label: 'Status' },
-  { key: 'spend', label: 'Gastos' },
-  { key: 'revenue', label: 'Faturamento' },
-  { key: 'profit', label: 'Lucro' },
+  { key: 'spend', label: 'Spend' },
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'profit', label: 'Profit' },
   { key: 'roas', label: 'ROAS' },
   { key: 'cpa', label: 'CPA' },
-  { key: 'impressions', label: 'Impressões' },
-  { key: 'clicks', label: 'Cliques' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'clicks', label: 'Clicks' },
   { key: 'ctr', label: 'CTR' },
-  { key: 'sales', label: 'Vendas' },
+  { key: 'sales', label: 'Sales' },
 ];
 
 const ADSET_COLUMNS = [
-  { key: 'name', label: 'Conjunto' },
-  { key: 'campaignName', label: 'Campanha' },
+  { key: 'name', label: 'Set' },
+  { key: 'campaignName', label: 'Campaign' },
   { key: 'status', label: 'Status' },
-  { key: 'spend', label: 'Gastos' },
-  { key: 'revenue', label: 'Faturamento' },
-  { key: 'profit', label: 'Lucro' },
+  { key: 'spend', label: 'Spend' },
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'profit', label: 'Profit' },
   { key: 'roas', label: 'ROAS' },
-  { key: 'impressions', label: 'Impressões' },
-  { key: 'clicks', label: 'Cliques' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'clicks', label: 'Clicks' },
   { key: 'ctr', label: 'CTR' },
-  { key: 'sales', label: 'Vendas' },
+  { key: 'sales', label: 'Sales' },
 ];
 
 const AD_COLUMNS = [
-  { key: 'name', label: 'Anúncio' },
-  { key: 'campaignName', label: 'Campanha' },
+  { key: 'name', label: 'Ad' },
+  { key: 'campaignName', label: 'Campaign' },
   { key: 'status', label: 'Status' },
-  { key: 'spend', label: 'Gastos' },
-  { key: 'revenue', label: 'Faturamento' },
-  { key: 'profit', label: 'Lucro' },
+  { key: 'spend', label: 'Spend' },
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'profit', label: 'Profit' },
   { key: 'roas', label: 'ROAS' },
   { key: 'cpa', label: 'CPA' },
-  { key: 'impressions', label: 'Impressões' },
-  { key: 'clicks', label: 'Cliques' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'clicks', label: 'Clicks' },
   { key: 'ctr', label: 'CTR' },
   { key: 'hookRate', label: 'Hook Rate' },
   { key: 'holdRate', label: 'Hold Rate' },
-  { key: 'sales', label: 'Vendas' },
+  { key: 'sales', label: 'Sales' },
 ];
 
 const ALL_COLUMNS = [...AD_COLUMNS,
@@ -66,9 +66,9 @@ const ALL_COLUMNS = [...AD_COLUMNS,
   { key: 'cpm', label: 'CPM' },
   { key: 'cpc', label: 'CPC' },
   { key: 'addToCart', label: 'Add to Cart' },
-  { key: 'margin', label: 'Margem' },
+  { key: 'margin', label: 'Margin' },
   { key: 'arpu', label: 'ARPU' },
-  { key: 'grossRevenue', label: 'Faturamento Bruto' },
+  { key: 'grossRevenue', label: 'Gross Revenue' },
 ];
 
 const OPTIONAL_COLUMNS = ['roi', 'cpm', 'cpc', 'addToCart', 'margin', 'arpu', 'grossRevenue', 'hookRate', 'holdRate'];
@@ -91,7 +91,7 @@ export function CampaignsReportPage() {
   const { data: products } = useProducts();
   const { data: channels } = useTrafficChannels();
 
-  const common = { period, page, pageSize: 50, search, status: statusFilter, campaignId: campaignFilter, sortBy, sortOrder };
+  const common = { period, page, pageSize: 50, search, status: statusFilter, campaignId: campaignFilter, sortBy, sortOrder, channels: selectedChannels.join(',') };
   const { data: campaignsData, isLoading: loadingCamps, error: errCamps, refetch: refetchCamps } = useCampaigns(common);
   const { data: adsetsData, isLoading: loadingAdsets, error: errAdsets, refetch: refetchAdsets } = useAdSets(common);
   const { data: adsData, isLoading: loadingAds, error: errAds, refetch: refetchAds } = useAds(common);
@@ -125,7 +125,7 @@ export function CampaignsReportPage() {
 
   const renderTable = (data: any, loading: boolean, error: any, refetch: () => void, columns: any[], footer: any) => {
     if (loading) return <TableSkeleton rows={10} />;
-    if (error) return <ErrorState message={`Erro ao carregar dados`} onRetry={refetch} />;
+    if (error) return <ErrorState message={`Error loading data`} onRetry={refetch} />;
 
     return (
       <div className="card !p-0 overflow-x-auto">
@@ -146,13 +146,13 @@ export function CampaignsReportPage() {
               </tr>
             ))}
             {(!data?.data || data.data.length === 0) && (
-              <tr><td colSpan={columns.length} className="px-4 py-8 text-center text-dark-400">Nenhum resultado encontrado</td></tr>
+              <tr><td colSpan={columns.length} className="px-4 py-8 text-center text-dark-400">No results found</td></tr>
             )}
           </tbody>
           {footer && (
             <tfoot className="border-t border-dark-600">
               <tr>
-                <td className="px-4 py-3 font-medium text-white" colSpan={tab === 'ads' ? 2 : 1}>Totais / Médias</td>
+                <td className="px-4 py-3 font-medium text-white" colSpan={tab === 'ads' ? 2 : 1}>Totals / Averages</td>
                 {columns.slice(tab === 'ads' ? 2 : 1).map(col => (
                   <td key={col.key} className="px-4 py-3 font-medium text-white">{renderCell(footer, col.key)}</td>
                 ))}
@@ -162,11 +162,11 @@ export function CampaignsReportPage() {
         </table>
         {data?.meta && data.meta.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-dark-700">
-            <span className="text-xs text-dark-400">Mostrando {(page - 1) * 50 + 1}-{Math.min(page * 50, data.meta.total)} de {data.meta.total}</span>
+            <span className="text-xs text-dark-400">Showing {(page - 1) * 50 + 1}-{Math.min(page * 50, data.meta.total)} of {data.meta.total}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="btn-secondary text-xs">Anterior</button>
-              <span className="text-xs text-dark-400">Página {page} de {data.meta.totalPages}</span>
-              <button disabled={page >= data.meta.totalPages} onClick={() => setPage(p => p + 1)} className="btn-secondary text-xs">Próxima</button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="btn-secondary text-xs">Previous</button>
+              <span className="text-xs text-dark-400">Page {page} of {data.meta.totalPages}</span>
+              <button disabled={page >= data.meta.totalPages} onClick={() => setPage(p => p + 1)} className="btn-secondary text-xs">Next</button>
             </div>
           </div>
         )}
@@ -184,9 +184,9 @@ export function CampaignsReportPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-white">Relatório de Campanhas e Anúncios</h2>
+        <h2 className="text-lg font-bold text-white">Campaigns & Ads Report</h2>
         {tab === 'ads' && (
-          <button onClick={() => setShowColumns(true)} className="btn-secondary text-xs">Colunas ({currentColumns.length})</button>
+          <button onClick={() => setShowColumns(true)} className="btn-secondary text-xs">Columns ({currentColumns.length})</button>
         )}
       </div>
 
@@ -203,15 +203,15 @@ export function CampaignsReportPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap">
         <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} />
-        <input type="text" placeholder="Buscar..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
+        <input type="text" placeholder="Search..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
         <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }} className="input max-w-[140px]">
-          <option value="">Todos status</option>
-          <option value="ACTIVE">Ativos</option>
-          <option value="PAUSED">Pausados</option>
+          <option value="">All statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="PAUSED">Paused</option>
         </select>
-        {accounts?.data && <MultiSelect options={accounts.data} selected={selectedAccounts} onChange={setSelectedAccounts} placeholder="Contas" />}
-        {products?.data && <MultiSelect options={products.data} selected={selectedProducts} onChange={setSelectedProducts} placeholder="Produtos" />}
-        {channels?.data && <MultiSelect options={channels.data} selected={selectedChannels} onChange={setSelectedChannels} placeholder="Canais" />}
+        {accounts?.data && <MultiSelect options={accounts.data} selected={selectedAccounts} onChange={setSelectedAccounts} placeholder="Accounts" />}
+        {products?.data && <MultiSelect options={products.data} selected={selectedProducts} onChange={setSelectedProducts} placeholder="Products" />}
+        {channels?.data && <MultiSelect options={channels.data} selected={selectedChannels} onChange={setSelectedChannels} placeholder="Channels" />}
       </div>
 
       {/* Table */}
@@ -221,7 +221,7 @@ export function CampaignsReportPage() {
       {showColumns && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowColumns(false)}>
           <div className="bg-dark-800 border border-dark-700 rounded-xl p-6 w-80" onClick={e => e.stopPropagation()}>
-            <h3 className="text-sm font-semibold text-white mb-4">Colunas Adicionais</h3>
+            <h3 className="text-sm font-semibold text-white mb-4">Additional Columns</h3>
             <div className="space-y-2">
               {OPTIONAL_COLUMNS.map(col => (
                 <label key={col} className="flex items-center gap-2 text-sm cursor-pointer hover:text-gray-200">
@@ -230,7 +230,7 @@ export function CampaignsReportPage() {
                 </label>
               ))}
             </div>
-            <button onClick={() => setShowColumns(false)} className="btn-primary w-full mt-4 text-sm">Concluído</button>
+            <button onClick={() => setShowColumns(false)} className="btn-primary w-full mt-4 text-sm">Done</button>
           </div>
         </div>
       )}

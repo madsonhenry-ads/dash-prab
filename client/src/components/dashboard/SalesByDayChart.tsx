@@ -10,7 +10,7 @@ interface Props {
 export function SalesByDayChart({ data }: Props) {
   return (
     <div className="card">
-      <h3 className="text-sm font-semibold text-gray-200 mb-4">Vendas por Dia da Semana</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-4">Sales by Day of Week</h3>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
@@ -19,7 +19,7 @@ export function SalesByDayChart({ data }: Props) {
           <Tooltip
             contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8 }}
             labelStyle={{ color: '#e0e0e0' }}
-            formatter={(value: number) => [formatNumber(value), 'Vendas']}
+            formatter={(value: number) => [formatNumber(value), 'Sales']}
           />
           <Bar dataKey="sales" radius={[4, 4, 0, 0]} name="Vendas">
             {data.map((entry, index) => (

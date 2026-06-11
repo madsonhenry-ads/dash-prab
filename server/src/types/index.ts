@@ -87,6 +87,9 @@ export interface UtmRow {
 export interface Creative {
   id: string;
   name: string;
+  campaignName: string;
+  campaignId: string;
+  adSetId: string;
   status: 'active' | 'paused' | 'rejected' | 'under_review' | 'no_data';
   startDate: string;
   spend: number;

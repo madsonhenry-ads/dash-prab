@@ -11,7 +11,7 @@ export function ConversionFunnel({ data }: FunnelProps) {
 
   return (
     <div className="card">
-      <h3 className="text-sm font-semibold text-gray-200 mb-4">Funil de Conversão</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-4">Conversion Funnel</h3>
       <div className="space-y-2">
         {data.map((step, i) => (
           <div key={step.label}>

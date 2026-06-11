@@ -16,7 +16,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     try {
       await onLogin(password);
     } catch (err: any) {
-      setError(err.message || 'Erro ao fazer login');
+      setError(err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -34,12 +34,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-dark-400 mb-1">Senha de Acesso</label>
+            <label className="block text-xs text-dark-400 mb-1">Access Password</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="Digite a senha..."
+              placeholder="Enter password..."
               className="input"
               autoFocus
             />
@@ -56,7 +56,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             disabled={loading || !password}
             className="btn-primary w-full"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
       </div>

@@ -5,6 +5,7 @@ import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { mcpService } from './services/McpService';
 import { isAuthenticated } from './services/EasyTrackerAuth';
+import { postgresService } from './services/PostgresService';
 import authRoutes from './routes/auth';
 import dashboardRoutes from './routes/dashboard';
 import campaignsRoutes from './routes/utm';
@@ -25,8 +26,13 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 
 // Health check (public)
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', async (_req, res) => {
   const isMock = process.env.MCP_MOCK === 'true';
+  let easytrackerConnected = isMock || isAuthenticated();
+  try {
+    const { checkConnection } = await import('./services/EasyTrackerProxy');
+    if (!isMock) easytrackerConnected = await checkConnection();
+  } catch {}
   res.json({
     success: true,
     data: {
@@ -34,7 +40,8 @@ app.get('/api/health', (_req, res) => {
       version: '1.0.0',
       mcpConnected: isMock || mcpService.isConnected(),
       mcpMode: isMock ? 'mock' : 'real',
-      easytrackerAuth: isMock || isAuthenticated(),
+      postgresConnected: postgresService.isConnected(),
+      easytrackerAuth: easytrackerConnected,
       uptime: process.uptime(),
     },
   });
@@ -69,6 +76,9 @@ app.use(errorHandler);
 // Start
 async function start() {
   try {
+    // Connect to PostgreSQL
+    postgresService.connect();
+
     // Connect to MCP (non-blocking)
     mcpService.connect().catch(err => {
       console.warn('[Server] MCP connection failed, will retry on demand:', err.message);

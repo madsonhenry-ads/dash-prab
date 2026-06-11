@@ -11,13 +11,13 @@ export function Header() {
   const handleRefresh = async () => {
     queryClient.invalidateQueries();
     await api.cache.invalidate();
-    toast.success('Cache limpo e dados atualizados!');
+    toast.success('Cache cleared, data updated!');
   };
 
   return (
     <header className="h-14 bg-dark-900 border-b border-dark-700 flex items-center justify-between px-6 shrink-0">
       <div className="flex items-center gap-3">
-        <span className="text-sm text-dark-400">Visão Geral</span>
+        <span className="text-sm text-dark-400">Overview</span>
       </div>
 
       <div className="flex items-center gap-4">
@@ -44,7 +44,7 @@ export function Header() {
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          Atualizar
+          Refresh
         </button>
       </div>
     </header>

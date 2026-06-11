@@ -12,7 +12,7 @@ interface Props {
 export function SalesByPaymentChart({ data }: Props) {
   return (
     <div className="card">
-      <h3 className="text-sm font-semibold text-gray-200 mb-4">Vendas por Pagamento</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-4">Sales by Payment</h3>
       <div className="flex items-center gap-6">
         <ResponsiveContainer width="60%" height={220}>
           <PieChart>
@@ -23,7 +23,7 @@ export function SalesByPaymentChart({ data }: Props) {
             </Pie>
             <Tooltip
               contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8 }}
-              formatter={(value: number) => [formatNumber(value), 'Vendas']}
+              formatter={(value: number) => [formatNumber(value), 'Sales']}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -33,7 +33,7 @@ export function SalesByPaymentChart({ data }: Props) {
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
               <span className="text-dark-300">{item.method}</span>
               <span className="text-white font-medium">{item.percentage.toFixed(1)}%</span>
-              <span className="text-dark-400 text-xs">{item.approvalRate.toFixed(0)}% aprovação</span>
+              <span className="text-dark-400 text-xs">{item.approvalRate.toFixed(0)}% approval</span>
             </div>
           ))}
         </div>

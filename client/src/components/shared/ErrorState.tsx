@@ -12,7 +12,7 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
       <p className="text-dark-300 mb-4 max-w-md">{message}</p>
       {onRetry && (
         <button onClick={onRetry} className="btn-primary">
-          Tentar novamente
+          Try again
         </button>
       )}
     </div>

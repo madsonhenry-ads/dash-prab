@@ -1,7 +1,7 @@
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('pt-BR', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'BRL',
+    currency: 'USD',
   }).format(value);
 }
 
@@ -29,11 +29,11 @@ export function classNames(...classes: (string | boolean | undefined | null)[]):
 
 export function statusLabel(status: string): string {
   const map: Record<string, string> = {
-    active: 'Ativo',
-    paused: 'Pausado',
-    rejected: 'Rejeitado',
-    under_review: 'Em Análise',
-    no_data: 'Sem dados',
+    active: 'Active',
+    paused: 'Paused',
+    rejected: 'Rejected',
+    under_review: 'Under Review',
+    no_data: 'No Data',
   };
   return map[status] || status;
 }
@@ -50,10 +50,10 @@ export function statusBadgeClass(status: string): string {
 }
 
 export function perfIndicator(roas: number, profit: number, status: string, roasGoal: number): { icon: string; label: string; className: string } {
-  if (status === 'rejected') return { icon: '❌', label: 'Rejeitado', className: 'text-brand-red' };
-  if (profit < 0) return { icon: '⚠️', label: 'Prejuízo', className: 'text-brand-yellow' };
-  if (roas >= roasGoal) return { icon: '🔥', label: 'Acima da meta', className: 'text-brand-green' };
-  return { icon: '➖', label: 'Abaixo da meta', className: 'text-dark-400' };
+  if (status === 'rejected') return { icon: '❌', label: 'Rejected', className: 'text-brand-red' };
+  if (profit < 0) return { icon: '⚠️', label: 'Loss', className: 'text-brand-yellow' };
+  if (roas >= roasGoal) return { icon: '🔥', label: 'Above Goal', className: 'text-brand-green' };
+  return { icon: '➖', label: 'Below Goal', className: 'text-dark-400' };
 }
 
 export function downloadCsv(filename: string, csvContent: string): void {

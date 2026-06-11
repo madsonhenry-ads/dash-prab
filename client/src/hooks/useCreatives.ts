@@ -10,6 +10,7 @@ interface CreativesParams {
   product?: string;
   sortBy?: string;
   sortOrder?: string;
+  channels?: string;
 }
 
 export function useCreatives(params: CreativesParams) {
