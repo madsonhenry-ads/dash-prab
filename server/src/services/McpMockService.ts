@@ -60,18 +60,35 @@ class McpMockService {
   }
 
   private getDashboardReport(args?: any) {
+    const period = args?.period || 'today';
+    const channels = args?.channels || '';
+
+    // Scale data based on period (more days = larger numbers)
+    let multiplier = 1;
+    switch (period) {
+      case 'yesterday': multiplier = 0.9; break;
+      case 'last_7': multiplier = 5; break;
+      case 'last_30': multiplier = 20; break;
+      default: multiplier = 1;
+    }
+
+    // Channel filter reduces numbers proportionally
+    const channelFactor = channels ? 0.4 + Math.random() * 0.3 : 1;
+
+    const base = multiplier * channelFactor;
+
     return {
       kpis: {
-        adSpend: 12543.78,
-        profit: 28765.42,
-        roas: 3.62,
-        netRevenue: 45234.56,
-        cpa: 42.15,
-        margin: 38.9,
-        roi: 229.3,
-        arpu: 89.45,
-        approvedSales: 312,
-        grossRevenue: 48987.34,
+        adSpend: Math.round(12543.78 * base),
+        profit: Math.round(28765.42 * base),
+        roas: 3.2 + Math.random() * 0.8,
+        netRevenue: Math.round(45234.56 * base),
+        cpa: 35 + Math.random() * 20,
+        margin: 35 + Math.random() * 10,
+        roi: 200 + Math.random() * 60,
+        arpu: 75 + Math.random() * 30,
+        approvedSales: Math.round(312 * base),
+        grossRevenue: Math.round(48987.34 * base),
       },
       funnel: [
         { label: 'Cliques', value: 52341 },
@@ -84,24 +101,24 @@ class McpMockService {
       salesByHour: Array.from({ length: 24 }, (_, h) => {
         const factor = h >= 8 && h <= 22 ? (h >= 10 && h <= 17 ? 3 : 1.5) : 0.3;
         const noise = 0.5 + Math.random();
-        const m = factor * noise;
+        const m = factor * noise * base;
         return { hour: h, investment: Math.round(100 * m * 100) / 100, revenue: Math.round(400 * m * 100) / 100, profit: Math.round(280 * m * 100) / 100 };
       }),
       salesByDay: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'].map((d, i) => ({
-        day: d, sales: Math.round(150 + Math.random() * 200), percentage: 0, isBest: i === 5,
+        day: d, sales: Math.round((150 + Math.random() * 200) * base), percentage: 0, isBest: i === 5,
       })),
       salesByCountry: [
-        { country: 'Brasil', sales: 856, revenue: 32450, flag: '🇧🇷' },
-        { country: 'Portugal', sales: 189, revenue: 7890, flag: '🇵🇹' },
-        { country: 'Angola', sales: 67, revenue: 2340, flag: '🇦🇴' },
-        { country: 'Moçambique', sales: 45, revenue: 1567, flag: '🇲🇿' },
-        { country: 'Cabo Verde', sales: 23, revenue: 890, flag: '🇨🇻' },
+        { country: 'Brasil', sales: Math.round(856 * base), revenue: Math.round(32450 * base), flag: '🇧🇷' },
+        { country: 'Portugal', sales: Math.round(189 * base), revenue: Math.round(7890 * base), flag: '🇵🇹' },
+        { country: 'Angola', sales: Math.round(67 * base), revenue: Math.round(2340 * base), flag: '🇦🇴' },
+        { country: 'Moçambique', sales: Math.round(45 * base), revenue: Math.round(1567 * base), flag: '🇲🇿' },
+        { country: 'Cabo Verde', sales: Math.round(23 * base), revenue: Math.round(890 * base), flag: '🇨🇻' },
       ],
       salesByPayment: [
-        { method: 'Pix', sales: 567, revenue: 21345, percentage: 45.9, approvalRate: 97.2 },
-        { method: 'Cartão de Crédito', sales: 423, revenue: 16780, percentage: 34.3, approvalRate: 88.5 },
-        { method: 'Boleto', sales: 178, revenue: 6789, percentage: 14.4, approvalRate: 62.1 },
-        { method: 'Outros', sales: 66, revenue: 2340, percentage: 5.4, approvalRate: 91.3 },
+        { method: 'Pix', sales: Math.round(567 * base), revenue: Math.round(21345 * base), percentage: 45.9, approvalRate: 97.2 },
+        { method: 'Cartão de Crédito', sales: Math.round(423 * base), revenue: Math.round(16780 * base), percentage: 34.3, approvalRate: 88.5 },
+        { method: 'Boleto', sales: Math.round(178 * base), revenue: Math.round(6789 * base), percentage: 14.4, approvalRate: 62.1 },
+        { method: 'Outros', sales: Math.round(66 * base), revenue: Math.round(2340 * base), percentage: 5.4, approvalRate: 91.3 },
       ],
       topCampaigns: [
         { name: 'LANÇAMENTO Q2 - ABERTURA', spend: 3450, revenue: 15670, roas: 4.54 },
