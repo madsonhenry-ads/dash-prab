@@ -22,57 +22,21 @@ router.get('/', async (req: AuthRequest, res: any) => {
 
     let rows: any[], total: number;
 
+    // Try Proxy first (real EasyTracker API)
     try {
-      // Try Proxy first
       const proxyResult = await proxy.getCreatives(beginDate, endDate, {
         search, sortBy, sortOrder, page, pageSize, channels,
       });
       rows = proxyResult.rows;
       total = proxyResult.total;
     } catch {
-      // Try PostgreSQL fallback
+      // Try cache or MCP (mock data with proper spend/roas)
       try {
-        if (postgresService.isConnected()) {
-          const dbResult = await db.getCreatives({ search, sortBy, sortOrder, page, pageSize });
-          rows = dbResult.rows.map((r: any) => ({
-            id: String(r.id),
-            name: r.creative,
-            campaignName: (r.campaigns || []).join(', '),
-            campaignId: '',
-            adSetId: '',
-            status: r.purchases > 0 ? 'active' : (r.ics > 0 ? 'paused' : (r.clicks > 0 ? 'under_review' : 'no_data')),
-            startDate: '',
-            spend: r.revenue_usd > 0 ? (r.revenue_usd / (r.roas || 1)) : r.profit_usd || 0,
-            revenue: r.revenue_usd || 0,
-            profit: r.profit_usd || 0,
-            roas: r.roas || 0,
-            cpa: r.purchases > 0 ? ((r.revenue_usd / (r.roas || 1)) / r.purchases) : 0,
-            cpc: r.clicks > 0 ? ((r.revenue_usd / (r.roas || 1)) / r.clicks) : 0,
-            ctr: r.conversion_rate || 0,
-            hookRate: r.hook_rate || 0,
-            holdRate: r.ic_to_purchase_rate || 0,
-            sales: r.purchases || 0,
-            addToCart: 0,
-            impressions: r.clicks || 0,
-            clicks: r.clicks || 0,
-            bounce_rate: 0,
-            landing_views: 0,
-            landing_clicks: r.ics || 0,
-            avg_ticket: r.revenue_usd > 0 && r.purchases > 0 ? r.revenue_usd / r.purchases : 0,
-            cic: r.ics > 0 ? ((r.revenue_usd / (r.roas || 1)) / r.ics) : 0,
-          }));
-          total = dbResult.total;
-        } else {
-          throw new Error('Postgres not connected');
-        }
-      } catch {
-        // Try Cache
         const cached = cacheService.get<any>('creatives', period);
         if (cached) {
           rows = cached.rows;
           total = cached.total;
         } else {
-          // Try MCP mock
           const ads = await mcpOrCache<any>('easytracker_list_ads', { period }, 'ads', period);
           const mapped = (ads as any[] || []).map((a: any) => ({
             id: a.id || '',
@@ -104,6 +68,51 @@ router.get('/', async (req: AuthRequest, res: any) => {
           rows = mapped;
           total = mapped.length;
           cacheService.set('creatives', { rows, total }, period);
+        }
+      } catch {
+        // Last resort: PostgreSQL (may have incomplete spend/roas data)
+        try {
+          if (postgresService.isConnected()) {
+            const dbResult = await db.getCreatives({ search, sortBy, sortOrder, page, pageSize });
+            // PG 'creatives' table has no spend column — calculate from revenue if possible
+            rows = dbResult.rows.map((r: any) => {
+              const spend = r.spend_usd || (r.revenue_usd && r.roas ? r.revenue_usd / r.roas : 0);
+              const roas = r.roas || (spend > 0 ? r.revenue_usd / spend : 0);
+              return {
+                id: String(r.id),
+                name: r.creative,
+                campaignName: (r.campaigns || []).join(', '),
+                campaignId: '',
+                adSetId: '',
+                status: r.purchases > 0 ? 'active' : (r.ics > 0 ? 'paused' : (r.clicks > 0 ? 'under_review' : 'no_data')),
+                startDate: '',
+                spend,
+                revenue: r.revenue_usd || 0,
+                profit: (r.revenue_usd || 0) - spend,
+                roas,
+                cpa: r.purchases > 0 ? spend / r.purchases : 0,
+                cpc: r.clicks > 0 ? spend / r.clicks : 0,
+                ctr: r.conversion_rate || 0,
+                hookRate: r.hook_rate || 0,
+                holdRate: r.ic_to_purchase_rate || 0,
+                sales: r.purchases || 0,
+                addToCart: 0,
+                impressions: r.clicks || 0,
+                clicks: r.clicks || 0,
+                bounce_rate: 0,
+                landing_views: 0,
+                landing_clicks: r.ics || 0,
+                avg_ticket: r.revenue_usd > 0 && r.purchases > 0 ? r.revenue_usd / r.purchases : 0,
+                cic: r.ics > 0 ? spend / r.ics : 0,
+              };
+            });
+            total = dbResult.total;
+          } else {
+            throw new Error('No data source available');
+          }
+        } catch {
+          rows = [];
+          total = 0;
         }
       }
     }
