@@ -20,6 +20,12 @@ let tokenStore: TokenStore | null = null;
 
 // ── Helpers ──
 
+function safeStr(v: any, fallback = ''): string {
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  return fallback;
+}
+
 function getHeaders(): Record<string, string> {
   const token = process.env.EASYTRACKER_ACCESS_TOKEN || tokenStore?.accessToken;
   if (!token) throw new Error('EasyTracker token not configured. Set EASYTRACKER_ACCESS_TOKEN env var.');
@@ -34,10 +40,23 @@ function getHeaders(): Record<string, string> {
 
 /**
  * Convert frontend period to beginDate/endDate strings.
+ * Supports timezone param (default: UTC). Use 'Europe/London' for London time.
  */
-export function periodToDates(period: string): { beginDate: string; endDate: string } {
+export function periodToDates(period: string, timezone?: string): { beginDate: string; endDate: string } {
+  const tz = timezone || 'UTC';
   const now = new Date();
-  const endDate = now.toISOString().split('T')[0];
+
+  // If timezone is specified, convert to that timezone's current date
+  let nowTz: Date;
+  if (tz === 'UTC') {
+    nowTz = now;
+  } else {
+    // Get date string in the target timezone, then parse back to a Date
+    const tzDateStr = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+    nowTz = new Date(tzDateStr + 'T00:00:00Z');
+  }
+
+  const endDate = nowTz.toISOString().split('T')[0];
 
   let beginDate: string;
   switch (period) {
@@ -204,7 +223,7 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
           creativeMap[sub6] = {
             id: sub6,
             name: sub6,
-            campaignName: camp.name || '',
+            campaignName: safeStr(camp.name) || '',
             campaignId: String(campId),
             adSetId: '',
             status: parseFloat(item.total_spent || 0) > 0 ? 'active' : 'no_data',
@@ -253,7 +272,7 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
         if (cr.sales > 0) cr.status = 'active';
         else if (cr.clicks > 0) cr.status = 'paused';
         // Keep campaignName from first campaign that had this creative
-        if (!cr.campaignName) cr.campaignName = camp.name || '';
+        if (!cr.campaignName) cr.campaignName = safeStr(camp.name) || '';
       }
     } catch (err: any) {
       console.warn(`[Proxy] Skipping campaign ${campId}: ${err.message}`);
@@ -332,7 +351,7 @@ export async function getAdSets(beginDate: string, endDate: string, params?: {
             id: key,
             name: sub5,
             campaignId: String(campId),
-            campaignName: camp.name || '',
+            campaignName: safeStr(camp.name) || '',
             status: parseFloat(item.total_spent || 0) > 0 ? 'ACTIVE' : 'PAUSED',
             spend: 0,
             revenue: 0,
@@ -400,7 +419,7 @@ export async function getCampaigns(beginDate: string, endDate: string, params?: 
 
   let result = campaigns.map((c: any) => ({
     id: String(c.id),
-    name: c.name || '',
+    name: safeStr(c.name) || '',
     status: parseFloat(c.total_spent || 0) > 0 ? 'ACTIVE' : 'PAUSED',
     budget: parseFloat(c.total_spent || 0),
     spend: parseFloat(c.total_spent || 0),
@@ -439,7 +458,7 @@ export async function getProducts(beginDate: string, endDate: string): Promise<a
   const offers = result?.data || [];
   return offers.map((o: any) => ({
     id: String(o.id || o.offer_id),
-    name: o.name || `Product ${o.id}`,
+    name: safeStr(o.name) || `Product ${o.id}`,
     price: parseFloat(o.avg_ticket || 0),
   }));
 }
@@ -449,8 +468,8 @@ export async function getTrafficChannels(): Promise<any[]> {
   const channels = result?.data || [];
   return channels.map((t: any) => ({
     id: String(t.id || t.traffic_channel_id?.value || `tc_${t.name}`),
-    name: t.name || 'Unknown',
-    platform: t.name || '',
+    name: safeStr(t.name) || 'Unknown',
+    platform: safeStr(t.name) || '',
   }));
 }
 
@@ -498,13 +517,70 @@ export async function getTopCampaigns(beginDate: string, endDate: string, channe
   const campaigns = result?.data?.campaignComparison || [];
   return campaigns
     .map((c: any) => ({
-      name: c.name || '',
+      name: safeStr(c.name) || '',
       spend: parseFloat(c.total_spent || 0),
       revenue: parseFloat(c.total_revenue || 0),
       roas: parseFloat(c.roas || 0),
     }))
     .sort((a: any, b: any) => b.revenue - a.revenue)
     .slice(0, 10);
+}
+
+// ── Sales by Traffic Channel ──
+
+export async function getSalesByChannel(beginDate: string, endDate: string, channels?: string): Promise<any[]> {
+  const result = await apiGet(`dashboards/${DASHBOARD_UUID}`, dashboardParams(beginDate, endDate, channels));
+  const campaignsResult = await apiGet('campaigns', `beginDate=${beginDate}&endDate=${endDate}`);
+  const campaigns = result?.data?.campaignComparison || [];
+  const allCampaigns = campaignsResult?.data || [];
+
+  // Build a channel map from campaign data
+  const channelMap: Record<string, any> = {};
+
+  for (const camp of allCampaigns) {
+    const tcId = camp.traffic_channel_id?.value ?? camp.traffic_channel_id;
+    const tcName = camp.traffic_channel_label || camp.traffic_channel;
+    if (!tcName && !tcId) continue;
+
+    const key = String(tcId || tcName);
+    if (!channelMap[key]) {
+      channelMap[key] = {
+        id: key,
+        name: safeStr(tcName) || `Channel ${key}`,
+        spend: 0,
+        revenue: 0,
+        profit: 0,
+        sales: 0,
+      };
+    }
+
+    // Find matching campaign in campaignComparison for metrics
+    const match = campaigns.find((c: any) => String(c.id) === String(camp.id));
+    if (match) {
+      channelMap[key].spend += parseFloat(match.total_spent || 0);
+      channelMap[key].revenue += parseFloat(match.total_revenue || 0);
+      channelMap[key].profit += parseFloat(match.gross_profit || 0);
+      channelMap[key].sales += parseInt(match.total_purchase || 0, 10);
+    }
+  }
+
+  return Object.values(channelMap)
+    .map((c: any) => ({ ...c, roas: c.spend > 0 ? Math.round((c.revenue / c.spend) * 100) / 100 : 0 }))
+    .sort((a: any, b: any) => b.revenue - a.revenue);
+}
+
+// ── Sales by Product ──
+
+export async function getSalesByProduct(beginDate: string, endDate: string, _channels?: string): Promise<any[]> {
+  const offersResult = await apiGet('offers', `beginDate=${beginDate}&endDate=${endDate}`);
+  const offers = offersResult?.data || [];
+  return offers.map((o: any) => ({
+    id: String(o.id || o.offer_id),
+    name: safeStr(o.name) || `Product ${o.id}`,
+    price: parseFloat(o.avg_ticket || 0),
+    sales: parseInt(o.custom_purchase_count || o.purchases || 0, 10),
+    revenue: parseFloat(o.total_revenue || 0),
+  }));
 }
 
 // ── Health check ──

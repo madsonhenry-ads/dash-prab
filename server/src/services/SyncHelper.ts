@@ -2,30 +2,29 @@ import { mcpService } from './McpService';
 import { cacheService } from './CacheService';
 
 /**
- * Tenta chamar MCP primeiro. Se não estiver conectado ou falhar,
- * usa o cache. Se não houver cache, lança erro.
+ * Tenta cache primeiro, depois MCP. Se nada funcionar,
+ * retorna undefined em vez de lançar erro.
+ * As rotas que chamam isso devem tratar undefined como "sem dados".
  */
 export async function mcpOrCache<T>(
   name: string,
   args: Record<string, any>,
   cacheKey: string,
   suffix?: string
-): Promise<T> {
+): Promise<T | undefined> {
   const cached = cacheService.get<T>(cacheKey as any, suffix);
+  if (cached) return cached;
 
   if (mcpService.isConnected()) {
     try {
       const result = await mcpService.callTool(name, args);
       return result as T;
     } catch (err) {
-      console.warn(`[SyncHelper] MCP call failed for ${name}, using cache:`, (err as Error).message);
-      if (cached) return cached;
-      throw err;
+      console.warn(`[SyncHelper] MCP call failed for ${name}:`, (err as Error).message);
     }
   }
 
-  if (cached) return cached;
-  throw new Error('MCP não conectado. Execute o sync local primeiro ou configure MCP_MOCK=true.');
+  return undefined;
 }
 
 /**
@@ -36,7 +35,7 @@ export async function fromCacheOrMCP<T>(
   suffix: string | undefined,
   mcpName: string,
   mcpArgs: Record<string, any>
-): Promise<T> {
+): Promise<T | undefined> {
   const cached = cacheService.get<T>(cacheKey as any, suffix);
   if (cached) return cached;
 

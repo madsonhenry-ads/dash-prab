@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { cacheService } from '../services/CacheService';
+import { syncAll } from '../services/SyncService';
+import { authMiddleware, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -23,38 +25,87 @@ router.post('/', (req: Request, res: Response) => {
     return;
   }
 
-  const suffix = `${data.period || 'today'}:${data.account || 'all'}`;
-  const now = Date.now();
+  // Helper to save under standard cache key
+  const save = (key: string, value: any, suffix?: string) => {
+    if (value !== undefined && value !== null) cacheService.set(key as any, value, suffix);
+  };
 
-  // Dashboard KPIs
-  if (data.kpis) cacheService.set('kpis', data.kpis, suffix);
-  if (data.funnel) cacheService.set('funnel', data.funnel, suffix);
-  if (data.salesByHour) cacheService.set('salesByHour', data.salesByHour, suffix);
-  if (data.salesByDay) cacheService.set('salesByDay', data.salesByDay, suffix);
-  if (data.salesByCountry) cacheService.set('salesByCountry', data.salesByCountry, suffix);
-  if (data.salesByPayment) cacheService.set('salesByPayment', data.salesByPayment, suffix);
-  if (data.topCampaigns) cacheService.set('topCampaigns', data.topCampaigns, suffix);
+  // Save simple keys (period-specific)
+  const periodSuffix = data.period ? `${data.period}:${data.account || 'all'}` : undefined;
 
-  // Campaigns report
-  if (data.campaigns) cacheService.set('campaigns', data.campaigns, suffix);
-  if (data.adSets) cacheService.set('adSets', data.adSets, suffix);
-  if (data.ads) cacheService.set('ads', data.ads, suffix);
+  // Dashboard KPIs (simple keys)
+  save('kpis', data.kpis, periodSuffix);
+  save('funnel', data.funnel, periodSuffix);
+  save('salesByHour', data.salesByHour, periodSuffix);
+  save('salesByDay', data.salesByDay, periodSuffix);
+  save('salesByCountry', data.salesByCountry, periodSuffix);
+  save('salesByPayment', data.salesByPayment, periodSuffix);
+  save('topCampaigns', data.topCampaigns, periodSuffix);
 
-  // Creatives
-  if (data.creatives) cacheService.set('creatives', data.creatives, suffix);
+  // Campaigns report (simple keys)
+  save('campaigns', data.campaigns, periodSuffix);
+  save('adSets', data.adSets, periodSuffix);
+  if (data.ads) cacheService.set('ads', data.ads, periodSuffix);
+  if (data.creatives) cacheService.set('creatives', data.creatives, periodSuffix);
 
-  // Filters
-  if (data.adAccounts) cacheService.set('adAccounts', data.adAccounts);
-  if (data.products) cacheService.set('products', data.products);
-  if (data.trafficChannels) cacheService.set('trafficChannels', data.trafficChannels);
+  // Filters (no period suffix — global)
+  save('adAccounts', data.adAccounts);
+  save('products', data.products);
+  save('trafficChannels', data.trafficChannels);
+
+  // Also save period-suffixed keys (e.g. kpis_last_7, campaigns_last_30)
+  const periods = ['today', 'yesterday', 'last_7', 'last_30'];
+  for (const period of periods) {
+    const suffix = `${period}:${data.account || 'all'}`;
+    save('kpis', data[`kpis_${period}`], suffix);
+    save('funnel', data[`funnel_${period}`], suffix);
+    save('salesByHour', data[`salesByHour_${period}`], suffix);
+    save('salesByDay', data[`salesByDay_${period}`], suffix);
+    save('salesByCountry', data[`salesByCountry_${period}`], suffix);
+    save('salesByPayment', data[`salesByPayment_${period}`], suffix);
+    save('topCampaigns', data[`topCampaigns_${period}`], suffix);
+    save('campaigns', data[`campaigns_${period}`], suffix);
+    save('adSets', data[`adSets_${period}`], suffix);
+    save('ads', data[`ads_${period}`], suffix);
+    save('creatives', data[`creatives_${period}`], suffix);
+  }
 
   res.json({
     success: true,
     data: {
-      syncedAt: now,
+      syncedAt: Date.now(),
       keys: Object.keys(data).filter(k => k !== 'period' && k !== 'account'),
     },
   });
+});
+
+// POST /api/sync/run — trigger sync from EasyTracker API → PostgreSQL + cache
+router.post('/run', authMiddleware, async (_req: Request, res: Response) => {
+  try {
+    const result = await syncAll();
+    res.json({ success: result.success, data: result });
+  } catch (err: any) {
+    res.status(502).json({ success: false, error: 'Sync failed: ' + err.message });
+  }
+});
+
+// GET /api/sync/status — get last sync info
+router.get('/status', authMiddleware, async (_req: Request, res: Response) => {
+  try {
+    const postgresImport = await import('../services/PostgresService');
+    const lastSync = await postgresImport.postgresService.queryOne<{ finished_at: string; status: string; total_leads: number; total_purchases: number }>(
+      `SELECT finished_at, status, total_leads, total_purchases FROM sync_log ORDER BY finished_at DESC LIMIT 1`
+    );
+    res.json({
+      success: true,
+      data: {
+        postgresConnected: postgresImport.postgresService.isConnected(),
+        lastSync: lastSync || null,
+      },
+    });
+  } catch {
+    res.json({ success: true, data: { postgresConnected: false, lastSync: null } });
+  }
 });
 
 export default router;

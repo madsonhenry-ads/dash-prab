@@ -9,10 +9,21 @@ import type { Creative } from '../types';
 
 const router = Router();
 
+function safeStr(v: any, fallback = ''): string {
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  return fallback;
+}
+
 router.get('/', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const tz = (req.query.timezone as string) || 'UTC';
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period, tz);
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 50;
     const search = (req.query.search as string) || '';
@@ -40,7 +51,7 @@ router.get('/', async (req: AuthRequest, res: any) => {
           const ads = await mcpOrCache<any>('easytracker_list_ads', { period }, 'ads', period);
           const mapped = (ads as any[] || []).map((a: any) => ({
             id: a.id || '',
-            name: a.name || '',
+            name: safeStr(a.name) || '',
             campaignName: a.campaignName || '',
             campaignId: a.campaignId || '',
             adSetId: a.adSetId || '',
@@ -141,8 +152,8 @@ router.get('/', async (req: AuthRequest, res: any) => {
 
     const data: Creative[] = filtered.map((r: any) => ({
       id: r.id,
-      name: r.name,
-      campaignName: r.campaignName || '',
+      name: safeStr(r.name),
+      campaignName: safeStr(r.campaignName) || '',
       campaignId: r.campaignId || '',
       adSetId: r.adSetId || '',
       status: (r.status as Creative['status']) || 'no_data',
@@ -201,9 +212,19 @@ router.get('/', async (req: AuthRequest, res: any) => {
 router.get('/export', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
+    const tz = (req.query.timezone as string) || 'UTC';
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period, tz);
     let data = cacheService.get<Creative[]>('creatives', period);
     if (!data) {
       data = await mcpOrCache<Creative[]>('easytracker_list_ads', { period }, 'ads', period);
+    }
+    if (!data) {
+      res.status(502).json({ success: false, error: 'Nenhum dado disponível para exportação' });
+      return;
     }
 
     const headers = ['Nome', 'Status', 'Data Veiculação', 'Gastos', 'Faturamento', 'Lucro', 'ROAS', 'CPA', 'CPC', 'CTR', 'Hook Rate', 'Hold Rate', 'Vendas', 'Add to Cart'];

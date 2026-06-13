@@ -140,13 +140,21 @@ export interface CreativeRow {
   purchases: number;
   revenue_usd: number;
   revenue_brl: number;
+  spend_usd: number;
+  profit_usd: number;
+  roas: number;
+  cpa: number;
   ics: number;
   clicks: number;
   conversion_rate: number;
   ic_to_purchase_rate: number;
+  hook_rate: number;
+  lead_to_purchase_cvr: number;
   campaigns: string[];
   products: string[];
   countries: string[];
+  landing_clicks: number;
+  landing_views: number;
 }
 
 export async function getCreatives(params: {
@@ -194,6 +202,8 @@ export async function getCreatives(params: {
     ctr: 'conversion_rate',
     hookRate: 'hook_rate',
     holdRate: 'lead_to_purchase_cvr',
+    landing_clicks: 'landing_clicks',
+    landing_views: 'landing_views',
   };
   const sortCol = sortMap[sortBy] || 'purchases';
   const sortDir = sortOrder === 'asc' ? 'ASC' : 'DESC';
@@ -207,7 +217,7 @@ export async function getCreatives(params: {
   // Data
   const offset = (page - 1) * pageSize;
   const rows = await postgresService.query<any>(
-    `SELECT * FROM creatives ${where} ORDER BY ${sortCol} ${sortDir} LIMIT $${idx} OFFSET $${idx + 1}`,
+    `SELECT creative, purchases, revenue_usd, revenue_brl, spend_usd, profit_usd, roas, cpa, ics, clicks, conversion_rate, ic_to_purchase_rate, hook_rate, lead_to_purchase_cvr, campaigns, products, countries, landing_clicks, landing_views FROM creatives ${where} ORDER BY ${sortCol} ${sortDir} LIMIT $${idx} OFFSET $${idx + 1}`,
     [...values, pageSize, offset]
   );
 
@@ -256,13 +266,21 @@ function mapCreativeRow(r: any): CreativeRow {
     purchases: parseInt(r.purchases, 10),
     revenue_usd: parseFloat(r.revenue_usd),
     revenue_brl: parseFloat(r.revenue_brl),
+    spend_usd: parseFloat(r.spend_usd || 0),
+    profit_usd: parseFloat(r.profit_usd || 0),
+    roas: parseFloat(r.roas || 0),
+    cpa: parseFloat(r.cpa || 0),
     ics: parseInt(r.ics, 10),
     clicks: parseInt(r.clicks, 10),
     conversion_rate: parseFloat(r.conversion_rate),
     ic_to_purchase_rate: parseFloat(r.ic_to_purchase_rate),
+    hook_rate: parseFloat(r.hook_rate || 0),
+    lead_to_purchase_cvr: parseFloat(r.lead_to_purchase_cvr || 0),
     campaigns: r.campaigns || [],
     products: r.products || [],
     countries: r.countries || [],
+    landing_clicks: parseInt(r.landing_clicks || 0, 10),
+    landing_views: parseInt(r.landing_views || 0, 10),
   };
 }
 

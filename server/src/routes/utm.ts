@@ -9,11 +9,22 @@ import type { Campaign, AdSet, AdCreative } from '../types';
 
 const router = Router();
 
+function safeStr(v: any, fallback = ''): string {
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  return fallback;
+}
+
 // GET /api/campaigns-report/campaigns — list campaigns
 router.get('/campaigns', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const tz = (req.query.timezone as string) || 'UTC';
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period, tz);
     const search = (req.query.search as string) || '';
     const status = (req.query.status as string) || '';
     const page = parseInt(req.query.page as string) || 1;
@@ -41,9 +52,9 @@ router.get('/campaigns', async (req: AuthRequest, res: any) => {
       } catch {
         // MCP fallback
         const campaigns = await mcpOrCache<any>('easytracker_list_campaigns', {}, 'campaigns', `${period}:all`);
-        const all = (campaigns as any[] || []).map((c: any) => ({
+        const all = ((campaigns as any[]) || []).map((c: any) => ({
           id: c.id || '',
-          name: c.name || '',
+          name: safeStr(c.name) || '',
           status: c.status || 'ACTIVE',
           budget: c.budget || 0,
           spend: c.spend || 0,
@@ -92,7 +103,12 @@ router.get('/campaigns', async (req: AuthRequest, res: any) => {
 router.get('/ad-sets', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const tz = (req.query.timezone as string) || 'UTC';
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period, tz);
     const campaignId = (req.query.campaignId as string) || '';
     const search = (req.query.search as string) || '';
     const page = parseInt(req.query.page as string) || 1;
@@ -114,9 +130,9 @@ router.get('/ad-sets', async (req: AuthRequest, res: any) => {
       const adSets = await mcpOrCache<any>('easytracker_list_ad_sets', { campaignId, period }, 'adSets', `${period}:${campaignId}`);
       rows = (adSets as any[] || []).map((a: any) => ({
         id: a.id || '',
-        name: a.name || '',
+        name: safeStr(a.name) || '',
         campaignId: a.campaignId || '',
-        campaignName: a.campaignName || '',
+        campaignName: safeStr(a.campaignName) || '',
         status: a.status || 'PAUSED',
         spend: a.spend || 0,
         revenue: a.revenue || 0,
@@ -151,7 +167,12 @@ router.get('/ad-sets', async (req: AuthRequest, res: any) => {
 router.get('/ads', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const tz = (req.query.timezone as string) || 'UTC';
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period, tz);
     const search = (req.query.search as string) || '';
     const status = (req.query.status as string) || '';
     const campaignId = (req.query.campaignId as string) || '';
@@ -180,9 +201,9 @@ router.get('/ads', async (req: AuthRequest, res: any) => {
           const ads = await mcpOrCache<any>('easytracker_list_ads', { period }, 'ads', period);
           rows = (ads as any[] || []).map((a: any) => ({
             id: a.id || '',
-            name: a.name || '',
+            name: safeStr(a.name) || '',
             campaignId: a.campaignId || '',
-            campaignName: a.campaignName || '',
+            campaignName: safeStr(a.campaignName) || '',
             adSetId: a.adSetId || '',
             status: a.status || 'no_data',
             startDate: a.startDate || '',
@@ -241,7 +262,11 @@ router.get('/ads', async (req: AuthRequest, res: any) => {
 router.get('/campaigns/export', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period);
     const { rows } = await proxy.getCampaigns(beginDate, endDate, { pageSize: 10000 });
 
     const headers = ['Name', 'Status', 'Budget', 'Spend', 'Impressions', 'Clicks', 'Revenue', 'Profit', 'ROAS', 'CPA', 'CTR', 'Sales'];
@@ -260,7 +285,11 @@ router.get('/campaigns/export', async (req: AuthRequest, res: any) => {
 router.get('/ads/export', async (req: AuthRequest, res: any) => {
   try {
     const period = (req.query.period as string) || 'today';
-    const { beginDate, endDate } = proxy.periodToDates(period);
+    const queryBegin = req.query.beginDate as string | undefined;
+    const queryEnd = req.query.endDate as string | undefined;
+    const { beginDate, endDate } = queryBegin && queryEnd
+      ? { beginDate: queryBegin, endDate: queryEnd }
+      : proxy.periodToDates(period);
     const { rows } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
 
     const headers = ['Name', 'Status', 'Start Date', 'Spend', 'Revenue', 'Profit', 'ROAS', 'CPA', 'CPC', 'CTR', 'Hook Rate', 'Hold Rate', 'Sales', 'Add to Cart', 'Impressions', 'Clicks', 'Bounce Rate', 'Landing Views', 'Avg Ticket'];

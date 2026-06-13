@@ -48,13 +48,13 @@ app.get('/api/health', async (_req, res) => {
 });
 
 // Protected routes
-app.use('/api/sync', syncRoutes);
 app.use('/api/dashboard', authMiddleware, dashboardRoutes);
 app.use('/api/campaigns-report', authMiddleware, campaignsRoutes);
 app.use('/api/creatives', authMiddleware, creativesRoutes);
 app.use('/api/filters', authMiddleware, filtersRoutes);
 app.use('/api/mcp', authMiddleware, mcpRoutes);
 app.use('/api/cache', authMiddleware, cacheRoutes);
+app.use('/api/sync', syncRoutes);
 
 // Serve static files
 const path = require('path');

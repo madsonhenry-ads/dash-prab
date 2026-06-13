@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
 
-type CacheKey = 'tools' | 'kpis' | 'funnel' | 'salesByHour' | 'salesByDay' | 'salesByCountry' | 'salesByPayment' | 'topCampaigns' | 'creatives' | 'adAccounts' | 'products' | 'campaigns' | 'adSets' | 'ads' | 'trafficChannels';
+type CacheKey = 'tools' | 'kpis' | 'funnel' | 'salesByHour' | 'salesByDay' | 'salesByCountry' | 'salesByPayment' | 'topCampaigns' | 'creatives' | 'adAccounts' | 'products' | 'campaigns' | 'adSets' | 'ads' | 'trafficChannels' | 'salesByChannel' | 'salesByProduct';
 
 const TTL: Record<CacheKey, number> = {
   tools: 86400,
@@ -18,6 +18,8 @@ const TTL: Record<CacheKey, number> = {
   adSets: 300,
   ads: 300,
   trafficChannels: 1800,
+  salesByChannel: 300,
+  salesByProduct: 300,
 };
 
 class CacheService {
