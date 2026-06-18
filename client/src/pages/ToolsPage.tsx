@@ -1,21 +1,12 @@
-import React, { useState } from 'react';
-import { api } from '../services/api';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { TableSkeleton } from '../components/shared/LoadingSkeleton';
-import { ErrorState } from '../components/shared/ErrorState';
+import React, { useState, useEffect } from 'react';
 import { formatDate } from '../utils/format';
 import toast from 'react-hot-toast';
-import type { ToolExpense, ToolsSummary } from '../types';
+import type { ToolExpense } from '../types';
 
-type PeriodFilter = 'all' | 'daily' | 'weekly' | 'monthly';
+const STORAGE_KEY = 'trafficboard_tools';
+
 type ExpenseType = 'occasional' | 'recurring';
-
-const PERIOD_TABS: { key: PeriodFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'daily', label: 'Daily' },
-  { key: 'weekly', label: 'Weekly' },
-  { key: 'monthly', label: 'Monthly' },
-];
+type PeriodFilter = 'all' | 'daily' | 'weekly' | 'monthly';
 
 interface FormState {
   name: string;
@@ -28,50 +19,172 @@ interface FormState {
 
 const DEFAULT_FORM: FormState = { name: '', value: 0, date: new Date().toISOString().split('T')[0], type: 'occasional', recurringDay: 1, notes: '' };
 
+const PERIOD_TABS: { key: PeriodFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'daily', label: 'Daily' },
+  { key: 'weekly', label: 'Weekly' },
+  { key: 'monthly', label: 'Monthly' },
+];
+
+function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function loadExpenses(): ToolExpense[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
+  } catch {
+    return [];
+  }
+}
+
+function saveExpenses(expenses: ToolExpense[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+}
+
 function formatCurrencyBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
+function computeSummary(entries: ToolExpense[], filter: PeriodFilter): { total: number; daily: number; weekly: number; monthly: number; entries: ToolExpense[] } {
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString().split('T')[0];
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  let total = 0;
+  let dailyTotal = 0;
+  let weeklyTotal = 0;
+  let monthlyTotal = 0;
+
+  // For recurring, project this month's value
+  const projectedEntries: ToolExpense[] = [];
+  for (const entry of entries) {
+    if (entry.type === 'recurring') {
+      const monthlyVal = entry.value;
+      total += monthlyVal;
+      monthlyTotal += monthlyVal;
+
+      if (entry.recurringDay) {
+        const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const projectedDate = new Date(currentYear, currentMonth, Math.min(entry.recurringDay, lastDay));
+        const projectedStr = projectedDate.toISOString().split('T')[0];
+        if (projectedStr === todayStr) dailyTotal += entry.value;
+        if (projectedStr >= weekAgo && projectedStr <= todayStr) weeklyTotal += entry.value;
+      }
+    } else {
+      total += entry.value;
+      if (entry.date === todayStr) dailyTotal += entry.value;
+      if (entry.date >= weekAgo && entry.date <= todayStr) weeklyTotal += entry.value;
+      if (entry.date >= monthStart && entry.date <= todayStr) monthlyTotal += entry.value;
+    }
+  }
+
+  // Filter entries based on period
+  let filtered: ToolExpense[];
+  switch (filter) {
+    case 'daily':
+      filtered = entries.filter(e => e.date === todayStr);
+      // Also include recurring entries projected today
+      break;
+    case 'weekly':
+      filtered = entries.filter(e => e.date >= weekAgo && e.date <= todayStr);
+      break;
+    case 'monthly':
+      filtered = entries.filter(e => e.date >= monthStart && e.date <= todayStr);
+      break;
+    default:
+      filtered = [...entries];
+  }
+
+  return {
+    total: Math.round(total * 100) / 100,
+    daily: Math.round(dailyTotal * 100) / 100,
+    weekly: Math.round(weeklyTotal * 100) / 100,
+    monthly: Math.round(monthlyTotal * 100) / 100,
+    entries: filtered.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
+  };
+}
+
 export function ToolsPage() {
-  const queryClient = useQueryClient();
+  const [expenses, setExpenses] = useState<ToolExpense[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('all');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
 
-  const { data: summary, isLoading, error, refetch } = useQuery({
-    queryKey: ['tools', periodFilter],
-    queryFn: () => {
-      const params = periodFilter !== 'all' ? `?period=${periodFilter}` : '';
-      return api.request<ToolsSummary>(`/tools${params}`);
-    },
-  });
+  // Load on mount
+  useEffect(() => {
+    try {
+      const stored = loadExpenses();
+      setExpenses(stored);
+    } catch (e) {
+      setError('Failed to load expenses from storage.');
+    }
+    setLoaded(true);
+  }, []);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => api.request(`/tools/${id}`, { method: 'DELETE' }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tools'] }); toast.success('Expense deleted'); },
-    onError: (err: Error) => toast.error(err.message),
-  });
+  // Persist on change
+  useEffect(() => {
+    if (loaded) saveExpenses(expenses);
+  }, [expenses, loaded]);
 
-  const createMutation = useMutation({
-    mutationFn: (body: Record<string, unknown>) => api.request('/tools', { method: 'POST', body: JSON.stringify(body) }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tools'] }); setShowForm(false); setForm(DEFAULT_FORM); toast.success('Expense added'); },
-    onError: (err: Error) => toast.error(err.message),
-  });
-
-  const handleSubmit = () => {
+  const handleAdd = () => {
     if (!form.name.trim() || form.value <= 0) return;
-    createMutation.mutate({
+    const expense: ToolExpense = {
+      id: generateId(),
       name: form.name,
       value: form.value,
       date: form.date,
       type: form.type,
       recurringDay: form.type === 'recurring' ? form.recurringDay : undefined,
       notes: form.notes || undefined,
-    });
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setExpenses(prev => [...prev, expense]);
+    setForm(DEFAULT_FORM);
+    setShowForm(false);
+    toast.success('Expense added!');
   };
 
-  if (isLoading) return <TableSkeleton rows={4} />;
-  if (error) return <ErrorState message="Error loading expenses." onRetry={() => refetch()} />;
+  const handleDelete = (id: string) => {
+    setExpenses(prev => prev.filter(e => e.id !== id));
+    toast.success('Expense deleted');
+  };
+
+  const summary = computeSummary(expenses, periodFilter);
+
+  if (!loaded) {
+    return (
+      <div className="space-y-4">
+        <div className="animate-pulse space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-dark-700 h-24 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="card flex flex-col items-center justify-center py-12 text-center">
+        <div className="text-4xl mb-4">⚠️</div>
+        <p className="text-dark-300 mb-4">{error}</p>
+        <button onClick={() => { setError(null); setExpenses(loadExpenses()); }} className="btn-primary">Try again</button>
+      </div>
+    );
+  }
+
+  const isEmpty = expenses.length === 0;
 
   return (
     <div className="space-y-6">
@@ -82,26 +195,24 @@ export function ToolsPage() {
       </div>
 
       {/* Summary cards */}
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="card">
-            <p className="text-xs text-dark-400 uppercase tracking-wider">Total</p>
-            <p className="text-2xl font-bold text-white mt-1">{formatCurrencyBRL(summary.total)}</p>
-          </div>
-          <div className="card">
-            <p className="text-xs text-dark-400 uppercase tracking-wider">Daily</p>
-            <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.daily)}</p>
-          </div>
-          <div className="card">
-            <p className="text-xs text-dark-400 uppercase tracking-wider">Weekly</p>
-            <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.weekly)}</p>
-          </div>
-          <div className="card">
-            <p className="text-xs text-dark-400 uppercase tracking-wider">Monthly</p>
-            <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.monthly)}</p>
-          </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="card">
+          <p className="text-xs text-dark-400 uppercase tracking-wider">Total</p>
+          <p className="text-2xl font-bold text-white mt-1">{formatCurrencyBRL(summary.total)}</p>
         </div>
-      )}
+        <div className="card">
+          <p className="text-xs text-dark-400 uppercase tracking-wider">Daily</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.daily)}</p>
+        </div>
+        <div className="card">
+          <p className="text-xs text-dark-400 uppercase tracking-wider">Weekly</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.weekly)}</p>
+        </div>
+        <div className="card">
+          <p className="text-xs text-dark-400 uppercase tracking-wider">Monthly</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.monthly)}</p>
+        </div>
+      </div>
 
       {/* Period filter tabs */}
       <div className="flex bg-dark-800 rounded-lg border border-dark-700 p-0.5 w-fit">
@@ -158,15 +269,15 @@ export function ToolsPage() {
 
           <div className="flex gap-2 justify-end">
             <button onClick={() => { setShowForm(false); setForm(DEFAULT_FORM); }} className="btn-secondary text-sm">Cancel</button>
-            <button onClick={handleSubmit} disabled={!form.name.trim() || form.value <= 0 || createMutation.isPending} className="btn-primary text-sm">
-              {createMutation.isPending ? 'Adding...' : 'Add Expense'}
+            <button onClick={handleAdd} disabled={!form.name.trim() || form.value <= 0} className="btn-primary text-sm">
+              Add Expense
             </button>
           </div>
         </div>
       )}
 
       {/* Empty state */}
-      {(!summary?.entries || summary.entries.length === 0) && (
+      {isEmpty && (
         <div className="card flex flex-col items-center justify-center py-16 text-center">
           <div className="text-5xl mb-4">🧰</div>
           <p className="text-dark-300 text-lg mb-2">No expenses yet</p>
@@ -176,7 +287,7 @@ export function ToolsPage() {
       )}
 
       {/* Expenses table */}
-      {summary?.entries && summary.entries.length > 0 && (
+      {!isEmpty && (
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -190,7 +301,7 @@ export function ToolsPage() {
               </tr>
             </thead>
             <tbody>
-              {(summary.entries as ToolExpense[]).map(expense => (
+              {summary.entries.map(expense => (
                 <tr key={expense.id} className="border-b border-dark-700/50 last:border-0">
                   <td className="py-3 pr-4 text-gray-200 font-medium">{expense.name}</td>
                   <td className="py-3 pr-4 text-white font-mono">{formatCurrencyBRL(expense.value)}</td>
@@ -203,8 +314,7 @@ export function ToolsPage() {
                   <td className="py-3 pr-4 text-dark-400 text-xs max-w-[200px] truncate">{expense.notes || '—'}</td>
                   <td className="py-3">
                     <button
-                      onClick={() => deleteMutation.mutate(expense.id)}
-                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(expense.id)}
                       className="text-dark-400 hover:text-red-400 transition-colors text-xs"
                     >
                       🗑️
