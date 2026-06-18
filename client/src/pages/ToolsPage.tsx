@@ -46,8 +46,8 @@ function saveExpenses(expenses: ToolExpense[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
 }
 
-function formatCurrencyBRL(value: number): string {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+function formatCurrencyUSD(value: number): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
 
 function computeSummary(entries: ToolExpense[], filter: PeriodFilter): { total: number; daily: number; weekly: number; monthly: number; entries: ToolExpense[] } {
@@ -198,19 +198,19 @@ export function ToolsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="card">
           <p className="text-xs text-dark-400 uppercase tracking-wider">Total</p>
-          <p className="text-2xl font-bold text-white mt-1">{formatCurrencyBRL(summary.total)}</p>
+          <p className="text-2xl font-bold text-white mt-1">{formatCurrencyUSD(summary.total)}</p>
         </div>
         <div className="card">
           <p className="text-xs text-dark-400 uppercase tracking-wider">Daily</p>
-          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.daily)}</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyUSD(summary.daily)}</p>
         </div>
         <div className="card">
           <p className="text-xs text-dark-400 uppercase tracking-wider">Weekly</p>
-          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.weekly)}</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyUSD(summary.weekly)}</p>
         </div>
         <div className="card">
           <p className="text-xs text-dark-400 uppercase tracking-wider">Monthly</p>
-          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyBRL(summary.monthly)}</p>
+          <p className="text-2xl font-bold text-gray-200 mt-1">{formatCurrencyUSD(summary.monthly)}</p>
         </div>
       </div>
 
@@ -237,7 +237,7 @@ export function ToolsPage() {
               <input className="input" placeholder="Tool name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
             </div>
             <div>
-              <label className="block text-xs text-dark-400 mb-1">Value (R$)</label>
+              <label className="block text-xs text-dark-400 mb-1">Value (USD)</label>
               <input className="input" type="number" step="0.01" min="0" placeholder="0.00" value={form.value || ''} onChange={e => setForm(f => ({ ...f, value: parseFloat(e.target.value) || 0 }))} />
             </div>
             <div>
@@ -304,7 +304,7 @@ export function ToolsPage() {
               {summary.entries.map(expense => (
                 <tr key={expense.id} className="border-b border-dark-700/50 last:border-0">
                   <td className="py-3 pr-4 text-gray-200 font-medium">{expense.name}</td>
-                  <td className="py-3 pr-4 text-white font-mono">{formatCurrencyBRL(expense.value)}</td>
+                  <td className="py-3 pr-4 text-white font-mono">{formatCurrencyUSD(expense.value)}</td>
                   <td className="py-3 pr-4 text-dark-300">{formatDate(expense.date)}</td>
                   <td className="py-3 pr-4">
                     <span className={expense.type === 'recurring' ? 'badge-blue' : 'badge-gray'}>
