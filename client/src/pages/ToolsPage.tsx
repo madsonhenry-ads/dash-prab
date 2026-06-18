@@ -3,11 +3,12 @@ import { api } from '../services/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TableSkeleton } from '../components/shared/LoadingSkeleton';
 import { ErrorState } from '../components/shared/ErrorState';
-import { formatCurrency, formatDate } from '../utils/format';
+import { formatDate } from '../utils/format';
 import toast from 'react-hot-toast';
-import type { ToolExpense, ToolsSummary } from '../types';
+import type { ToolExpense, ToolsSummary, ApiResponse } from '../types';
 
 type PeriodFilter = 'all' | 'daily' | 'weekly' | 'monthly';
+type ExpenseType = 'occasional' | 'recurring';
 
 const PERIOD_TABS: { key: PeriodFilter; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -16,7 +17,16 @@ const PERIOD_TABS: { key: PeriodFilter; label: string }[] = [
   { key: 'monthly', label: 'Monthly' },
 ];
 
-const DEFAULT_FORM = { name: '', value: 0, date: new Date().toISOString().split('T')[0], type: 'occasional' as const, recurringDay: 1, notes: '' };
+interface FormState {
+  name: string;
+  value: number;
+  date: string;
+  type: ExpenseType;
+  recurringDay: number;
+  notes: string;
+}
+
+const DEFAULT_FORM: FormState = { name: '', value: 0, date: new Date().toISOString().split('T')[0], type: 'occasional', recurringDay: 1, notes: '' };
 
 function formatCurrencyBRL(value: number): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -26,9 +36,9 @@ export function ToolsPage() {
   const queryClient = useQueryClient();
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('all');
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(DEFAULT_FORM);
+  const [form, setForm] = useState<FormState>(DEFAULT_FORM);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<ApiResponse<ToolsSummary>>({
     queryKey: ['tools', periodFilter],
     queryFn: () => {
       const params = periodFilter !== 'all' ? `?period=${periodFilter}` : '';
@@ -43,7 +53,7 @@ export function ToolsPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (body: any) => api.request('/tools', { method: 'POST', body: JSON.stringify(body) }),
+    mutationFn: (body: Record<string, unknown>) => api.request('/tools', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tools'] }); setShowForm(false); setForm(DEFAULT_FORM); toast.success('Expense added'); },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -127,7 +137,7 @@ export function ToolsPage() {
             </div>
             <div>
               <label className="block text-xs text-dark-400 mb-1">Type</label>
-              <select className="input" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as 'occasional' | 'recurring' }))}>
+              <select className="input" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value as ExpenseType }))}>
                 <option value="occasional">Occasional</option>
                 <option value="recurring">Recurring</option>
               </select>
@@ -182,7 +192,7 @@ export function ToolsPage() {
               </tr>
             </thead>
             <tbody>
-              {summary.entries.map(expense => (
+              {(summary.entries as ToolExpense[]).map(expense => (
                 <tr key={expense.id} className="border-b border-dark-700/50 last:border-0">
                   <td className="py-3 pr-4 text-gray-200 font-medium">{expense.name}</td>
                   <td className="py-3 pr-4 text-white font-mono">{formatCurrencyBRL(expense.value)}</td>
