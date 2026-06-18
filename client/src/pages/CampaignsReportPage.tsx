@@ -76,6 +76,8 @@ const OPTIONAL_COLUMNS = ['roi', 'cpm', 'cpc', 'addToCart', 'margin', 'arpu', 'g
 export function CampaignsReportPage() {
   const [tab, setTab] = useState<TabType>('campaigns');
   const [period, setPeriod] = useState<Period>('today');
+  const [beginDate, setBeginDate] = useState(() => new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -91,7 +93,8 @@ export function CampaignsReportPage() {
   const { data: products } = useProducts();
   const { data: channels } = useTrafficChannels();
 
-  const common = { period, page, pageSize: 50, search, status: statusFilter, campaignId: campaignFilter, sortBy, sortOrder, channels: selectedChannels.join(',') };
+  const dateParams = period === 'custom' ? { beginDate, endDate } : undefined;
+  const common = { period, page, pageSize: 50, search, status: statusFilter, campaignId: campaignFilter, sortBy, sortOrder, channels: selectedChannels.join(','), ...dateParams };
   const { data: campaignsData, isLoading: loadingCamps, error: errCamps, refetch: refetchCamps } = useCampaigns(common);
   const { data: adsetsData, isLoading: loadingAdsets, error: errAdsets, refetch: refetchAdsets } = useAdSets(common);
   const { data: adsData, isLoading: loadingAds, error: errAds, refetch: refetchAds } = useAds(common);
@@ -202,7 +205,7 @@ export function CampaignsReportPage() {
 
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap">
-        <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} />
+        <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} beginDate={beginDate} endDate={endDate} onBeginDateChange={setBeginDate} onEndDateChange={setEndDate} />
         <input type="text" placeholder="Search..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
         <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }} className="input max-w-[140px]">
           <option value="">All statuses</option>

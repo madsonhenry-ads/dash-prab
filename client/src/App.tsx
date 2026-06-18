@@ -6,9 +6,13 @@ import { AppLayout } from './components/layout/AppLayout';
 import { DashboardPage } from './pages/DashboardPage';
 import { CampaignsReportPage } from './pages/CampaignsReportPage';
 import { CreativesPage } from './pages/CreativesPage';
+import { TasksPage } from './pages/TasksPage';
+import { KpisPage } from './pages/KpisPage';
+import { ToolsPage } from './pages/ToolsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LoginPage } from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 2, refetchOnWindowFocus: false, staleTime: 5 * 60 * 1000 } } });
 
@@ -18,13 +22,18 @@ function AppContent() {
   if (!isAuthenticated) return <LoginPage onLogin={login} />;
   return (
     <AppLayout onLogout={logout}>
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/campaigns" element={<CampaignsReportPage />} />
-        <Route path="/creatives" element={<CreativesPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/campaigns" element={<CampaignsReportPage />} />
+          <Route path="/creatives" element={<CreativesPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/kpis" element={<KpisPage />} />
+          <Route path="/tools" element={<ToolsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ErrorBoundary>
     </AppLayout>
   );
 }

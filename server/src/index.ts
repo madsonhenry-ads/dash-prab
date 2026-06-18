@@ -14,6 +14,7 @@ import filtersRoutes from './routes/filters';
 import mcpRoutes from './routes/mcp';
 import cacheRoutes from './routes/cache';
 import syncRoutes from './routes/sync';
+import toolsRoutes from './routes/tools';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -55,6 +56,7 @@ app.use('/api/filters', authMiddleware, filtersRoutes);
 app.use('/api/mcp', authMiddleware, mcpRoutes);
 app.use('/api/cache', authMiddleware, cacheRoutes);
 app.use('/api/sync', syncRoutes);
+app.use('/api/tools', authMiddleware, toolsRoutes);
 
 // Serve static files
 const path = require('path');
@@ -78,6 +80,9 @@ async function start() {
   try {
     // Connect to PostgreSQL
     postgresService.connect();
+
+    // Ensure schema (create tables if needed)
+    setTimeout(() => postgresService.ensureSchema(), 1000);
 
     // Connect to MCP (non-blocking)
     mcpService.connect().catch(err => {

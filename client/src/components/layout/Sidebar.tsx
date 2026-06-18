@@ -7,6 +7,9 @@ const navItems = [
   { to: '/', label: 'Dashboard', icon: '📊' },
   { to: '/campaigns', label: 'Campaigns & Ads', icon: '📋' },
   { to: '/creatives', label: 'Creative Control', icon: '🎬' },
+  { to: '/tasks', label: 'Tasks', icon: '✅' },
+  { to: '/kpis', label: 'KPIs', icon: '📈' },
+  { to: '/tools', label: 'Tools', icon: '🧰' },
   { to: '/settings', label: 'Settings', icon: '⚙️' },
 ];
 

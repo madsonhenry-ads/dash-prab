@@ -5,6 +5,12 @@ interface Option {
   name: string;
 }
 
+function safeLabel(v: any): string {
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+  return '';
+}
+
 interface MultiSelectProps {
   options: Option[];
   selected: string[];
@@ -37,7 +43,7 @@ export function MultiSelect({ options, selected, onChange, placeholder }: MultiS
   const label = selected.length === 0
     ? placeholder
     : selected.length === 1
-      ? options.find(o => o.id === selected[0])?.name || placeholder
+      ? safeLabel(options.find(o => o.id === selected[0])?.name) || placeholder
       : `${selected.length} selecionados`;
 
   return (
@@ -64,7 +70,7 @@ export function MultiSelect({ options, selected, onChange, placeholder }: MultiS
                 onChange={() => toggle(opt.id)}
                 className="rounded border-dark-500 bg-dark-700 text-brand-blue focus:ring-brand-blue"
               />
-              {opt.name}
+              {safeLabel(opt.name)}
             </label>
           ))}
           {options.length === 0 && (

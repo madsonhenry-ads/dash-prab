@@ -96,6 +96,7 @@ Este script usa o **MCP SDK** que:
 ## Variaveis Railway
 
 ```env
+
 # Ja configuradas:
 EASYTRACKER_CLIENT_ID=e145f0b5-0bbc-44b8-ac1b-9125f38abc29
 EASYTRACKER_MCP_URL=https://api.easytracker.digital/api/mcp/v1

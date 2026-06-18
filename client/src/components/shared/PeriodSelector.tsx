@@ -4,6 +4,10 @@ import type { Period } from '../../types';
 interface PeriodSelectorProps {
   value: Period;
   onChange: (period: Period) => void;
+  beginDate?: string;
+  endDate?: string;
+  onBeginDateChange?: (date: string) => void;
+  onEndDateChange?: (date: string) => void;
 }
 
 const periods: { value: Period; label: string }[] = [
@@ -14,7 +18,7 @@ const periods: { value: Period; label: string }[] = [
   { value: 'custom', label: 'Custom' },
 ];
 
-export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
+export function PeriodSelector({ value, onChange, beginDate, endDate, onBeginDateChange, onEndDateChange }: PeriodSelectorProps) {
   return (
     <div className="flex items-center gap-1 bg-dark-800 rounded-lg p-1 border border-dark-700">
       {periods.map(p => (
@@ -30,6 +34,13 @@ export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
           {p.label}
         </button>
       ))}
+      {value === 'custom' && (
+        <div className="flex items-center gap-2 ml-2 pl-2 border-l border-dark-600">
+          <input type="date" value={beginDate || ''} onChange={e => onBeginDateChange?.(e.target.value)} className="input text-sm w-36" />
+          <span className="text-dark-400">to</span>
+          <input type="date" value={endDate || ''} onChange={e => onEndDateChange?.(e.target.value)} className="input text-sm w-36" />
+        </div>
+      )}
     </div>
   );
 }

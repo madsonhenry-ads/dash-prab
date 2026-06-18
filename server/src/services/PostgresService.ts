@@ -76,6 +76,28 @@ class PostgresService {
     return rows.length > 0 ? rows[0] : null;
   }
 
+  async ensureSchema(): Promise<void> {
+    if (!this.pool || !this.connected) return;
+    try {
+      await this.pool.query(`
+        CREATE TABLE IF NOT EXISTS tools_expenses (
+          id UUID PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          value DECIMAL(12,2) NOT NULL,
+          date DATE NOT NULL,
+          type VARCHAR(20) NOT NULL CHECK (type IN ('occasional', 'recurring')),
+          recurring_day INTEGER CHECK (recurring_day BETWEEN 1 AND 31),
+          notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+      `);
+      console.log('[Postgres] Schema ensured (tools_expenses)');
+    } catch (err: any) {
+      console.warn('[Postgres] Schema init failed:', err.message);
+    }
+  }
+
   isConnected(): boolean {
     return this.connected;
   }

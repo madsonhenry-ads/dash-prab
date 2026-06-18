@@ -40,6 +40,8 @@ const STATUS_FILTERS = [
 
 export function CreativesPage() {
   const [period, setPeriod] = useState<Period>('today');
+  const [beginDate, setBeginDate] = useState(() => new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
@@ -50,7 +52,8 @@ export function CreativesPage() {
   const [sortOrder, setSortOrder] = useState('desc');
   const roasGoal = parseFloat(localStorage.getItem('trafficboard_roas_goal') || '2.5');
 
-  const { data, isLoading, error, refetch } = useCreatives({ period, page, pageSize: 50, status, search, product: selectedProducts.join(','), sortBy, sortOrder });
+  const dateParams = period === 'custom' ? { beginDate, endDate } : undefined;
+  const { data, isLoading, error, refetch } = useCreatives({ period, page, pageSize: 50, status, search, product: selectedProducts.join(','), sortBy, sortOrder, ...dateParams });
   const { data: accounts } = useAdAccounts();
   const { data: products } = useProducts();
   const { data: channels } = useTrafficChannels();
@@ -90,7 +93,7 @@ export function CreativesPage() {
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
-        <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} />
+        <PeriodSelector value={period} onChange={(p) => { setPeriod(p); setPage(1); }} beginDate={beginDate} endDate={endDate} onBeginDateChange={setBeginDate} onEndDateChange={setEndDate} />
         <input type="text" placeholder="Search creative..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="input max-w-xs" />
         <div className="flex items-center gap-1 bg-dark-800 rounded-lg p-1 border border-dark-700">
           {STATUS_FILTERS.map(sf => (

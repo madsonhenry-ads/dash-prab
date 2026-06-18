@@ -78,6 +78,8 @@ export interface AdSet {
   sales: number;
 }
 
+export type Timezone = 'UTC' | 'Europe/London' | 'America/Sao_Paulo';
+
 export interface AdCreative {
   id: string;
   name: string;
@@ -155,3 +157,37 @@ export interface HealthStatus {
 }
 
 export type Period = 'today' | 'yesterday' | 'last_7' | 'last_30' | 'custom';
+
+export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
+export type TaskPriority = 'low' | 'medium' | 'high';
+
+export interface TaskItem {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assignee: string;
+  dueDate: string;
+  createdAt: string;
+}
+
+export interface ToolExpense {
+  id: string;
+  name: string;
+  value: number;
+  date: string;
+  type: 'occasional' | 'recurring';
+  recurringDay?: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ToolsSummary {
+  total: number;
+  daily: number;
+  weekly: number;
+  monthly: number;
+  entries: ToolExpense[];
+}

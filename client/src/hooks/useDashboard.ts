@@ -40,3 +40,13 @@ export function useTopCampaigns(period: Period, channels?: string[], dates?: { b
   const params = getParams(period, { channels, beginDate: dates?.beginDate, endDate: dates?.endDate });
   return useQuery({ queryKey: ['dashboard', 'topCampaigns', period, channels, dates?.beginDate, dates?.endDate], queryFn: () => api.dashboard.topCampaigns(params), staleTime: 5 * 60 * 1000 });
 }
+
+export function useSalesByChannel(period: Period, channels?: string[], dates?: { beginDate?: string; endDate?: string }) {
+  const params = getParams(period, { channels, beginDate: dates?.beginDate, endDate: dates?.endDate });
+  return useQuery({ queryKey: ['dashboard', 'salesByChannel', period, channels, dates?.beginDate, dates?.endDate], queryFn: () => api.dashboard.salesByChannel(params), staleTime: 5 * 60 * 1000 });
+}
+
+export function useSalesByProduct(period: Period, channels?: string[], dates?: { beginDate?: string; endDate?: string }) {
+  const params = getParams(period, { channels, beginDate: dates?.beginDate, endDate: dates?.endDate });
+  return useQuery({ queryKey: ['dashboard', 'salesByProduct', period, channels, dates?.beginDate, dates?.endDate], queryFn: () => api.dashboard.salesByProduct(params), staleTime: 5 * 60 * 1000 });
+}
