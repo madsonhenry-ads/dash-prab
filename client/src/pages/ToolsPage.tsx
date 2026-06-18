@@ -5,7 +5,7 @@ import { TableSkeleton } from '../components/shared/LoadingSkeleton';
 import { ErrorState } from '../components/shared/ErrorState';
 import { formatDate } from '../utils/format';
 import toast from 'react-hot-toast';
-import type { ToolExpense, ToolsSummary, ApiResponse } from '../types';
+import type { ToolExpense, ToolsSummary } from '../types';
 
 type PeriodFilter = 'all' | 'daily' | 'weekly' | 'monthly';
 type ExpenseType = 'occasional' | 'recurring';
@@ -38,7 +38,7 @@ export function ToolsPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
 
-  const { data, isLoading, error, refetch } = useQuery<ApiResponse<ToolsSummary>>({
+  const { data: summary, isLoading, error, refetch } = useQuery({
     queryKey: ['tools', periodFilter],
     queryFn: () => {
       const params = periodFilter !== 'all' ? `?period=${periodFilter}` : '';
