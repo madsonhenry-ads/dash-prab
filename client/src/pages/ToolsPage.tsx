@@ -70,8 +70,6 @@ export function ToolsPage() {
     });
   };
 
-  const summary = data?.data;
-
   if (isLoading) return <TableSkeleton rows={4} />;
   if (error) return <ErrorState message="Error loading expenses." onRetry={() => refetch()} />;
 
