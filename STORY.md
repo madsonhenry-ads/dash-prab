@@ -8,6 +8,27 @@ Isso significa que o servidor no Railway **nunca consegue se autenticar diretame
 
 ---
 
+## 2026-06-25 — Persistência via API para Tasks e Tools
+
+**Contexto:** Os menus Tasks (/tasks) e Tools (/tools) salvavam dados apenas no localStorage do navegador — dados não persistiram entre navegadores/dispositivos.
+
+**O que foi feito:**
+- **Tasks:** Criada infraestrutura completa do zero — tabela `tasks` no PostgreSQL, rotas `/api/tasks` (GET, POST, PUT, DELETE), e refatoração do frontend para usar a API
+- **Tools:** Backend já existia (tabela + rotas), mas o frontend ignorava o servidor. Agora chama `/api/tools` corretamente
+- Ambos mantêm localStorage como cache offline (fallback se servidor estiver indisponível)
+- Push para o Railway via `git push origin master`
+
+**Arquivos alterados:**
+- `client/src/pages/TasksPage.tsx` — API calls + drag-and-drop persiste status
+- `client/src/pages/ToolsPage.tsx` — API calls + fallback offline
+- `client/src/services/api.ts` — novos métodos `api.tools` e `api.tasks`
+- `server/src/routes/tasks.ts` — novo arquivo, CRUD completo
+- `server/src/index.ts` — registro das rotas de tasks
+- `server/src/services/PostgresService.ts` — schema `tasks` no ensureSchema
+- `schema.sql` — nova tabela `tasks`
+
+---
+
 ## Tentativas Falhas
 
 ### 1. OAuth Manual no Railway ❌
