@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { api } from '../services/api';
 import type { TaskItem, TaskStatus, TaskPriority } from '../types';
 
 const STORAGE_KEY = 'trafficboard_tasks';
 
-function loadTasks(): TaskItem[] {
+function loadLocalFallback(): TaskItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -15,12 +17,12 @@ function loadTasks(): TaskItem[] {
   }
 }
 
-function saveTasks(tasks: TaskItem[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-}
-
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function saveLocalCache(tasks: TaskItem[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch {
+    // localStorage might be full
+  }
 }
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
@@ -58,32 +60,47 @@ export function TasksPage() {
   const [form, setForm] = useState<Omit<TaskItem, 'id' | 'createdAt'>>(DEFAULT_TASK);
   const [dragging, setDragging] = useState<string | null>(null);
 
-  // Load on mount
+  // Load from API on mount
   useEffect(() => {
-    try {
-      const stored = loadTasks();
-      setTasks(stored);
-    } catch (e) {
-      setError('Failed to load tasks from storage.');
-    }
-    setLoaded(true);
+    fetchTasks();
   }, []);
 
-  // Persist on change
-  useEffect(() => {
-    if (loaded) saveTasks(tasks);
-  }, [tasks, loaded]);
+  async function fetchTasks() {
+    try {
+      const res = await api.tasks.list();
+      setTasks(res.data);
+      saveLocalCache(res.data);
+      setError(null);
+    } catch (e: any) {
+      const fallback = loadLocalFallback();
+      if (fallback.length > 0) {
+        setTasks(fallback);
+        toast.error('Server unavailable — showing local data');
+      } else {
+        setError(e.message || 'Failed to load tasks');
+      }
+    }
+    setLoaded(true);
+  }
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!form.title.trim()) return;
-    const task: TaskItem = {
-      ...form,
-      id: generateId(),
-      createdAt: new Date().toISOString(),
-    };
-    setTasks(prev => [...prev, task]);
-    setForm(DEFAULT_TASK);
-    setShowForm(false);
+    try {
+      const res = await api.tasks.create({
+        title: form.title,
+        description: form.description,
+        status: form.status,
+        priority: form.priority,
+        assignee: form.assignee,
+        dueDate: form.dueDate,
+      });
+      setTasks(prev => [...prev, res.data]);
+      setForm(DEFAULT_TASK);
+      setShowForm(false);
+      toast.success('Task created!');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to create task');
+    }
   };
 
   const handleEdit = (task: TaskItem) => {
@@ -92,20 +109,44 @@ export function TasksPage() {
     setShowForm(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!editingId || !form.title.trim()) return;
-    setTasks(prev => prev.map(t => t.id === editingId ? { ...t, ...form } : t));
-    setForm(DEFAULT_TASK);
-    setEditingId(null);
-    setShowForm(false);
+    try {
+      const res = await api.tasks.update(editingId, {
+        title: form.title,
+        description: form.description,
+        status: form.status,
+        priority: form.priority,
+        assignee: form.assignee,
+        dueDate: form.dueDate,
+      });
+      setTasks(prev => prev.map(t => t.id === editingId ? res.data : t));
+      setForm(DEFAULT_TASK);
+      setEditingId(null);
+      setShowForm(false);
+      toast.success('Task updated!');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to update task');
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setTasks(prev => prev.filter(t => t.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await api.tasks.delete(id);
+      setTasks(prev => prev.filter(t => t.id !== id));
+      toast.success('Task deleted');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to delete task');
+    }
   };
 
-  const moveTask = useCallback((id: string, newStatus: TaskStatus) => {
+  const moveTask = useCallback(async (id: string, newStatus: TaskStatus) => {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    try {
+      await api.tasks.update(id, { status: newStatus });
+    } catch {
+      // Optimistic update — revert would be too disruptive on board
+    }
   }, []);
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
@@ -142,7 +183,7 @@ export function TasksPage() {
       <div className="card flex flex-col items-center justify-center py-12 text-center">
         <div className="text-4xl mb-4">⚠️</div>
         <p className="text-dark-300 mb-4">{error}</p>
-        <button onClick={() => { setError(null); setTasks(loadTasks()); }} className="btn-primary">Try again</button>
+        <button onClick={() => { setError(null); fetchTasks(); }} className="btn-primary">Try again</button>
       </div>
     );
   }

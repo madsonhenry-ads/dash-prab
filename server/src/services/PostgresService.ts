@@ -96,6 +96,24 @@ class PostgresService {
     } catch (err: any) {
       console.warn('[Postgres] Schema init failed:', err.message);
     }
+    try {
+      await this.pool.query(`
+        CREATE TABLE IF NOT EXISTS tasks (
+          id UUID PRIMARY KEY,
+          title VARCHAR(255) NOT NULL,
+          description TEXT DEFAULT '',
+          status VARCHAR(20) NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'in_progress', 'review', 'done')),
+          priority VARCHAR(10) NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+          assignee VARCHAR(100) DEFAULT '',
+          due_date DATE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+      `);
+      console.log('[Postgres] Schema ensured (tasks)');
+    } catch (err: any) {
+      console.warn('[Postgres] Schema init failed (tasks):', err.message);
+    }
   }
 
   isConnected(): boolean {

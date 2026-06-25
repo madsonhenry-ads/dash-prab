@@ -44,6 +44,23 @@ export const api = {
     list: (p?: Record<string, string>) => request<{ data: import('../types').AdCreative[]; meta: import('../types').MetaData; footer: any }>(`/creatives?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     export: (p?: Record<string, string>) => `${API_BASE}/creatives/export?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`,
   },
+  tools: {
+    list: (period?: string) => {
+      const params = period ? `?period=${period}` : '';
+      return request<{ data: import('../types').ToolsSummary }>(`/tools${params}`);
+    },
+    create: (expense: { name: string; value: number; date: string; type: string; recurringDay?: number; notes?: string }) =>
+      request<{ data: import('../types').ToolExpense }>('/tools', { method: 'POST', body: JSON.stringify(expense) }),
+    delete: (id: string) => request<void>(`/tools/${id}`, { method: 'DELETE' }),
+  },
+  tasks: {
+    list: () => request<{ data: import('../types').TaskItem[] }>('/tasks'),
+    create: (task: { title: string; description?: string; status?: string; priority?: string; assignee?: string; dueDate?: string }) =>
+      request<{ data: import('../types').TaskItem }>('/tasks', { method: 'POST', body: JSON.stringify(task) }),
+    update: (id: string, task: { title?: string; description?: string; status?: string; priority?: string; assignee?: string; dueDate?: string }) =>
+      request<{ data: import('../types').TaskItem }>(`/tasks/${id}`, { method: 'PUT', body: JSON.stringify(task) }),
+    delete: (id: string) => request<void>(`/tasks/${id}`, { method: 'DELETE' }),
+  },
   filters: {
     adAccounts: () => request<{ data: import('../types').AdAccount[] }>('/filters/ad-accounts'),
     products: () => request<{ data: import('../types').Product[] }>('/filters/products'),

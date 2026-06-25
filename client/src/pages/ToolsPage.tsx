@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatDate } from '../utils/format';
 import toast from 'react-hot-toast';
+import { api } from '../services/api';
 import type { ToolExpense } from '../types';
 
 const STORAGE_KEY = 'trafficboard_tools';
@@ -26,11 +27,7 @@ const PERIOD_TABS: { key: PeriodFilter; label: string }[] = [
   { key: 'monthly', label: 'Monthly' },
 ];
 
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
-
-function loadExpenses(): ToolExpense[] {
+function loadLocalFallback(): ToolExpense[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -42,74 +39,16 @@ function loadExpenses(): ToolExpense[] {
   }
 }
 
-function saveExpenses(expenses: ToolExpense[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+function saveLocalCache(expenses: ToolExpense[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+  } catch {
+    // localStorage might be full
+  }
 }
 
 function formatCurrencyUSD(value: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-}
-
-function computeSummary(entries: ToolExpense[], filter: PeriodFilter): { total: number; daily: number; weekly: number; monthly: number; entries: ToolExpense[] } {
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString().split('T')[0];
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-
-  let total = 0;
-  let dailyTotal = 0;
-  let weeklyTotal = 0;
-  let monthlyTotal = 0;
-
-  // For recurring, project this month's value
-  const projectedEntries: ToolExpense[] = [];
-  for (const entry of entries) {
-    if (entry.type === 'recurring') {
-      const monthlyVal = entry.value;
-      total += monthlyVal;
-      monthlyTotal += monthlyVal;
-
-      if (entry.recurringDay) {
-        const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-        const projectedDate = new Date(currentYear, currentMonth, Math.min(entry.recurringDay, lastDay));
-        const projectedStr = projectedDate.toISOString().split('T')[0];
-        if (projectedStr === todayStr) dailyTotal += entry.value;
-        if (projectedStr >= weekAgo && projectedStr <= todayStr) weeklyTotal += entry.value;
-      }
-    } else {
-      total += entry.value;
-      if (entry.date === todayStr) dailyTotal += entry.value;
-      if (entry.date >= weekAgo && entry.date <= todayStr) weeklyTotal += entry.value;
-      if (entry.date >= monthStart && entry.date <= todayStr) monthlyTotal += entry.value;
-    }
-  }
-
-  // Filter entries based on period
-  let filtered: ToolExpense[];
-  switch (filter) {
-    case 'daily':
-      filtered = entries.filter(e => e.date === todayStr);
-      // Also include recurring entries projected today
-      break;
-    case 'weekly':
-      filtered = entries.filter(e => e.date >= weekAgo && e.date <= todayStr);
-      break;
-    case 'monthly':
-      filtered = entries.filter(e => e.date >= monthStart && e.date <= todayStr);
-      break;
-    default:
-      filtered = [...entries];
-  }
-
-  return {
-    total: Math.round(total * 100) / 100,
-    daily: Math.round(dailyTotal * 100) / 100,
-    weekly: Math.round(weeklyTotal * 100) / 100,
-    monthly: Math.round(monthlyTotal * 100) / 100,
-    entries: filtered.sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
-  };
 }
 
 export function ToolsPage() {
@@ -119,48 +58,73 @@ export function ToolsPage() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('all');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  const [summary, setSummary] = useState({ total: 0, daily: 0, weekly: 0, monthly: 0 });
 
-  // Load on mount
+  // Load from API on mount
   useEffect(() => {
-    try {
-      const stored = loadExpenses();
-      setExpenses(stored);
-    } catch (e) {
-      setError('Failed to load expenses from storage.');
-    }
-    setLoaded(true);
+    fetchExpenses('all');
   }, []);
 
-  // Persist on change
+  // Re-fetch when period changes
   useEffect(() => {
-    if (loaded) saveExpenses(expenses);
-  }, [expenses, loaded]);
+    if (loaded) fetchExpenses(periodFilter);
+  }, [periodFilter]);
 
-  const handleAdd = () => {
+  async function fetchExpenses(period: string) {
+    try {
+      const res = await api.tools.list(period);
+      setExpenses(res.data.entries);
+      setSummary({
+        total: res.data.total,
+        daily: res.data.daily,
+        weekly: res.data.weekly,
+        monthly: res.data.monthly,
+      });
+      // Cache locally for offline fallback
+      saveLocalCache(res.data.entries);
+      setError(null);
+    } catch (e: any) {
+      // Fallback to localStorage if API is unavailable
+      const fallback = loadLocalFallback();
+      if (fallback.length > 0) {
+        setExpenses(fallback);
+        toast.error('Server unavailable — showing local data');
+      } else {
+        setError(e.message || 'Failed to load expenses');
+      }
+    }
+    setLoaded(true);
+  }
+
+  const handleAdd = async () => {
     if (!form.name.trim() || form.value <= 0) return;
-    const expense: ToolExpense = {
-      id: generateId(),
-      name: form.name,
-      value: form.value,
-      date: form.date,
-      type: form.type,
-      recurringDay: form.type === 'recurring' ? form.recurringDay : undefined,
-      notes: form.notes || undefined,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setExpenses(prev => [...prev, expense]);
-    setForm(DEFAULT_FORM);
-    setShowForm(false);
-    toast.success('Expense added!');
+    try {
+      const res = await api.tools.create({
+        name: form.name,
+        value: form.value,
+        date: form.date,
+        type: form.type,
+        recurringDay: form.type === 'recurring' ? form.recurringDay : undefined,
+        notes: form.notes || undefined,
+      });
+      setExpenses(prev => [...prev, res.data]);
+      setForm(DEFAULT_FORM);
+      setShowForm(false);
+      toast.success('Expense added!');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to add expense');
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setExpenses(prev => prev.filter(e => e.id !== id));
-    toast.success('Expense deleted');
+  const handleDelete = async (id: string) => {
+    try {
+      await api.tools.delete(id);
+      setExpenses(prev => prev.filter(e => e.id !== id));
+      toast.success('Expense deleted');
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to delete expense');
+    }
   };
-
-  const summary = computeSummary(expenses, periodFilter);
 
   if (!loaded) {
     return (
@@ -179,7 +143,7 @@ export function ToolsPage() {
       <div className="card flex flex-col items-center justify-center py-12 text-center">
         <div className="text-4xl mb-4">⚠️</div>
         <p className="text-dark-300 mb-4">{error}</p>
-        <button onClick={() => { setError(null); setExpenses(loadExpenses()); }} className="btn-primary">Try again</button>
+        <button onClick={() => { setError(null); fetchExpenses('all'); }} className="btn-primary">Try again</button>
       </div>
     );
   }
@@ -301,7 +265,7 @@ export function ToolsPage() {
               </tr>
             </thead>
             <tbody>
-              {summary.entries.map(expense => (
+              {expenses.map(expense => (
                 <tr key={expense.id} className="border-b border-dark-700/50 last:border-0">
                   <td className="py-3 pr-4 text-gray-200 font-medium">{expense.name}</td>
                   <td className="py-3 pr-4 text-white font-mono">{formatCurrencyUSD(expense.value)}</td>

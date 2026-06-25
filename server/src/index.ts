@@ -15,6 +15,7 @@ import mcpRoutes from './routes/mcp';
 import cacheRoutes from './routes/cache';
 import syncRoutes from './routes/sync';
 import toolsRoutes from './routes/tools';
+import tasksRoutes from './routes/tasks';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -57,6 +58,7 @@ app.use('/api/mcp', authMiddleware, mcpRoutes);
 app.use('/api/cache', authMiddleware, cacheRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/tools', authMiddleware, toolsRoutes);
+app.use('/api/tasks', authMiddleware, tasksRoutes);
 
 // Serve static files
 const path = require('path');
