@@ -81,6 +81,10 @@ export function periodToDates(period: string, timezone?: string): { beginDate: s
       beginDate = d.toISOString().split('T')[0];
       break;
     }
+    case 'this_month': {
+      beginDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+      break;
+    }
     default:
       beginDate = endDate;
   }
@@ -191,11 +195,10 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
 }): Promise<{ rows: any[]; total: number }> {
   const { search = '', sortBy = 'purchases', sortOrder = 'desc', page = 1, pageSize = 50, campaignId = '', channels = '' } = params || {};
 
-  // Get campaigns first
+  // STEP 1: Get campaigns for the report
   const campaignsResult = await apiGet('campaigns', `beginDate=${beginDate}&endDate=${endDate}`);
   const campaigns = campaignsResult?.data || [];
 
-  // Filter campaigns by channel if specified
   const channelIds = channels ? channels.split(',').filter(Boolean).map(Number) : [];
   const filteredCampaigns = channelIds.length > 0
     ? campaigns.filter((c: any) => {
@@ -205,8 +208,9 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
       })
     : campaigns;
 
-  // Fetch report per campaign and aggregate by sub6 (creative name)
-  const creativeMap: Record<string, any> = {};
+  // STEP 2: Fetch report per campaign, aggregate by sub6 (creative name)
+  // This gives us: revenue, purchases, clicks, landing_views, landing_clicks, spend
+  const reportsBySub6: Record<string, any> = {};
 
   for (const camp of filteredCampaigns) {
     const campId = camp.id;
@@ -219,67 +223,148 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
       for (const item of items) {
         const sub6 = (item.sub6 || '').trim();
         if (!sub6) continue;
-        if (!creativeMap[sub6]) {
-          creativeMap[sub6] = {
-            id: sub6,
-            name: sub6,
+        if (!reportsBySub6[sub6]) {
+          reportsBySub6[sub6] = {
+            spend: 0, revenue: 0, profit: 0, sales: 0,
+            clicks: 0, landing_views: 0, landing_clicks: 0,
+            bounce_rate: 0, avg_ticket: 0, hookRate: 0, holdRate: 0,
             campaignName: safeStr(camp.name) || '',
             campaignId: String(campId),
-            adSetId: '',
-            status: parseFloat(item.total_spent || 0) > 0 ? 'active' : 'no_data',
-            startDate: beginDate,
-            spend: 0,
-            revenue: 0,
-            profit: 0,
-            roas: 0,
-            cpa: 0,
-            cpc: 0,
-            ctr: 0,
-            hookRate: 0,
-            holdRate: 0,
-            sales: 0,
-            addToCart: 0,
-            impressions: 0,
-            clicks: 0,
-            bounce_rate: 0,
-            landing_views: 0,
-            landing_clicks: 0,
-            avg_ticket: 0,
-            cic: 0,
           };
         }
-        const cr = creativeMap[sub6];
-        cr.spend += parseFloat(item.total_spent || 0);
-        cr.revenue += parseFloat(item.total_revenue || 0);
-        cr.profit += parseFloat(item.gross_profit || 0);
-        cr.sales += parseInt(item.custom_purchase_count || 0, 10);
-        cr.clicks += parseInt(item.clicks || 0, 10);
-        cr.impressions += parseInt(item.clicks || 0, 10);
-        cr.landing_views += parseInt(item.landing_views || 0, 10);
-        cr.landing_clicks += parseInt(item.landing_clicks || 0, 10);
-        cr.bounce_rate = parseFloat(item.bounce_rate || 0);
-        cr.avg_ticket = parseFloat(item.avg_ticket || 0);
-        // Hook rate = video watch rate (3s+ views / impressions)
-        cr.hookRate = parseFloat(item.hook_rate ?? item.video_watch_rate ?? 0);
-        // Hold rate = lead-to-purchase or IC-to-purchase conversion
-        cr.holdRate = parseFloat(item.hold_rate ?? item.lead_to_purchase_conversion ?? 0);
-        cr.cpc = cr.clicks > 0 ? cr.spend / cr.clicks : 0;
-        cr.roas = cr.spend > 0 ? cr.revenue / cr.spend : 0;
-        cr.cpa = cr.sales > 0 ? cr.spend / cr.sales : 0;
-        cr.ctr = parseFloat(item.lead_to_purchase_conversion || 0);
-        // CIC = cost per landing click (IC)
-        cr.cic = cr.landing_clicks > 0 ? cr.spend / cr.landing_clicks : 0;
-        if (cr.sales > 0) cr.status = 'active';
-        else if (cr.clicks > 0) cr.status = 'paused';
-        // Keep campaignName from first campaign that had this creative
-        if (!cr.campaignName) cr.campaignName = safeStr(camp.name) || '';
+        const r = reportsBySub6[sub6];
+        r.spend += parseFloat(item.total_spent || 0);
+        r.revenue += parseFloat(item.total_revenue || 0);
+        r.profit += parseFloat(item.gross_profit || 0);
+        r.sales += parseInt(item.custom_purchase_count || 0, 10);
+        r.clicks += parseInt(item.clicks || 0, 10);
+        r.landing_views += parseInt(item.landing_views || 0, 10);
+        r.landing_clicks += parseInt(item.landing_clicks || 0, 10);
+        r.bounce_rate = parseFloat(item.bounce_rate || 0);
+        r.avg_ticket = parseFloat(item.avg_ticket || 0);
+        r.hookRate = parseFloat(item.hook_rate ?? item.video_watch_rate ?? 0);
+        r.holdRate = parseFloat(item.hold_rate ?? item.lead_to_purchase_conversion ?? 0);
       }
     } catch (err: any) {
       console.warn(`[Proxy] Skipping campaign ${campId}: ${err.message}`);
     }
   }
 
-  let result = Object.values(creativeMap);
+  // STEP 3: Get ads-manager data (Facebook rich metrics) — primary source for rows
+  const adsManagerRows = await getAdsManagerAds(beginDate, endDate);
+
+  // Build ads-by-name lookup for dedup
+  const usedNames = new Set<string>();
+  const mergedRows: any[] = [];
+
+  for (const ad of adsManagerRows) {
+    const nameLower = ad.name.toLowerCase().trim();
+    const report = reportsBySub6[nameLower];
+    usedNames.add(nameLower);
+
+    const spend = report?.spend || ad.spend || 0;
+    const revenue = report?.revenue || 0;
+    const clicks = report?.clicks || ad.clicks_all || 0;
+    const landingClicks = report?.landing_clicks || 0;
+    const sales = report?.sales || 0;
+
+    mergedRows.push({
+      id: ad.id,
+      name: ad.name,
+      campaignName: report?.campaignName || '',
+      campaignId: report?.campaignId || '',
+      adSetId: '',
+      status: ad.status || (sales > 0 ? 'active' : (clicks > 0 ? 'paused' : 'no_data')),
+      startDate: ad.start_date || beginDate,
+      spend,
+      revenue,
+      profit: revenue - spend,
+      roas: spend > 0 ? revenue / spend : 0,
+      cpa: sales > 0 ? spend / sales : 0,
+      cpc: clicks > 0 ? spend / clicks : 0,
+      ctr: report?.holdRate || ad.ctr || 0,
+      hookRate: ad.hook_rate || report?.hookRate || 0,
+      holdRate: report?.holdRate || 0,
+      sales,
+      addToCart: 0,
+      impressions: ad.impressions || 0,
+      clicks,
+      bounce_rate: report?.bounce_rate || 0,
+      landing_views: report?.landing_views || 0,
+      landing_clicks: landingClicks,
+      avg_ticket: report?.avg_ticket || (sales > 0 ? revenue / sales : 0),
+      cic: landingClicks > 0 ? spend / landingClicks : 0,
+      // Ads-manager fields
+      reach: ad.reach || 0,
+      frequency: ad.frequency || 0,
+      clicks_all: ad.clicks_all || 0,
+      cpc_all: ad.cpc_all || 0,
+      cpm: ad.cpm || 0,
+      video_plays: ad.video_plays || 0,
+      video_views: ad.video_views || 0,
+      video_25: ad.video_25 || 0,
+      video_50: ad.video_50 || 0,
+      video_75: ad.video_75 || 0,
+      video_100: ad.video_100 || 0,
+      avg_watch_time: ad.avg_watch_time || 0,
+      pixel_purchase: ad.pixel_purchase || 0,
+      play_rate: ad.play_rate || 0,
+      body_rate: ad.body_rate || 0,
+      completion_rate: ad.completion_rate || 0,
+      landing_rate: ad.landing_rate || ((ad.impressions || 0) > 0 && report ? ((report.landing_views || 0) / (ad.impressions || 0)) * 100 : 0),
+      checkout_rate: clicks > 0 ? (landingClicks / clicks) * 100 : 0,
+      cost_per_checkout: landingClicks > 0 ? spend / landingClicks : 0,
+      last_updated: ad.updated_time || '',
+      source: 'ads-manager',
+    });
+  }
+
+  // STEP 4: Add unmatched reports entries (creatives that exist in reports but not in ads-manager)
+  for (const [sub6, report] of Object.entries(reportsBySub6) as [string, any]) {
+    if (usedNames.has(sub6.toLowerCase().trim())) continue;
+    const spend = report.spend || 0;
+    const clicks = report.clicks || 0;
+    const landingClicks = report.landing_clicks || 0;
+    const sales = report.sales || 0;
+
+    mergedRows.push({
+      id: sub6,
+      name: sub6,
+      campaignName: report.campaignName || '',
+      campaignId: report.campaignId || '',
+      adSetId: '',
+      status: sales > 0 ? 'active' : (clicks > 0 ? 'paused' : 'no_data'),
+      startDate: beginDate,
+      spend,
+      revenue: report.revenue || 0,
+      profit: (report.revenue || 0) - spend,
+      roas: spend > 0 ? (report.revenue || 0) / spend : 0,
+      cpa: sales > 0 ? spend / sales : 0,
+      cpc: clicks > 0 ? spend / clicks : 0,
+      ctr: report.holdRate || 0,
+      hookRate: report.hookRate || 0,
+      holdRate: report.holdRate || 0,
+      sales,
+      addToCart: 0,
+      impressions: 0,
+      clicks,
+      bounce_rate: report.bounce_rate || 0,
+      landing_views: report.landing_views || 0,
+      landing_clicks: landingClicks,
+      avg_ticket: report.avg_ticket || (sales > 0 ? (report.revenue || 0) / sales : 0),
+      cic: landingClicks > 0 ? spend / landingClicks : 0,
+      reach: 0, frequency: 0, clicks_all: 0, cpc_all: 0, cpm: 0,
+      video_plays: 0, video_views: 0, video_25: 0, video_50: 0, video_75: 0, video_100: 0,
+      avg_watch_time: 0, pixel_purchase: 0,
+      play_rate: 0, body_rate: 0, completion_rate: 0,
+      landing_rate: 0, checkout_rate: clicks > 0 ? (landingClicks / clicks) * 100 : 0,
+      cost_per_checkout: landingClicks > 0 ? spend / landingClicks : 0,
+      last_updated: '',
+      source: 'reports',
+    });
+  }
+
+  let result = mergedRows;
 
   // Filter
   if (search) {
@@ -288,7 +373,7 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
   }
 
   // Sort
-  const sortField = sortBy || 'purchases';
+  const sortField = sortBy || 'sales';
   result.sort((a: any, b: any) => {
     const va = a[sortField] ?? 0;
     const vb = b[sortField] ?? 0;

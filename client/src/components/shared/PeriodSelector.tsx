@@ -15,6 +15,7 @@ const periods: { value: Period; label: string }[] = [
   { value: 'yesterday', label: 'Yesterday' },
   { value: 'last_7', label: 'Last 7 days' },
   { value: 'last_30', label: 'Last 30 days' },
+  { value: 'this_month', label: 'This month' },
   { value: 'custom', label: 'Custom' },
 ];
 

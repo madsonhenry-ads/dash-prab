@@ -103,7 +103,7 @@ router.get('/', async (req: AuthRequest, res: any) => {
         throw new Error('PG not connected');
       }
     } catch {
-      // SECOND: Try Proxy (real EasyTracker API)
+      // SECOND: Try Proxy (real EasyTracker API — already merges ads-manager data)
       try {
         const proxyResult = await proxy.getCreatives(beginDate, endDate, {
           search, sortBy, sortOrder, page, pageSize, channels,
@@ -111,21 +111,6 @@ router.get('/', async (req: AuthRequest, res: any) => {
         rows = proxyResult.rows;
         total = proxyResult.total;
         dataSource = 'proxy';
-
-        // Enrich with ads-manager data if available
-        try {
-          const adsData = await proxy.getAdsManagerAds(beginDate, endDate);
-          const adsByName: Record<string, any> = {};
-          for (const ad of adsData) {
-            adsByName[ad.name.toLowerCase().trim()] = ad;
-          }
-          rows = rows.map((r: any) => {
-            const ad = adsByName[r.name?.toLowerCase().trim()] || {};
-            return { ...r, ...ad, name: r.name, campaignName: r.campaignName, sales: r.sales };
-          });
-        } catch {
-          // ads-manager enrichment is optional
-        }
       } catch {
         // LAST: Try cache or MCP (mock data)
         try {

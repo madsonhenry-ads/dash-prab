@@ -96,32 +96,19 @@ export async function syncAll(): Promise<SyncResult> {
 // ── Creatives sync ──
 
 async function syncCreatives(beginDate: string, endDate: string): Promise<number> {
-  // 1. Get revenue/sales data from campaign reports (by sub6)
-  const { rows: reportRows } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
-  if (!reportRows.length) return 0;
-
-  // 2. Get Facebook rich metrics from ads-manager (by ad name)
-  const adsManagerRows = await proxy.getAdsManagerAds(beginDate, endDate);
-
-  // 3. Build lookup by name for ads-manager data
-  const adsByName: Record<string, any> = {};
-  for (const ad of adsManagerRows) {
-    adsByName[ad.name.toLowerCase().trim()] = ad;
-  }
+  // 1. Get merged data (ads-manager primary + reports enrichment)
+  const { rows: merged } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
+  if (!merged.length) return 0;
 
   let count = 0;
-  for (const c of reportRows) {
+  for (const c of merged) {
     try {
-      const nameLower = c.name?.toLowerCase().trim() || '';
-      const ad = adsByName[nameLower] || {};
-
-      // Merge: reports data + ads-manager data
       const clicks = c.clicks || 0;
       const landingClicks = c.landing_clicks || 0;
       const sales = c.sales || 0;
       const spend = c.spend || 0;
       const revenue = c.revenue || 0;
-      const impressions = ad.impressions || 0;
+      const impressions = c.impressions || 0;
 
       await postgresService.query(
         `INSERT INTO creatives
@@ -189,9 +176,9 @@ async function syncCreatives(beginDate: string, endDate: string): Promise<number
           sales > 0 ? spend / sales : 0, // cpa
           landingClicks, // ics
           clicks,
-          clicks > 0 ? c.ctr || 0 : 0, // conversion_rate
+          clicks > 0 ? (sales / clicks) : 0, // conversion_rate
           landingClicks > 0 ? sales / landingClicks : 0, // ic_to_purchase_rate
-          ad.hook_rate || c.hookRate || 0,
+          c.hookRate || 0,
           landingClicks > 0 ? sales / landingClicks : 0, // lead_to_purchase_cvr
           landingClicks,
           c.landing_views || 0,
@@ -199,27 +186,27 @@ async function syncCreatives(beginDate: string, endDate: string): Promise<number
           [],
           [],
           // ads-manager fields
-          ad.status || 'no_data',
+          c.status || 'no_data',
           impressions,
-          ad.reach || 0,
-          ad.frequency || 0,
-          ad.clicks_all || clicks,
-          ad.cpc_all || 0,
-          ad.cpm || 0,
+          c.reach || 0,
+          c.frequency || 0,
+          c.clicks_all || clicks,
+          c.cpc_all || 0,
+          c.cpm || 0,
           clicks > 0 ? spend / clicks : 0, // cpc
           c.avg_ticket || 0,
           c.bounce_rate || 0,
-          ad.video_plays || 0,
-          ad.video_views || 0,
-          ad.video_25 || 0,
-          ad.video_50 || 0,
-          ad.video_75 || 0,
-          ad.video_100 || 0,
-          ad.avg_watch_time || 0,
-          ad.pixel_purchase || 0,
-          ad.play_rate || 0,
-          ad.body_rate || 0,
-          ad.completion_rate || 0,
+          c.video_plays || 0,
+          c.video_views || 0,
+          c.video_25 || 0,
+          c.video_50 || 0,
+          c.video_75 || 0,
+          c.video_100 || 0,
+          c.avg_watch_time || 0,
+          c.pixel_purchase || 0,
+          c.play_rate || 0,
+          c.body_rate || 0,
+          c.completion_rate || 0,
           impressions > 0 ? ((c.landing_views || 0) / impressions) * 100 : 0, // landing_rate
           clicks > 0 ? (landingClicks / clicks) * 100 : 0, // checkout_rate
           landingClicks > 0 ? spend / landingClicks : 0, // cost_per_checkout

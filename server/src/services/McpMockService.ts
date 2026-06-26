@@ -68,6 +68,7 @@ class McpMockService {
     switch (period) {
       case 'yesterday': multiplier = 0.9; break;
       case 'last_7': multiplier = 5; break;
+      case 'this_month': multiplier = 15; break;
       case 'last_30': multiplier = 20; break;
       default: multiplier = 1;
     }

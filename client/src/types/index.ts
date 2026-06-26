@@ -177,7 +177,7 @@ export interface HealthStatus {
   uptime: number;
 }
 
-export type Period = 'today' | 'yesterday' | 'last_7' | 'last_30' | 'custom';
+export type Period = 'today' | 'yesterday' | 'last_7' | 'last_30' | 'this_month' | 'custom';
 
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high';
