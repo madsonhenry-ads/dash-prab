@@ -57,6 +57,13 @@ export async function syncAll(): Promise<SyncResult> {
   for (const period of SYNC_PERIODS) {
     const { beginDate, endDate } = getDateRange(period.daysBack);
 
+    // Clean PG before first sync so stale records from old merges are removed
+    if (period === SYNC_PERIODS[0]) {
+      try {
+        await postgresService.query('DELETE FROM creatives');
+      } catch {}
+    }
+
     try {
       const count = await syncCreatives(beginDate, endDate);
       result.creatives += count;
@@ -96,7 +103,7 @@ export async function syncAll(): Promise<SyncResult> {
 // ── Creatives sync ──
 
 async function syncCreatives(beginDate: string, endDate: string): Promise<number> {
-  // 1. Get merged data (ads-manager primary + reports enrichment)
+  // 1. Get Facebook ads-manager data (sole source)
   const { rows: merged } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
   if (!merged.length) return 0;
 
