@@ -36,6 +36,7 @@ const COLUMNS = [
   { key: 'body_rate', label: 'Body Rate' },
   { key: 'completion_rate', label: 'Completion Rate' },
   { key: 'video_plays', label: 'Video Plays' },
+  { key: 'video_views', label: 'Video Views' },
   { key: 'video_25', label: 'Video 25%' },
   { key: 'video_50', label: 'Video 50%' },
   { key: 'video_75', label: 'Video 75%' },
@@ -122,7 +123,7 @@ export function CreativesPage() {
     }
 
     // Numbers (integer)
-    if (['sales', 'addToCart', 'landing_views', 'landing_clicks', 'impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'video_plays', 'video_25', 'video_50', 'video_75', 'video_100'].includes(key)) {
+    if (['sales', 'addToCart', 'landing_views', 'landing_clicks', 'impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'video_plays', 'video_views', 'video_25', 'video_50', 'video_75', 'video_100'].includes(key)) {
       return <span>{formatNumber((row as any)[key] || 0)}</span>;
     }
 
@@ -151,7 +152,18 @@ export function CreativesPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-white">Creative Control</h2>
-        <button onClick={handleExport} className="btn-secondary text-xs">Export CSV</button>
+        <div className="flex items-center gap-2">
+          {data?.source && (
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+              data.source === 'postgres' ? 'bg-green-900/40 text-green-400 border border-green-700/50' :
+              data.source === 'proxy' ? 'bg-blue-900/40 text-blue-400 border border-blue-700/50' :
+              'bg-yellow-900/40 text-yellow-400 border border-yellow-700/50'
+            }`}>
+              {data.source === 'postgres' ? 'PG' : data.source === 'proxy' ? 'API' : 'CACHE'}
+            </span>
+          )}
+          <button onClick={handleExport} className="btn-secondary text-xs">Export CSV</button>
+        </div>
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
