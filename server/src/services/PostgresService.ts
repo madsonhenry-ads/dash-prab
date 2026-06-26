@@ -115,8 +115,18 @@ class PostgresService {
       console.warn('[Postgres] Schema init failed (tasks):', err.message);
     }
     try {
-      // v2: ads-manager rich media columns
-      const v2Columns = [
+      // v1-v2: ensure all creatives columns exist (both legacy and ads-manager)
+      const migrationColumns = [
+        // v1 columns (may be missing on older schemas)
+        'ADD COLUMN IF NOT EXISTS spend_usd NUMERIC(12,2) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS profit_usd NUMERIC(12,2) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS roas NUMERIC(8,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS cpa NUMERIC(10,2) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS hook_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS lead_to_purchase_cvr NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS landing_clicks INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS landing_views INT DEFAULT 0',
+        // v2: ads-manager rich media columns
         'ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT \'no_data\'',
         'ADD COLUMN IF NOT EXISTS impressions INT DEFAULT 0',
         'ADD COLUMN IF NOT EXISTS reach INT DEFAULT 0',
@@ -142,7 +152,7 @@ class PostgresService {
         'ADD COLUMN IF NOT EXISTS checkout_rate NUMERIC(6,3) DEFAULT 0',
         'ADD COLUMN IF NOT EXISTS cost_per_checkout NUMERIC(10,2) DEFAULT 0',
       ];
-      for (const col of v2Columns) {
+      for (const col of migrationColumns) {
         await this.pool.query(`ALTER TABLE creatives ${col}`);
       }
       // Indexes for common queries
