@@ -24,7 +24,7 @@ class PostgresService {
       max: 5,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
-      ssl: databaseUrl.includes('railway.internal') ? false : { rejectUnauthorized: false },
+      ssl: databaseUrl.includes('railway.internal') || databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false },
     });
 
     this.pool.on('error', (err) => {
@@ -113,6 +113,44 @@ class PostgresService {
       console.log('[Postgres] Schema ensured (tasks)');
     } catch (err: any) {
       console.warn('[Postgres] Schema init failed (tasks):', err.message);
+    }
+    try {
+      // v2: ads-manager rich media columns
+      const v2Columns = [
+        'ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT \'no_data\'',
+        'ADD COLUMN IF NOT EXISTS impressions INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS reach INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS frequency NUMERIC(8,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS clicks_all INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS cpc_all NUMERIC(10,4) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS cpm NUMERIC(10,4) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS cpc NUMERIC(10,4) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS avg_ticket NUMERIC(10,2) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS bounce_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_plays INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_views INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_25 INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_50 INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_75 INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS video_100 INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS avg_watch_time NUMERIC(8,2) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS pixel_purchase INT DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS play_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS body_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS completion_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS landing_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS checkout_rate NUMERIC(6,3) DEFAULT 0',
+        'ADD COLUMN IF NOT EXISTS cost_per_checkout NUMERIC(10,2) DEFAULT 0',
+      ];
+      for (const col of v2Columns) {
+        await this.pool.query(`ALTER TABLE creatives ${col}`);
+      }
+      // Indexes for common queries
+      await this.pool.query(`CREATE INDEX IF NOT EXISTS idx_creatives_status ON creatives(status)`);
+      await this.pool.query(`CREATE INDEX IF NOT EXISTS idx_creatives_updated_at ON creatives(updated_at)`);
+      console.log('[Postgres] Schema ensured (creatives v2 columns)');
+    } catch (err: any) {
+      console.warn('[Postgres] Schema init failed (creatives v2):', err.message);
     }
   }
 

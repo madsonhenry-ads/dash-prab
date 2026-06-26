@@ -9,25 +9,40 @@ import { formatCurrency, formatNumber, statusLabel, statusBadgeClass, perfIndica
 import type { Period, AdCreative } from '../types';
 
 const COLUMNS = [
-  { key: 'name', label: 'Creative Name' },
-  { key: 'campaignName', label: 'Campaign' },
+  { key: 'name', label: 'Criativo' },
   { key: 'status', label: 'Status' },
-  { key: 'startDate', label: 'Start Date' },
-  { key: 'spend', label: 'Spend' },
-  { key: 'revenue', label: 'Revenue' },
-  { key: 'profit', label: 'Profit / Loss' },
-  { key: 'roas', label: 'ROAS' },
+  { key: 'spend', label: 'Spent' },
   { key: 'cpa', label: 'CPA' },
-  { key: 'cpc', label: 'CPC' },
+  { key: 'roas', label: 'ROAS' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'reach', label: 'Reach' },
+  { key: 'frequency', label: 'Freq.' },
+  { key: 'clicks', label: 'Clicks' },
+  { key: 'clicks_all', label: 'Clicks All' },
   { key: 'ctr', label: 'CTR' },
-  { key: 'hookRate', label: 'Hook Rate' },
-  { key: 'holdRate', label: 'Hold Rate' },
-  { key: 'sales', label: 'Sales' },
-  { key: 'landing_clicks', label: 'Landing Clicks (IC)' },
-  { key: 'cic', label: 'CIC (Cost / IC)' },
-  { key: 'bounce_rate', label: 'Bounce Rate' },
+  { key: 'cpc', label: 'CPC' },
+  { key: 'cpc_all', label: 'CPC All' },
+  { key: 'cpm', label: 'CPM' },
   { key: 'landing_views', label: 'Landing Views' },
-  { key: 'avg_ticket', label: 'Avg Ticket' },
+  { key: 'cic', label: 'Cost per Landing' },
+  { key: 'landing_clicks', label: 'Checkouts' },
+  { key: 'cost_per_checkout', label: 'Cost per Checkout' },
+  { key: 'checkout_rate', label: 'Checkout Rate' },
+  { key: 'pixel_purchase', label: 'Pixel Purchase' },
+  { key: 'revenue', label: 'Purchase Value' },
+  { key: 'sales', label: 'Conv. Rate' },
+  { key: 'play_rate', label: 'Play Rate' },
+  { key: 'hookRate', label: 'Hook Rate' },
+  { key: 'body_rate', label: 'Body Rate' },
+  { key: 'completion_rate', label: 'Completion Rate' },
+  { key: 'video_plays', label: 'Video Plays' },
+  { key: 'video_25', label: 'Video 25%' },
+  { key: 'video_50', label: 'Video 50%' },
+  { key: 'video_75', label: 'Video 75%' },
+  { key: 'video_100', label: 'Video 100%' },
+  { key: 'landing_rate', label: 'Landing Rate' },
+  { key: 'avg_watch_time', label: 'Avg Watch Time' },
+  { key: 'last_updated', label: 'Last Updated' },
 ];
 
 const STATUS_FILTERS = [
@@ -37,6 +52,23 @@ const STATUS_FILTERS = [
   { value: 'paused', label: 'Paused' },
   { value: 'no_data', label: 'No data' },
 ];
+
+function formatSeconds(sec: number): string {
+  if (!sec) return '0s';
+  if (sec < 60) return `${sec.toFixed(1)}s`;
+  const m = Math.floor(sec / 60);
+  const s = Math.round(sec % 60);
+  return `${m}m ${s}s`;
+}
+
+function formatTimestamp(ts: string): string {
+  if (!ts) return '—';
+  try {
+    return new Date(ts).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return ts;
+  }
+}
 
 export function CreativesPage() {
   const [period, setPeriod] = useState<Period>('today');
@@ -78,10 +110,40 @@ export function CreativesPage() {
     }
     if (key === 'profit') return <span className={row.profit < 0 ? 'text-brand-red' : 'text-brand-green'}>{formatCurrency(row.profit)}</span>;
     if (key === 'roas') return <span className={row.roas < roasGoal ? 'text-brand-yellow' : ''}>{row.roas.toFixed(2)}</span>;
-    if (['ctr', 'hookRate', 'holdRate', 'bounce_rate'].includes(key)) return <span>{(row as any)[key]}%</span>;
-    if (['cpa', 'cpc', 'cic', 'spend', 'revenue', 'avg_ticket'].includes(key)) return <span>{formatCurrency((row as any)[key])}</span>;
-    if (['sales', 'addToCart', 'landing_views', 'landing_clicks'].includes(key)) return <span>{formatNumber((row as any)[key])}</span>;
+
+    // Percentages
+    if (['ctr', 'hookRate', 'holdRate', 'bounce_rate', 'play_rate', 'body_rate', 'completion_rate', 'landing_rate', 'checkout_rate'].includes(key)) {
+      return <span>{(row as any)[key]?.toFixed(1) ?? '0.0'}%</span>;
+    }
+
+    // Currency
+    if (['cpa', 'cpc', 'cic', 'spend', 'revenue', 'avg_ticket', 'cpc_all', 'cpm', 'cost_per_checkout'].includes(key)) {
+      return <span>{formatCurrency((row as any)[key] || 0)}</span>;
+    }
+
+    // Numbers (integer)
+    if (['sales', 'addToCart', 'landing_views', 'landing_clicks', 'impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'video_plays', 'video_25', 'video_50', 'video_75', 'video_100'].includes(key)) {
+      return <span>{formatNumber((row as any)[key] || 0)}</span>;
+    }
+
+    // Frequency (decimal number)
+    if (key === 'frequency') return <span>{(row as any).frequency?.toFixed(2) ?? '0.00'}</span>;
+
+    // Avg watch time (seconds -> formatted)
+    if (key === 'avg_watch_time') return <span>{formatSeconds((row as any).avg_watch_time || 0)}</span>;
+
+    // Last updated (timestamp)
+    if (key === 'last_updated') return <span className="text-dark-400 text-xs">{formatTimestamp((row as any).last_updated || '')}</span>;
+
+    // Start date
     if (key === 'startDate') return <span className="text-dark-400">{new Date(row.startDate + 'T00:00:00').toLocaleDateString('en-US')}</span>;
+
+    // Conversion rate (special: sales / clicks)
+    if (key === 'sales') {
+      const convRate = row.clicks > 0 ? ((row.sales / row.clicks) * 100) : 0;
+      return <span>{convRate.toFixed(2)}%</span>;
+    }
+
     return <span>{(row as any)[key] ?? '—'}</span>;
   };
 
@@ -115,7 +177,7 @@ export function CreativesPage() {
           <thead>
             <tr className="border-b border-dark-700">
               {COLUMNS.map(col => (
-                <th key={col.key} onClick={() => handleSort(col.key)} className="px-4 py-3 text-left text-xs font-medium text-dark-400 uppercase tracking-wider cursor-pointer hover:text-gray-200 whitespace-nowrap">
+                <th key={col.key} onClick={() => handleSort(col.key)} className="px-3 py-3 text-left text-xs font-medium text-dark-400 uppercase tracking-wider cursor-pointer hover:text-gray-200 whitespace-nowrap">
                   <div className="flex items-center gap-1">{col.label}{sortBy === col.key && <span>{sortOrder === 'desc' ? '↓' : '↑'}</span>}</div>
                 </th>
               ))}
@@ -124,7 +186,7 @@ export function CreativesPage() {
           <tbody className="divide-y divide-dark-700">
             {data?.data?.map((row) => (
               <tr key={row.id} className="hover:bg-dark-750 transition-colors">
-                {COLUMNS.map(col => <td key={col.key} className="px-4 py-3 text-gray-300 whitespace-nowrap">{renderCell(row, col.key)}</td>)}
+                {COLUMNS.map(col => <td key={col.key} className="px-3 py-3 text-gray-300 whitespace-nowrap">{renderCell(row, col.key)}</td>)}
               </tr>
             ))}
             {(!data?.data || data.data.length === 0) && (
@@ -134,24 +196,11 @@ export function CreativesPage() {
           {data?.footer && (
             <tfoot className="border-t border-dark-600">
               <tr>
-                <td className="px-4 py-3 font-medium text-white" colSpan={2}>Totals / Averages</td>
-                <td className="px-4 py-3 text-dark-400">—</td>
-                <td className="px-4 py-3 text-dark-400">—</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.spend)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.revenue)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.profit)}</td>
-                <td className="px-4 py-3 font-medium text-white">{data.footer.roas.toFixed(2)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.cpa)}</td>
-                <td className="px-4 py-3 text-dark-400">—</td>
-                <td className="px-4 py-3 text-dark-400">—</td>
-                <td className="px-4 py-3 font-medium text-white">{data.footer.hookRate?.toFixed(1)}%</td>
-                <td className="px-4 py-3 font-medium text-white">{data.footer.holdRate?.toFixed(1)}%</td>
-                <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.sales)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.landing_clicks || 0)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.cic || 0)}</td>
-                <td className="px-4 py-3 font-medium text-white">{data.footer.bounce_rate?.toFixed(1)}%</td>
-                <td className="px-4 py-3 font-medium text-white">{formatNumber(data.footer.landing_views || 0)}</td>
-                <td className="px-4 py-3 font-medium text-white">{formatCurrency(data.footer.avg_ticket || 0)}</td>
+                <td className="px-3 py-3 font-medium text-white" colSpan={2}>Totals / Averages</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.spend)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpa)}</td>
+                <td className="px-3 py-3 font-medium text-white">{data.footer.roas.toFixed(2)}</td>
+                <td className="px-3 py-3 text-dark-400" colSpan={29}>—</td>
               </tr>
             </tfoot>
           )}

@@ -106,6 +106,27 @@ export interface AdCreative {
   landing_clicks: number;
   avg_ticket: number;
   cic: number;
+  // Novas métricas do ads-manager
+  reach: number;
+  frequency: number;
+  clicks_all: number;
+  cpc_all: number;
+  cpm: number;
+  video_plays: number;
+  video_views: number;
+  video_25: number;
+  video_50: number;
+  video_75: number;
+  video_100: number;
+  avg_watch_time: number;
+  pixel_purchase: number;
+  play_rate: number;
+  body_rate: number;
+  completion_rate: number;
+  landing_rate: number;
+  checkout_rate: number;
+  cost_per_checkout: number;
+  last_updated: string;
 }
 
 export interface TrafficChannel {

@@ -302,6 +302,71 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
   return { rows, total };
 }
 
+// ── Ads Manager (Facebook rich metrics) ──
+
+export async function getAdsManagerAds(beginDate: string, endDate: string): Promise<any[]> {
+  try {
+    const result = await apiGet('ads-manager/ads', `provider=facebook&beginDate=${beginDate}&endDate=${endDate}&skipTimezone=1`);
+    const ads = result?.data || [];
+
+    return ads.map((ad: any) => {
+      const impressions = parseInt(ad.impressions || 0, 10);
+      const clicks = parseInt(ad.clicks || 0, 10);
+      const spend = parseFloat(ad.spend || 0);
+      const videoViews = ad.video_play_actions?.video_view
+        ? parseInt(ad.video_play_actions.video_view, 10)
+        : (typeof ad.actions?.video_view === 'number'
+            ? ad.actions.video_view
+            : parseInt(ad.actions?.video_view || 0, 10));
+      const videoPlays = typeof ad.actions?.video_view === 'number'
+        ? ad.actions.video_view
+        : parseInt(ad.actions?.video_view || 0, 10);
+      const p25 = ad.video_p25_watched_actions?.video_view
+        ? parseInt(ad.video_p25_watched_actions.video_view, 10) : 0;
+      const p50 = ad.video_p50_watched_actions?.video_view
+        ? parseInt(ad.video_p50_watched_actions.video_view, 10) : 0;
+      const p75 = ad.video_p75_watched_actions?.video_view
+        ? parseInt(ad.video_p75_watched_actions.video_view, 10) : 0;
+      const p100 = ad.video_p100_watched_actions?.video_view
+        ? parseInt(ad.video_p100_watched_actions.video_view, 10) : 0;
+
+      return {
+        id: String(ad.id || ''),
+        name: safeStr(ad.name) || '',
+        status: (ad.status || 'UNKNOWN').toLowerCase(),
+        spend,
+        impressions,
+        reach: parseInt(ad.reach || 0, 10),
+        frequency: parseFloat(ad.frequency || 0),
+        clicks_all: clicks,
+        ctr: parseFloat(ad.ctr || 0),
+        cpc_all: clicks > 0 ? spend / clicks : 0,
+        cpm: impressions > 0 ? (spend / impressions) * 1000 : 0,
+        video_plays: videoPlays,
+        video_views: videoViews,
+        video_25: p25,
+        video_50: p50,
+        video_75: p75,
+        video_100: p100,
+        avg_watch_time: parseFloat(ad.avg_watch_time || 0),
+        pixel_purchase: typeof ad.actions?.pixel_purchase === 'number'
+          ? ad.actions.pixel_purchase
+          : parseInt(ad.actions?.pixel_purchase || 0, 10),
+        start_date: ad.start_time || '',
+        updated_time: ad.updated_time || '',
+        // Derived metrics
+        play_rate: impressions > 0 ? (videoViews / impressions) * 100 : 0,
+        hook_rate: videoViews > 0 ? (p25 / videoViews) * 100 : 0,
+        body_rate: videoViews > 0 ? (p50 / videoViews) * 100 : 0,
+        completion_rate: videoViews > 0 ? (p100 / videoViews) * 100 : 0,
+      };
+    });
+  } catch (err: any) {
+    console.warn(`[Proxy] Ads-manager error: ${err.message}`);
+    return [];
+  }
+}
+
 // ── Ad Sets ──
 
 export async function getAdSets(beginDate: string, endDate: string, params?: {

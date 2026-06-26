@@ -208,6 +208,11 @@ class McpMockService {
       const sales = status === 'active' ? Math.floor(revenue / (30 + Math.random() * 80)) : 0;
       const landingClicks = Math.floor(clicks * (0.2 + Math.random() * 0.3));
       const landingViews = Math.floor(clicks * (0.5 + Math.random() * 0.3));
+      const videoViews = Math.floor(impressions * (0.1 + Math.random() * 0.3));
+      const video25 = Math.floor(videoViews * (0.4 + Math.random() * 0.3));
+      const video50 = Math.floor(videoViews * (0.2 + Math.random() * 0.3));
+      const video75 = Math.floor(videoViews * (0.1 + Math.random() * 0.2));
+      const video100 = Math.floor(videoViews * (0.05 + Math.random() * 0.1));
       return {
         id: `ad_${i + 1}`,
         name,
@@ -234,6 +239,27 @@ class McpMockService {
         landing_clicks: landingClicks,
         avg_ticket: sales > 0 ? Math.round((revenue / sales) * 100) / 100 : 0,
         cic: landingClicks > 0 ? Math.round((spend / landingClicks) * 100) / 100 : 0,
+        // New ads-manager fields
+        reach: Math.floor(impressions * (0.5 + Math.random() * 0.4)),
+        frequency: Math.round((1.2 + Math.random() * 3) * 100) / 100,
+        clicks_all: Math.floor(clicks * (1.1 + Math.random() * 0.5)),
+        cpc_all: Math.round((spend / (clicks * 1.3)) * 100) / 100,
+        cpm: Math.round((spend / impressions) * 1000 * 100) / 100,
+        video_plays: Math.floor(videoViews * (0.5 + Math.random() * 0.5)),
+        video_views: videoViews,
+        video_25: video25,
+        video_50: video50,
+        video_75: video75,
+        video_100: video100,
+        avg_watch_time: Math.round((5 + Math.random() * 25) * 100) / 100,
+        pixel_purchase: Math.floor(sales * (0.7 + Math.random() * 0.5)),
+        play_rate: Math.round((videoViews / impressions) * 10000) / 100,
+        body_rate: videoViews > 0 ? Math.round((video50 / videoViews) * 10000) / 100 : 0,
+        completion_rate: videoViews > 0 ? Math.round((video100 / videoViews) * 10000) / 100 : 0,
+        landing_rate: Math.round((landingViews / impressions) * 10000) / 100,
+        checkout_rate: clicks > 0 ? Math.round((landingClicks / clicks) * 10000) / 100 : 0,
+        cost_per_checkout: landingClicks > 0 ? Math.round((spend / landingClicks) * 100) / 100 : 0,
+        last_updated: new Date().toISOString(),
       };
     });
   }
