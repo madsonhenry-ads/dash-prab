@@ -250,51 +250,115 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
     }
   }
 
-  // STEP 3: Get ads-manager data (Facebook rich metrics) — primary source for rows
+  // STEP 3: Get ads-manager data (Facebook rich metrics) — for enrichment
   const adsManagerRows = await getAdsManagerAds(beginDate, endDate);
 
-  // Build ads-by-name lookup for dedup
-  const usedNames = new Set<string>();
-  const mergedRows: any[] = [];
-
+  // Build ads-by-name lookup
+  const adsByName: Record<string, any> = {};
   for (const ad of adsManagerRows) {
-    const nameLower = ad.name.toLowerCase().trim();
-    const report = reportsBySub6[nameLower];
-    usedNames.add(nameLower);
+    const key = ad.name.toLowerCase().trim();
+    adsByName[key] = ad;
+  }
 
-    const spend = report?.spend || ad.spend || 0;
-    const revenue = report?.revenue || 0;
-    const clicks = report?.clicks || ad.clicks_all || 0;
-    const landingClicks = report?.landing_clicks || 0;
-    const sales = report?.sales || 0;
+  // STEP 4: Iterate over REPORTS as primary source, enrich with ads-manager where matched
+  const mergedRows: any[] = [];
+  const usedAdsNames = new Set<string>();
+
+  for (const [sub6, report] of Object.entries(reportsBySub6) as [string, any]) {
+    const nameLower = sub6.toLowerCase().trim();
+    const ad = adsByName[nameLower];
+    usedAdsNames.add(nameLower);
+
+    const spend = report.spend || 0;
+    const revenue = report.revenue || 0;
+    const clicks = report.clicks || 0;
+    const landingClicks = report.landing_clicks || 0;
+    const sales = report.sales || 0;
 
     mergedRows.push({
-      id: ad.id,
-      name: ad.name,
-      campaignName: report?.campaignName || '',
-      campaignId: report?.campaignId || '',
+      id: ad?.id || sub6,
+      name: sub6,
+      campaignName: report.campaignName || '',
+      campaignId: report.campaignId || '',
       adSetId: '',
-      status: ad.status || (sales > 0 ? 'active' : (clicks > 0 ? 'paused' : 'no_data')),
-      startDate: ad.start_date || beginDate,
+      status: ad?.status || (sales > 0 ? 'active' : (clicks > 0 ? 'paused' : 'no_data')),
+      startDate: ad?.start_date || beginDate,
       spend,
       revenue,
       profit: revenue - spend,
       roas: spend > 0 ? revenue / spend : 0,
       cpa: sales > 0 ? spend / sales : 0,
       cpc: clicks > 0 ? spend / clicks : 0,
-      ctr: report?.holdRate || ad.ctr || 0,
-      hookRate: ad.hook_rate || report?.hookRate || 0,
-      holdRate: report?.holdRate || 0,
+      ctr: ad?.ctr || report.holdRate || 0,
+      hookRate: ad?.hook_rate || report.hookRate || 0,
+      holdRate: report.holdRate || 0,
       sales,
+      addToCart: 0,
+      impressions: ad?.impressions || 0,
+      clicks,
+      bounce_rate: report.bounce_rate || 0,
+      landing_views: report.landing_views || 0,
+      landing_clicks: landingClicks,
+      avg_ticket: report.avg_ticket || (sales > 0 ? revenue / sales : 0),
+      cic: landingClicks > 0 ? spend / landingClicks : 0,
+      // Ads-manager fields (enriched where match exists)
+      reach: ad?.reach || 0,
+      frequency: ad?.frequency || 0,
+      clicks_all: ad?.clicks_all || 0,
+      cpc_all: ad?.cpc_all || 0,
+      cpm: ad?.cpm || 0,
+      video_plays: ad?.video_plays || 0,
+      video_views: ad?.video_views || 0,
+      video_25: ad?.video_25 || 0,
+      video_50: ad?.video_50 || 0,
+      video_75: ad?.video_75 || 0,
+      video_100: ad?.video_100 || 0,
+      avg_watch_time: ad?.avg_watch_time || 0,
+      pixel_purchase: ad?.pixel_purchase || 0,
+      play_rate: ad?.play_rate || 0,
+      body_rate: ad?.body_rate || 0,
+      completion_rate: ad?.completion_rate || 0,
+      landing_rate: (ad?.impressions || 0) > 0 ? ((report.landing_views || 0) / (ad.impressions || 0)) * 100 : 0,
+      checkout_rate: clicks > 0 ? (landingClicks / clicks) * 100 : 0,
+      cost_per_checkout: landingClicks > 0 ? spend / landingClicks : 0,
+      last_updated: ad?.updated_time || '',
+      source: ad ? 'merged' : 'reports',
+    });
+  }
+
+  // STEP 5: Add ads-manager-only items (ads that exist in Facebook but have no matching sub6 in reports)
+  for (const ad of adsManagerRows) {
+    const nameLower = ad.name.toLowerCase().trim();
+    if (usedAdsNames.has(nameLower)) continue;
+    const spend = ad.spend || 0;
+    const clicks = ad.clicks_all || 0;
+
+    mergedRows.push({
+      id: ad.id,
+      name: ad.name,
+      campaignName: '',
+      campaignId: '',
+      adSetId: '',
+      status: ad.status || 'no_data',
+      startDate: ad.start_date || beginDate,
+      spend,
+      revenue: 0,
+      profit: -spend,
+      roas: 0,
+      cpa: 0,
+      cpc: clicks > 0 ? spend / clicks : 0,
+      ctr: ad.ctr || 0,
+      hookRate: ad.hook_rate || 0,
+      holdRate: 0,
+      sales: 0,
       addToCart: 0,
       impressions: ad.impressions || 0,
       clicks,
-      bounce_rate: report?.bounce_rate || 0,
-      landing_views: report?.landing_views || 0,
-      landing_clicks: landingClicks,
-      avg_ticket: report?.avg_ticket || (sales > 0 ? revenue / sales : 0),
-      cic: landingClicks > 0 ? spend / landingClicks : 0,
-      // Ads-manager fields
+      bounce_rate: 0,
+      landing_views: 0,
+      landing_clicks: 0,
+      avg_ticket: 0,
+      cic: 0,
       reach: ad.reach || 0,
       frequency: ad.frequency || 0,
       clicks_all: ad.clicks_all || 0,
@@ -311,56 +375,11 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
       play_rate: ad.play_rate || 0,
       body_rate: ad.body_rate || 0,
       completion_rate: ad.completion_rate || 0,
-      landing_rate: ad.landing_rate || ((ad.impressions || 0) > 0 && report ? ((report.landing_views || 0) / (ad.impressions || 0)) * 100 : 0),
-      checkout_rate: clicks > 0 ? (landingClicks / clicks) * 100 : 0,
-      cost_per_checkout: landingClicks > 0 ? spend / landingClicks : 0,
+      landing_rate: 0,
+      checkout_rate: 0,
+      cost_per_checkout: 0,
       last_updated: ad.updated_time || '',
       source: 'ads-manager',
-    });
-  }
-
-  // STEP 4: Add unmatched reports entries (creatives that exist in reports but not in ads-manager)
-  for (const [sub6, report] of Object.entries(reportsBySub6) as [string, any]) {
-    if (usedNames.has(sub6.toLowerCase().trim())) continue;
-    const spend = report.spend || 0;
-    const clicks = report.clicks || 0;
-    const landingClicks = report.landing_clicks || 0;
-    const sales = report.sales || 0;
-
-    mergedRows.push({
-      id: sub6,
-      name: sub6,
-      campaignName: report.campaignName || '',
-      campaignId: report.campaignId || '',
-      adSetId: '',
-      status: sales > 0 ? 'active' : (clicks > 0 ? 'paused' : 'no_data'),
-      startDate: beginDate,
-      spend,
-      revenue: report.revenue || 0,
-      profit: (report.revenue || 0) - spend,
-      roas: spend > 0 ? (report.revenue || 0) / spend : 0,
-      cpa: sales > 0 ? spend / sales : 0,
-      cpc: clicks > 0 ? spend / clicks : 0,
-      ctr: report.holdRate || 0,
-      hookRate: report.hookRate || 0,
-      holdRate: report.holdRate || 0,
-      sales,
-      addToCart: 0,
-      impressions: 0,
-      clicks,
-      bounce_rate: report.bounce_rate || 0,
-      landing_views: report.landing_views || 0,
-      landing_clicks: landingClicks,
-      avg_ticket: report.avg_ticket || (sales > 0 ? (report.revenue || 0) / sales : 0),
-      cic: landingClicks > 0 ? spend / landingClicks : 0,
-      reach: 0, frequency: 0, clicks_all: 0, cpc_all: 0, cpm: 0,
-      video_plays: 0, video_views: 0, video_25: 0, video_50: 0, video_75: 0, video_100: 0,
-      avg_watch_time: 0, pixel_purchase: 0,
-      play_rate: 0, body_rate: 0, completion_rate: 0,
-      landing_rate: 0, checkout_rate: clicks > 0 ? (landingClicks / clicks) * 100 : 0,
-      cost_per_checkout: landingClicks > 0 ? spend / landingClicks : 0,
-      last_updated: '',
-      source: 'reports',
     });
   }
 
