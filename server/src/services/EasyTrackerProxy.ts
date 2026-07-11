@@ -8,15 +8,11 @@
  * Token: EASYTRACKER_ACCESS_TOKEN env var (JWT from .et_token)
  */
 import { cacheService } from './CacheService';
+import { getValidAccessToken, forceRefresh, isAutoLoginConfigured } from './EasyTrackerAutoLogin';
 import type { FunnelStep } from '../types';
 
 const BASE = 'https://api.easytracker.digital/api';
 const DASHBOARD_UUID = '5d266636-7c23-4add-ae7b-6aeadcfee1cb';
-
-interface TokenStore {
-  accessToken: string;
-}
-let tokenStore: TokenStore | null = null;
 
 // ── Helpers ──
 
@@ -26,9 +22,23 @@ function safeStr(v: any, fallback = ''): string {
   return fallback;
 }
 
-function getHeaders(): Record<string, string> {
-  const token = process.env.EASYTRACKER_ACCESS_TOKEN || tokenStore?.accessToken;
-  if (!token) throw new Error('EasyTracker token not configured. Set EASYTRACKER_ACCESS_TOKEN env var.');
+/**
+ * Get headers with a valid token.
+ * Uses auto-login (email/password) if configured, otherwise falls back to EASYTRACKER_ACCESS_TOKEN env var.
+ */
+async function getHeaders(): Promise<Record<string, string>> {
+  let token: string | null = null;
+
+  if (isAutoLoginConfigured()) {
+    token = await getValidAccessToken();
+  } else {
+    token = process.env.EASYTRACKER_ACCESS_TOKEN || null;
+  }
+
+  if (!token) {
+    throw new Error('EasyTracker token not configured. Set EASYTRACKER_EMAIL/PASSWORD or EASYTRACKER_ACCESS_TOKEN env var.');
+  }
+
   return {
     Authorization: `Bearer ${token}`,
     'x-app-id': '111127',
@@ -93,7 +103,21 @@ export function periodToDates(period: string, timezone?: string): { beginDate: s
 
 async function apiGet(path: string, params: string = ''): Promise<any> {
   const url = `${BASE}/${path}${params ? '?' + params : ''}`;
-  const resp = await fetch(url, { headers: getHeaders() });
+  const headers = await getHeaders();
+  const resp = await fetch(url, { headers });
+
+  // If 401, try one auto-refresh then retry once
+  if (resp.status === 401 && isAutoLoginConfigured()) {
+    console.log('[Proxy] 401 received, attempting token refresh...');
+    const newToken = await forceRefresh();
+    const retryHeaders = { ...headers, Authorization: `Bearer ${newToken}` };
+    const retry = await fetch(url, { headers: retryHeaders });
+    if (!retry.ok) {
+      throw new Error(`EasyTracker API error (${retry.status}): ${retry.statusText} for ${path}`);
+    }
+    return retry.json();
+  }
+
   if (!resp.ok) {
     throw new Error(`EasyTracker API error (${resp.status}): ${resp.statusText} for ${path}`);
   }
