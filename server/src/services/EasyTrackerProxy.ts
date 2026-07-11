@@ -254,6 +254,9 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
       const impressions = parseInt(ad.impressions || 0, 10);
       const clicks = parseInt(ad.clicks || 0, 10);
       const spend = parseFloat(ad.spend || 0);
+      const reach = parseInt(ad.reach || 0, 10);
+
+      // Video metrics
       const videoViews = ad.video_play_actions?.video_view
         ? parseInt(ad.video_play_actions.video_view, 10)
         : (typeof ad.actions?.video_view === 'number'
@@ -271,35 +274,91 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
       const p100 = ad.video_p100_watched_actions?.video_view
         ? parseInt(ad.video_p100_watched_actions.video_view, 10) : 0;
 
+      // Action-based metrics
+      const getAction = (key: string): number => {
+        const v = ad.actions?.[key];
+        if (typeof v === 'number') return v;
+        return parseInt(v || 0, 10);
+      };
+      const getActionValue = (key: string): number => {
+        const v = ad.action_values?.[key];
+        if (typeof v === 'number') return v;
+        return parseFloat(v || 0);
+      };
+
+      const landingViews = getAction('landing_page_view');
+      const checkouts = getAction('initiate_checkout');
+      const pixelPurchase = getAction('offsite_conversion_fb_pixel_purchase') || getAction('purchase') || getAction('pixel_purchase');
+      const purchaseValue = getActionValue('offsite_conversion_fb_pixel_purchase') || getActionValue('purchase');
+      const sales = getAction('purchase');
+
+      // ROAS from Facebook
+      const roas = ad.purchase_roas?.omni_purchase
+        ? parseFloat(ad.purchase_roas.omni_purchase)
+        : (ad.website_purchase_roas?.offsite_conversion_fb_pixel_purchase
+            ? parseFloat(ad.website_purchase_roas.offsite_conversion_fb_pixel_purchase)
+            : (spend > 0 && purchaseValue > 0 ? purchaseValue / spend : 0));
+
+      // CPA (cost per purchase)
+      const cpa = pixelPurchase > 0 ? spend / pixelPurchase : 0;
+
+      // CPC from Facebook
+      const cpc = parseFloat(ad.cpc || 0);
+
+      // Cost per landing view
+      const cic = landingViews > 0 ? spend / landingViews : 0;
+
+      // Cost per checkout
+      const costPerCheckout = checkouts > 0 ? spend / checkouts : 0;
+
+      // Checkout rate (checkouts / landing_views)
+      const checkoutRate = landingViews > 0 ? (checkouts / landingViews) * 100 : 0;
+
+      // Landing rate (landing_views / clicks)
+      const landingRate = clicks > 0 ? (landingViews / clicks) * 100 : 0;
+
+      // Conv rate (sales / clicks)
+      const convRate = clicks > 0 ? (sales / clicks) * 100 : 0;
+
       return {
         id: String(ad.id || ''),
         name: safeStr(ad.name) || '',
         status: (ad.status || 'UNKNOWN').toLowerCase(),
         spend,
+        cpa,
+        roas,
         impressions,
-        reach: parseInt(ad.reach || 0, 10),
+        reach,
         frequency: parseFloat(ad.frequency || 0),
+        clicks,
         clicks_all: clicks,
         ctr: parseFloat(ad.ctr || 0),
+        cpc,
         cpc_all: clicks > 0 ? spend / clicks : 0,
         cpm: impressions > 0 ? (spend / impressions) * 1000 : 0,
+        landing_views: landingViews,
+        cic,
+        landing_clicks: checkouts,
+        cost_per_checkout: costPerCheckout,
+        checkout_rate: checkoutRate,
+        pixel_purchase: pixelPurchase,
+        revenue: purchaseValue,
+        sales: convRate,
+        play_rate: impressions > 0 ? (videoViews / impressions) * 100 : 0,
+        hook_rate: videoViews > 0 ? (p25 / videoViews) * 100 : 0,
+        body_rate: videoViews > 0 ? (p50 / videoViews) * 100 : 0,
+        completion_rate: videoViews > 0 ? (p100 / videoViews) * 100 : 0,
         video_plays: videoPlays,
         video_views: videoViews,
         video_25: p25,
         video_50: p50,
         video_75: p75,
         video_100: p100,
+        landing_rate: landingRate,
         avg_watch_time: parseFloat(ad.avg_watch_time || 0),
-        pixel_purchase: typeof ad.actions?.pixel_purchase === 'number'
-          ? ad.actions.pixel_purchase
-          : parseInt(ad.actions?.pixel_purchase || 0, 10),
         start_date: ad.start_time || '',
         updated_time: ad.updated_time || '',
-        // Derived metrics
-        play_rate: impressions > 0 ? (videoViews / impressions) * 100 : 0,
-        hook_rate: videoViews > 0 ? (p25 / videoViews) * 100 : 0,
-        body_rate: videoViews > 0 ? (p50 / videoViews) * 100 : 0,
-        completion_rate: videoViews > 0 ? (p100 / videoViews) * 100 : 0,
+        last_updated: ad.updated_time || ad._fetched_at || '',
       };
     });
   } catch (err: any) {
@@ -587,6 +646,15 @@ export async function getSalesByProduct(beginDate: string, endDate: string, _cha
     sales: parseInt(o.custom_purchase_count || o.purchases || 0, 10),
     revenue: parseFloat(o.total_revenue || 0),
   }));
+}
+
+// ── Simplified Dashboard (pass-through) ──
+
+export async function getSimplifiedDashboard(beginDate: string, endDate: string, timezone?: string): Promise<any> {
+  const tz = timezone || 'UTC';
+  const params = `provider=all&timezone=${encodeURIComponent(tz)}&beginDate=${beginDate}&endDate=${endDate}`;
+  const result = await apiGet('simplified-dashboard', params);
+  return result?.data || result;
 }
 
 // ── Health check ──

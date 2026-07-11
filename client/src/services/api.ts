@@ -25,6 +25,7 @@ export const api = {
   },
   health: { get: () => request<{ data: import('../types').HealthStatus }>('/health') },
   dashboard: {
+    simplified: (p?: Record<string, string>) => request<{ data: import('../types').SimplifiedDashboard }>(`/dashboard/simplified?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     kpis: (p?: Record<string, string>) => request<{ data: import('../types').DashboardKpis }>(`/dashboard/kpis?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     funnel: (p?: Record<string, string>) => request<{ data: import('../types').FunnelStep[] }>(`/dashboard/funnel?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     salesByHour: (p?: Record<string, string>) => request<{ data: import('../types').SalesByHour[] }>(`/dashboard/sales-by-hour?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),

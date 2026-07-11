@@ -11,6 +11,11 @@ function getParams(period: Period, extra?: { channels?: string[]; products?: str
   return params;
 }
 
+export function useSimplifiedDashboard(period: Period, dates?: { beginDate?: string; endDate?: string }) {
+  const params = getParams(period, { beginDate: dates?.beginDate, endDate: dates?.endDate });
+  return useQuery({ queryKey: ['dashboard', 'simplified', period, dates?.beginDate, dates?.endDate], queryFn: () => api.dashboard.simplified(params), staleTime: 5 * 60 * 1000 });
+}
+
 export function useDashboardKpis(period: Period, account: string, channels?: string[], products?: string[], dates?: { beginDate?: string; endDate?: string }) {
   const params = getParams(period, { channels, products, beginDate: dates?.beginDate, endDate: dates?.endDate });
   params.account = account;

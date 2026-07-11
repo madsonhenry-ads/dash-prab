@@ -1,58 +1,59 @@
 import React, { useState } from 'react';
 import { useCreatives } from '../hooks/useCreatives';
-import { useAdAccounts, useProducts, useTrafficChannels } from '../hooks/useFilters';
 import { PeriodSelector } from '../components/shared/PeriodSelector';
-import { MultiSelect } from '../components/shared/MultiSelect';
 import { TableSkeleton } from '../components/shared/LoadingSkeleton';
 import { ErrorState } from '../components/shared/ErrorState';
-import { formatCurrency, formatNumber, statusLabel, statusBadgeClass, perfIndicator, downloadCsv } from '../utils/format';
+import { formatCurrency, formatNumber, downloadCsv } from '../utils/format';
 import type { Period, AdCreative } from '../types';
 
+// Columns exactly matching EasyTracker's Ads Manager
 const COLUMNS = [
-  { key: 'name', label: 'Criativo' },
-  { key: 'status', label: 'Status' },
-  { key: 'spend', label: 'Spent' },
+  { key: 'status', label: 'ACTIVE' },
+  { key: 'name', label: 'AD' },
+  { key: 'spend', label: 'SPENT' },
   { key: 'cpa', label: 'CPA' },
   { key: 'roas', label: 'ROAS' },
-  { key: 'impressions', label: 'Impressions' },
-  { key: 'reach', label: 'Reach' },
-  { key: 'frequency', label: 'Freq.' },
-  { key: 'clicks', label: 'Clicks' },
-  { key: 'clicks_all', label: 'Clicks All' },
+  { key: 'impressions', label: 'IMPRESSIONS' },
+  { key: 'reach', label: 'REACH' },
+  { key: 'frequency', label: 'FREQ.' },
+  { key: 'clicks', label: 'CLICKS' },
+  { key: 'clicks_all', label: 'CLICKS (ALL)' },
   { key: 'ctr', label: 'CTR' },
   { key: 'cpc', label: 'CPC' },
-  { key: 'cpc_all', label: 'CPC All' },
+  { key: 'cpc_all', label: 'CPC (ALL)' },
   { key: 'cpm', label: 'CPM' },
-  { key: 'landing_views', label: 'Landing Views' },
-  { key: 'cic', label: 'Cost per Landing' },
-  { key: 'landing_clicks', label: 'Checkouts' },
-  { key: 'cost_per_checkout', label: 'Cost per Checkout' },
-  { key: 'checkout_rate', label: 'Checkout Rate' },
-  { key: 'pixel_purchase', label: 'Pixel Purchase' },
-  { key: 'revenue', label: 'Purchase Value' },
-  { key: 'sales', label: 'Conv. Rate' },
-  { key: 'play_rate', label: 'Play Rate' },
-  { key: 'hookRate', label: 'Hook Rate' },
-  { key: 'body_rate', label: 'Body Rate' },
-  { key: 'completion_rate', label: 'Completion Rate' },
-  { key: 'video_plays', label: 'Video Plays' },
-  { key: 'video_views', label: 'Video Views' },
-  { key: 'video_25', label: 'Video 25%' },
-  { key: 'video_50', label: 'Video 50%' },
-  { key: 'video_75', label: 'Video 75%' },
-  { key: 'video_100', label: 'Video 100%' },
-  { key: 'landing_rate', label: 'Landing Rate' },
-  { key: 'avg_watch_time', label: 'Avg Watch Time' },
-  { key: 'last_updated', label: 'Last Updated' },
+  { key: 'landing_views', label: 'LANDING VIEWS' },
+  { key: 'cic', label: 'COST PER LANDING' },
+  { key: 'landing_clicks', label: 'CHECKOUTS' },
+  { key: 'cost_per_checkout', label: 'COST PER CHECKOUT' },
+  { key: 'checkout_rate', label: 'CHECKOUT RATE' },
+  { key: 'pixel_purchase', label: 'PIXEL PURCHASE' },
+  { key: 'revenue', label: 'PURCHASE VALUE' },
+  { key: 'sales', label: 'CONV. RATE' },
+  { key: 'play_rate', label: 'PLAY RATE' },
+  { key: 'hook_rate', label: 'HOOK RATE' },
+  { key: 'body_rate', label: 'BODY RATE' },
+  { key: 'completion_rate', label: 'COMPLETION RATE' },
+  { key: 'video_plays', label: 'VIDEO PLAYS' },
+  { key: 'video_25', label: 'VIDEO 25%' },
+  { key: 'video_50', label: 'VIDEO 50%' },
+  { key: 'video_75', label: 'VIDEO 75%' },
+  { key: 'video_100', label: 'VIDEO 100%' },
+  { key: 'landing_rate', label: 'LANDING RATE' },
+  { key: 'avg_watch_time', label: 'AVG WATCH TIME' },
+  { key: 'last_updated', label: 'LAST UPDATED' },
 ];
 
 const STATUS_FILTERS = [
   { value: '', label: 'All' },
   { value: 'active', label: 'Active' },
-  { value: 'rejected', label: 'Rejected' },
   { value: 'paused', label: 'Paused' },
-  { value: 'no_data', label: 'No data' },
+  { value: 'rejected', label: 'Rejected' },
 ];
+
+const PERCENT_COLS = ['ctr', 'play_rate', 'hook_rate', 'body_rate', 'completion_rate', 'checkout_rate', 'landing_rate', 'sales'];
+const CURRENCY_COLS = ['spend', 'cpa', 'cpc', 'cpc_all', 'cpm', 'cic', 'cost_per_checkout', 'revenue'];
+const INT_COLS = ['impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'landing_views', 'landing_clicks', 'video_plays', 'video_25', 'video_50', 'video_75', 'video_100'];
 
 function formatSeconds(sec: number): string {
   if (!sec) return '0s';
@@ -65,7 +66,7 @@ function formatSeconds(sec: number): string {
 function formatTimestamp(ts: string): string {
   if (!ts) return '—';
   try {
-    return new Date(ts).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    return new Date(ts).toLocaleString('en-US', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   } catch {
     return ts;
   }
@@ -78,18 +79,11 @@ export function CreativesPage() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
-  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState('spend');
   const [sortOrder, setSortOrder] = useState('desc');
-  const roasGoal = parseFloat(localStorage.getItem('trafficboard_roas_goal') || '2.5');
 
   const dateParams = period === 'custom' ? { beginDate, endDate } : undefined;
-  const { data, isLoading, error, refetch } = useCreatives({ period, page, pageSize: 50, status, search, product: selectedProducts.join(','), sortBy, sortOrder, ...dateParams });
-  const { data: accounts } = useAdAccounts();
-  const { data: products } = useProducts();
-  const { data: channels } = useTrafficChannels();
+  const { data, isLoading, error, refetch } = useCreatives({ period, page, pageSize: 50, status, search, sortBy, sortOrder, ...dateParams });
 
   const handleSort = (column: string) => {
     if (sortBy === column) setSortOrder(o => o === 'desc' ? 'asc' : 'desc');
@@ -98,54 +92,40 @@ export function CreativesPage() {
 
   const handleExport = () => {
     const headers = COLUMNS.map(c => c.label);
-    const rows = (data?.data || []).map((row: any) => COLUMNS.map(c => row[c.key] ?? ''));
+    const rows = (data?.data || []).map((row: any) => COLUMNS.map(c => {
+      const v = row[c.key];
+      if (v === undefined || v === null) return '';
+      return typeof v === 'number' ? v.toFixed(2) : v;
+    }));
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     downloadCsv(`creatives-${period}.csv`, csv);
   };
 
-  const renderCell = (row: AdCreative, key: string) => {
-    if (key === 'status') return <span className={statusBadgeClass(row.status)}>{statusLabel(row.status)}</span>;
-    if (key === 'name') {
-      const perf = perfIndicator(row.roas, row.profit, row.status, roasGoal);
-      return <div className="flex items-center gap-2"><span title={perf.label} className={perf.className}>{perf.icon}</span><span>{row.name}</span></div>;
-    }
-    if (key === 'profit') return <span className={row.profit < 0 ? 'text-brand-red' : 'text-brand-green'}>{formatCurrency(row.profit)}</span>;
-    if (key === 'roas') return <span className={row.roas < roasGoal ? 'text-brand-yellow' : ''}>{row.roas.toFixed(2)}</span>;
+  const renderCell = (row: any, key: string) => {
+    const val = row[key];
 
-    // Percentages
-    if (['ctr', 'hookRate', 'holdRate', 'bounce_rate', 'play_rate', 'body_rate', 'completion_rate', 'landing_rate', 'checkout_rate'].includes(key)) {
-      return <span>{(row as any)[key]?.toFixed(1) ?? '0.0'}%</span>;
+    if (key === 'status') {
+      const isActive = (val || '').toLowerCase() === 'active';
+      return <span className={`px-2 py-0.5 rounded text-xs font-medium ${isActive ? 'bg-green-900/40 text-green-400' : 'bg-dark-700 text-dark-300'}`}>{(val || '—').toUpperCase()}</span>;
     }
 
-    // Currency
-    if (['cpa', 'cpc', 'cic', 'spend', 'revenue', 'avg_ticket', 'cpc_all', 'cpm', 'cost_per_checkout'].includes(key)) {
-      return <span>{formatCurrency((row as any)[key] || 0)}</span>;
-    }
+    if (key === 'name') return <span className="text-gray-200">{val || '—'}</span>;
 
-    // Numbers (integer)
-    if (['sales', 'addToCart', 'landing_views', 'landing_clicks', 'impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'video_plays', 'video_views', 'video_25', 'video_50', 'video_75', 'video_100'].includes(key)) {
-      return <span>{formatNumber((row as any)[key] || 0)}</span>;
-    }
+    if (PERCENT_COLS.includes(key)) return <span>{(val || 0).toFixed(2)}%</span>;
 
-    // Frequency (decimal number)
-    if (key === 'frequency') return <span>{(row as any).frequency?.toFixed(2) ?? '0.00'}</span>;
+    if (CURRENCY_COLS.includes(key)) return <span>{formatCurrency(val || 0)}</span>;
 
-    // Avg watch time (seconds -> formatted)
-    if (key === 'avg_watch_time') return <span>{formatSeconds((row as any).avg_watch_time || 0)}</span>;
+    if (INT_COLS.includes(key)) return <span>{formatNumber(val || 0)}</span>;
 
-    // Last updated (timestamp)
-    if (key === 'last_updated') return <span className="text-dark-400 text-xs">{formatTimestamp((row as any).last_updated || '')}</span>;
+    if (key === 'frequency') return <span>{(val || 0).toFixed(2)}</span>;
 
-    // Start date
-    if (key === 'startDate') return <span className="text-dark-400">{new Date(row.startDate + 'T00:00:00').toLocaleDateString('en-US')}</span>;
+    if (key === 'roas') return <span className={(val || 0) < 1 ? 'text-brand-red' : 'text-brand-green'}>{(val || 0).toFixed(2)}</span>;
 
-    // Conversion rate (special: sales / clicks)
-    if (key === 'sales') {
-      const convRate = row.clicks > 0 ? ((row.sales / row.clicks) * 100) : 0;
-      return <span>{convRate.toFixed(2)}%</span>;
-    }
+    if (key === 'avg_watch_time') return <span>{formatSeconds(val || 0)}</span>;
 
-    return <span>{(row as any)[key] ?? '—'}</span>;
+    if (key === 'last_updated') return <span className="text-dark-400 text-xs">{formatTimestamp(val || '')}</span>;
+
+    return <span>{val ?? '—'}</span>;
   };
 
   return (
@@ -154,12 +134,8 @@ export function CreativesPage() {
         <h2 className="text-lg font-bold text-white">Creative Control</h2>
         <div className="flex items-center gap-2">
           {data?.source && (
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-              data.source === 'postgres' ? 'bg-green-900/40 text-green-400 border border-green-700/50' :
-              data.source === 'proxy' ? 'bg-blue-900/40 text-blue-400 border border-blue-700/50' :
-              'bg-yellow-900/40 text-yellow-400 border border-yellow-700/50'
-            }`}>
-              {data.source === 'postgres' ? 'PG' : data.source === 'proxy' ? 'API' : 'CACHE'}
+            <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-900/40 text-blue-400 border border-blue-700/50">
+              {data.source === 'proxy' ? 'LIVE' : data.source.toUpperCase()}
             </span>
           )}
           <button onClick={handleExport} className="btn-secondary text-xs">Export CSV</button>
@@ -177,9 +153,6 @@ export function CreativesPage() {
             </button>
           ))}
         </div>
-        {products?.data && <MultiSelect options={products.data} selected={selectedProducts} onChange={setSelectedProducts} placeholder="Produtos" />}
-        {accounts?.data && <MultiSelect options={accounts.data} selected={selectedAccounts} onChange={setSelectedAccounts} placeholder="Contas" />}
-        {channels?.data && <MultiSelect options={channels.data} selected={selectedChannels} onChange={setSelectedChannels} placeholder="Canais" />}
       </div>
 
       {isLoading ? <TableSkeleton rows={10} /> :
@@ -196,7 +169,7 @@ export function CreativesPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-dark-700">
-            {data?.data?.map((row) => (
+            {data?.data?.map((row: any) => (
               <tr key={row.id} className="hover:bg-dark-750 transition-colors">
                 {COLUMNS.map(col => <td key={col.key} className="px-3 py-3 text-gray-300 whitespace-nowrap">{renderCell(row, col.key)}</td>)}
               </tr>
@@ -211,8 +184,14 @@ export function CreativesPage() {
                 <td className="px-3 py-3 font-medium text-white" colSpan={2}>Totals / Averages</td>
                 <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.spend)}</td>
                 <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpa)}</td>
-                <td className="px-3 py-3 font-medium text-white">{data.footer.roas.toFixed(2)}</td>
-                <td className="px-3 py-3 text-dark-400" colSpan={29}>—</td>
+                <td className="px-3 py-3 font-medium text-white">{(data.footer.roas || 0).toFixed(2)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.impressions)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.clicks)}</td>
+                <td className="px-3 py-3 text-dark-400" colSpan={3}>—</td>
+                <td className="px-3 py-3 font-medium text-white">{(data.footer.ctr || 0).toFixed(2)}%</td>
+                <td className="px-3 py-3 text-dark-400" colSpan={2}>—</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpm)}</td>
+                <td className="px-3 py-3 text-dark-400" colSpan={COLUMNS.length - 13}>—</td>
               </tr>
             </tfoot>
           )}
