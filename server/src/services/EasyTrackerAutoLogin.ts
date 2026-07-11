@@ -10,8 +10,8 @@
  *   EASYTRACKER_EMAIL    — account email
  *   EASYTRACKER_PASSWORD — account password
  *
- * Token validity: ~50 days (Max-Age=4320000 from Set-Cookie)
- * Auto-refresh: 7 days before expiry (safety margin)
+ * Token validity: 24 hours (JWT exp claim)
+ * Auto-refresh: 1 hour before expiry (safety margin)
  */
 
 const LOGIN_URL = 'https://api.easytracker.digital/api/auth/action/login';
@@ -84,10 +84,10 @@ export async function loginToEasyTracker(): Promise<string> {
 
 /**
  * Get a valid access token, logging in if needed.
- * Auto-refreshes 7 days before expiry (safety margin for 50-day tokens).
+ * Auto-refreshes 1 hour before expiry (JWT tokens expire in 24h).
  */
 export async function getValidAccessToken(): Promise<string> {
-  const SAFETY_MARGIN_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+  const SAFETY_MARGIN_MS = 60 * 60 * 1000; // 1 hour
 
   if (cachedToken && cachedToken.expiresAt) {
     if (Date.now() < cachedToken.expiresAt - SAFETY_MARGIN_MS) {
