@@ -46,6 +46,18 @@ async function mcpFallback<T>(name: string, args: Record<string, any>, cacheKey:
   return mcpOrCache<T>(name, args, cacheKey, suffix);
 }
 
+// Simplified dashboard — direct pass-through from EasyTracker
+router.get('/simplified', async (req: AuthRequest, res: any) => {
+  try {
+    const { beginDate, endDate } = getDates(req);
+    const tz = (req.query.timezone as string) || 'UTC';
+    const data = await proxy.getSimplifiedDashboard(beginDate, endDate, tz);
+    res.json({ success: true, data });
+  } catch (err: any) {
+    res.status(502).json({ success: false, error: 'Simplified dashboard fetch failed: ' + err.message });
+  }
+});
+
 router.get('/kpis', async (req: AuthRequest, res: any) => {
   try {
     const { beginDate, endDate } = getDates(req);

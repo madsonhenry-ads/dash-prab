@@ -87,30 +87,42 @@ export interface UtmRow {
 export interface Creative {
   id: string;
   name: string;
-  campaignName: string;
-  campaignId: string;
-  adSetId: string;
   status: 'active' | 'paused' | 'rejected' | 'under_review' | 'no_data';
-  startDate: string;
   spend: number;
-  revenue: number;
-  profit: number;
-  roas: number;
   cpa: number;
-  cpc: number;
-  ctr: number;
-  hookRate: number;
-  holdRate: number;
-  sales: number;
-  addToCart: number;
+  roas: number;
   impressions: number;
+  reach: number;
+  frequency: number;
   clicks: number;
-  bounce_rate: number;
+  clicks_all: number;
+  ctr: number;
+  cpc: number;
+  cpc_all: number;
+  cpm: number;
   landing_views: number;
-  landing_clicks: number;
-  avg_ticket: number;
   cic: number;
-  thumbnail?: string;
+  landing_clicks: number;
+  cost_per_checkout: number;
+  checkout_rate: number;
+  pixel_purchase: number;
+  revenue: number;
+  sales: number;
+  play_rate: number;
+  hook_rate: number;
+  body_rate: number;
+  completion_rate: number;
+  video_plays: number;
+  video_views: number;
+  video_25: number;
+  video_50: number;
+  video_75: number;
+  video_100: number;
+  landing_rate: number;
+  avg_watch_time: number;
+  start_date: string;
+  updated_time: string;
+  last_updated: string;
 }
 
 export interface ApiResponse<T> {
@@ -195,6 +207,27 @@ export interface AdCreative {
   landing_clicks: number;
   avg_ticket: number;
   cic: number;
+  // Novas métricas do ads-manager
+  reach: number;
+  frequency: number;
+  clicks_all: number;
+  cpc_all: number;
+  cpm: number;
+  video_plays: number;
+  video_views: number;
+  video_25: number;
+  video_50: number;
+  video_75: number;
+  video_100: number;
+  avg_watch_time: number;
+  pixel_purchase: number;
+  play_rate: number;
+  body_rate: number;
+  completion_rate: number;
+  landing_rate: number;
+  checkout_rate: number;
+  cost_per_checkout: number;
+  last_updated: string;
 }
 
 export interface AdAccount {

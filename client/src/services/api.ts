@@ -25,6 +25,7 @@ export const api = {
   },
   health: { get: () => request<{ data: import('../types').HealthStatus }>('/health') },
   dashboard: {
+    simplified: (p?: Record<string, string>) => request<{ data: import('../types').SimplifiedDashboard }>(`/dashboard/simplified?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     kpis: (p?: Record<string, string>) => request<{ data: import('../types').DashboardKpis }>(`/dashboard/kpis?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     funnel: (p?: Record<string, string>) => request<{ data: import('../types').FunnelStep[] }>(`/dashboard/funnel?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     salesByHour: (p?: Record<string, string>) => request<{ data: import('../types').SalesByHour[] }>(`/dashboard/sales-by-hour?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
@@ -41,7 +42,7 @@ export const api = {
     ads: (p?: Record<string, string>) => request<{ data: import('../types').AdCreative[]; meta: import('../types').MetaData; footer: any }>(`/campaigns-report/ads?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
   },
   creatives: {
-    list: (p?: Record<string, string>) => request<{ data: import('../types').AdCreative[]; meta: import('../types').MetaData; footer: any }>(`/creatives?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
+    list: (p?: Record<string, string>) => request<{ data: import('../types').AdCreative[]; meta: import('../types').MetaData; footer: any; source: string }>(`/creatives?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
     export: (p?: Record<string, string>) => `${API_BASE}/creatives/export?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`,
   },
   tools: {

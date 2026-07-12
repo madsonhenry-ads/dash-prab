@@ -57,6 +57,13 @@ export async function syncAll(): Promise<SyncResult> {
   for (const period of SYNC_PERIODS) {
     const { beginDate, endDate } = getDateRange(period.daysBack);
 
+    // Clean PG before first sync so stale records from old merges are removed
+    if (period === SYNC_PERIODS[0]) {
+      try {
+        await postgresService.query('DELETE FROM creatives');
+      } catch {}
+    }
+
     try {
       const count = await syncCreatives(beginDate, endDate);
       result.creatives += count;
@@ -96,22 +103,35 @@ export async function syncAll(): Promise<SyncResult> {
 // ── Creatives sync ──
 
 async function syncCreatives(beginDate: string, endDate: string): Promise<number> {
-  const { rows } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
-  if (!rows.length) return 0;
+  // 1. Get Facebook ads-manager data (sole source)
+  const { rows: merged } = await proxy.getCreatives(beginDate, endDate, { pageSize: 10000 });
+  if (!merged.length) return 0;
 
   let count = 0;
-  for (const c of rows) {
+  for (const c of merged) {
     try {
+      const clicks = c.clicks || 0;
+      const landingClicks = c.landing_clicks || 0;
+      const sales = c.sales || 0;
+      const spend = c.spend || 0;
+      const revenue = c.revenue || 0;
+      const impressions = c.impressions || 0;
+
       await postgresService.query(
         `INSERT INTO creatives
           (creative, purchases, revenue_usd, revenue_brl, spend_usd, profit_usd, roas, cpa,
            ics, clicks, conversion_rate, ic_to_purchase_rate, hook_rate, lead_to_purchase_cvr,
-           landing_clicks, landing_views, campaigns, products, countries, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW())
+           landing_clicks, landing_views, campaigns, products, countries, updated_at,
+           status, impressions, reach, frequency, clicks_all, cpc_all, cpm, cpc,
+           avg_ticket, bounce_rate, video_plays, video_views, video_25, video_50, video_75, video_100,
+           avg_watch_time, pixel_purchase, play_rate, body_rate, completion_rate,
+           landing_rate, checkout_rate, cost_per_checkout, first_seen)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW(),
+                 $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35,
+                 $36, $37, $38, $39, $40, $41, $42, $43, NOW())
          ON CONFLICT (creative) DO UPDATE SET
            purchases = EXCLUDED.purchases,
            revenue_usd = EXCLUDED.revenue_usd,
-           revenue_brl = EXCLUDED.revenue_brl,
            spend_usd = EXCLUDED.spend_usd,
            profit_usd = EXCLUDED.profit_usd,
            roas = EXCLUDED.roas,
@@ -127,27 +147,76 @@ async function syncCreatives(beginDate: string, endDate: string): Promise<number
            campaigns = EXCLUDED.campaigns,
            products = EXCLUDED.products,
            countries = EXCLUDED.countries,
-           updated_at = NOW()`,
+           updated_at = NOW(),
+           status = EXCLUDED.status,
+           impressions = EXCLUDED.impressions,
+           reach = EXCLUDED.reach,
+           frequency = EXCLUDED.frequency,
+           clicks_all = EXCLUDED.clicks_all,
+           cpc_all = EXCLUDED.cpc_all,
+           cpm = EXCLUDED.cpm,
+           cpc = EXCLUDED.cpc,
+           avg_ticket = EXCLUDED.avg_ticket,
+           bounce_rate = EXCLUDED.bounce_rate,
+           video_plays = EXCLUDED.video_plays,
+           video_views = EXCLUDED.video_views,
+           video_25 = EXCLUDED.video_25,
+           video_50 = EXCLUDED.video_50,
+           video_75 = EXCLUDED.video_75,
+           video_100 = EXCLUDED.video_100,
+           avg_watch_time = EXCLUDED.avg_watch_time,
+           pixel_purchase = EXCLUDED.pixel_purchase,
+           play_rate = EXCLUDED.play_rate,
+           body_rate = EXCLUDED.body_rate,
+           completion_rate = EXCLUDED.completion_rate,
+           landing_rate = EXCLUDED.landing_rate,
+           checkout_rate = EXCLUDED.checkout_rate,
+           cost_per_checkout = EXCLUDED.cost_per_checkout`,
         [
           c.name,
-          c.sales || 0,
-          c.revenue || 0,
+          sales,
+          revenue,
           0, // revenue_brl
-          c.spend || 0,
-          c.profit || 0,
-          c.roas || 0,
-          c.cpa || 0,
-          c.sales || 0, // ics reuse — we don't have separate IC count per creative
-          c.clicks || 0,
-          c.ctr || 0,
-          c.holdRate || 0,
+          spend,
+          revenue - spend, // profit
+          spend > 0 ? revenue / spend : 0, // roas
+          sales > 0 ? spend / sales : 0, // cpa
+          landingClicks, // ics
+          clicks,
+          clicks > 0 ? (sales / clicks) : 0, // conversion_rate
+          landingClicks > 0 ? sales / landingClicks : 0, // ic_to_purchase_rate
           c.hookRate || 0,
-          c.holdRate || 0,
-          c.landing_clicks || 0,
+          landingClicks > 0 ? sales / landingClicks : 0, // lead_to_purchase_cvr
+          landingClicks,
           c.landing_views || 0,
           c.campaignName ? [c.campaignName] : [],
           [],
           [],
+          // ads-manager fields
+          c.status || 'no_data',
+          impressions,
+          c.reach || 0,
+          c.frequency || 0,
+          c.clicks_all || clicks,
+          c.cpc_all || 0,
+          c.cpm || 0,
+          clicks > 0 ? spend / clicks : 0, // cpc
+          c.avg_ticket || 0,
+          c.bounce_rate || 0,
+          c.video_plays || 0,
+          c.video_views || 0,
+          c.video_25 || 0,
+          c.video_50 || 0,
+          c.video_75 || 0,
+          c.video_100 || 0,
+          c.avg_watch_time || 0,
+          c.pixel_purchase || 0,
+          c.play_rate || 0,
+          c.body_rate || 0,
+          c.completion_rate || 0,
+          impressions > 0 ? ((c.landing_views || 0) / impressions) * 100 : 0, // landing_rate
+          clicks > 0 ? (landingClicks / clicks) * 100 : 0, // checkout_rate
+          landingClicks > 0 ? spend / landingClicks : 0, // cost_per_checkout
         ]
       );
       count++;

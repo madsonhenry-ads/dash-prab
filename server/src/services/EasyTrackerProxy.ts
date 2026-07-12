@@ -8,15 +8,11 @@
  * Token: EASYTRACKER_ACCESS_TOKEN env var (JWT from .et_token)
  */
 import { cacheService } from './CacheService';
+import { getValidAccessToken, forceRefresh, isAutoLoginConfigured } from './EasyTrackerAutoLogin';
 import type { FunnelStep } from '../types';
 
 const BASE = 'https://api.easytracker.digital/api';
 const DASHBOARD_UUID = '5d266636-7c23-4add-ae7b-6aeadcfee1cb';
-
-interface TokenStore {
-  accessToken: string;
-}
-let tokenStore: TokenStore | null = null;
 
 // ── Helpers ──
 
@@ -26,9 +22,23 @@ function safeStr(v: any, fallback = ''): string {
   return fallback;
 }
 
-function getHeaders(): Record<string, string> {
-  const token = process.env.EASYTRACKER_ACCESS_TOKEN || tokenStore?.accessToken;
-  if (!token) throw new Error('EasyTracker token not configured. Set EASYTRACKER_ACCESS_TOKEN env var.');
+/**
+ * Get headers with a valid token.
+ * Uses auto-login (email/password) if configured, otherwise falls back to EASYTRACKER_ACCESS_TOKEN env var.
+ */
+async function getHeaders(): Promise<Record<string, string>> {
+  let token: string | null = null;
+
+  if (isAutoLoginConfigured()) {
+    token = await getValidAccessToken();
+  } else {
+    token = process.env.EASYTRACKER_ACCESS_TOKEN || null;
+  }
+
+  if (!token) {
+    throw new Error('EasyTracker token not configured. Set EASYTRACKER_EMAIL/PASSWORD or EASYTRACKER_ACCESS_TOKEN env var.');
+  }
+
   return {
     Authorization: `Bearer ${token}`,
     'x-app-id': '111127',
@@ -81,6 +91,10 @@ export function periodToDates(period: string, timezone?: string): { beginDate: s
       beginDate = d.toISOString().split('T')[0];
       break;
     }
+    case 'this_month': {
+      beginDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+      break;
+    }
     default:
       beginDate = endDate;
   }
@@ -89,7 +103,21 @@ export function periodToDates(period: string, timezone?: string): { beginDate: s
 
 async function apiGet(path: string, params: string = ''): Promise<any> {
   const url = `${BASE}/${path}${params ? '?' + params : ''}`;
-  const resp = await fetch(url, { headers: getHeaders() });
+  const headers = await getHeaders();
+  const resp = await fetch(url, { headers });
+
+  // If 401, try one auto-refresh then retry once
+  if (resp.status === 401 && isAutoLoginConfigured()) {
+    console.log('[Proxy] 401 received, attempting token refresh...');
+    const newToken = await forceRefresh();
+    const retryHeaders = { ...headers, Authorization: `Bearer ${newToken}` };
+    const retry = await fetch(url, { headers: retryHeaders });
+    if (!retry.ok) {
+      throw new Error(`EasyTracker API error (${retry.status}): ${retry.statusText} for ${path}`);
+    }
+    return retry.json();
+  }
+
   if (!resp.ok) {
     throw new Error(`EasyTracker API error (${resp.status}): ${resp.statusText} for ${path}`);
   }
@@ -193,117 +221,154 @@ export async function getCreatives(beginDate: string, endDate: string, params?: 
   campaignId?: string;
   channels?: string;
 }): Promise<{ rows: any[]; total: number }> {
-  const { search = '', sortBy = 'purchases', sortOrder = 'desc', page = 1, pageSize = 50, campaignId = '', channels = '' } = params || {};
+  const { search = '', sortBy = 'spend', sortOrder = 'desc', page = 1, pageSize = 50 } = params || {};
 
-  // Get campaigns first
-  const campaignsResult = await apiGet('campaigns', `beginDate=${beginDate}&endDate=${endDate}`);
-  const campaigns = campaignsResult?.data || [];
-
-  // Filter campaigns by channel if specified
-  const channelIds = channels ? channels.split(',').filter(Boolean).map(Number) : [];
-  const filteredCampaigns = channelIds.length > 0
-    ? campaigns.filter((c: any) => {
-        const tc = c.traffic_channel_id;
-        const tcId = tc?.value ?? tc;
-        return channelIds.includes(Number(tcId));
-      })
-    : campaigns;
-
-  // Fetch report per campaign and aggregate by sub6 (creative name)
-  const creativeMap: Record<string, any> = {};
-
-  for (const camp of filteredCampaigns) {
-    const campId = camp.id;
-    if (!campId) continue;
-    if (campaignId && String(campId) !== campaignId) continue;
-
-    try {
-      const report = await apiGet(`reports/campaigns/${campId}`, `groupings[]=sub6&beginDate=${beginDate}&endDate=${endDate}`);
-      const items = report?.data || [];
-      for (const item of items) {
-        const sub6 = (item.sub6 || '').trim();
-        if (!sub6) continue;
-        if (!creativeMap[sub6]) {
-          creativeMap[sub6] = {
-            id: sub6,
-            name: sub6,
-            campaignName: safeStr(camp.name) || '',
-            campaignId: String(campId),
-            adSetId: '',
-            status: parseFloat(item.total_spent || 0) > 0 ? 'active' : 'no_data',
-            startDate: beginDate,
-            spend: 0,
-            revenue: 0,
-            profit: 0,
-            roas: 0,
-            cpa: 0,
-            cpc: 0,
-            ctr: 0,
-            hookRate: 0,
-            holdRate: 0,
-            sales: 0,
-            addToCart: 0,
-            impressions: 0,
-            clicks: 0,
-            bounce_rate: 0,
-            landing_views: 0,
-            landing_clicks: 0,
-            avg_ticket: 0,
-            cic: 0,
-          };
-        }
-        const cr = creativeMap[sub6];
-        cr.spend += parseFloat(item.total_spent || 0);
-        cr.revenue += parseFloat(item.total_revenue || 0);
-        cr.profit += parseFloat(item.gross_profit || 0);
-        cr.sales += parseInt(item.custom_purchase_count || 0, 10);
-        cr.clicks += parseInt(item.clicks || 0, 10);
-        cr.impressions += parseInt(item.clicks || 0, 10);
-        cr.landing_views += parseInt(item.landing_views || 0, 10);
-        cr.landing_clicks += parseInt(item.landing_clicks || 0, 10);
-        cr.bounce_rate = parseFloat(item.bounce_rate || 0);
-        cr.avg_ticket = parseFloat(item.avg_ticket || 0);
-        // Hook rate = video watch rate (3s+ views / impressions)
-        cr.hookRate = parseFloat(item.hook_rate ?? item.video_watch_rate ?? 0);
-        // Hold rate = lead-to-purchase or IC-to-purchase conversion
-        cr.holdRate = parseFloat(item.hold_rate ?? item.lead_to_purchase_conversion ?? 0);
-        cr.cpc = cr.clicks > 0 ? cr.spend / cr.clicks : 0;
-        cr.roas = cr.spend > 0 ? cr.revenue / cr.spend : 0;
-        cr.cpa = cr.sales > 0 ? cr.spend / cr.sales : 0;
-        cr.ctr = parseFloat(item.lead_to_purchase_conversion || 0);
-        // CIC = cost per landing click (IC)
-        cr.cic = cr.landing_clicks > 0 ? cr.spend / cr.landing_clicks : 0;
-        if (cr.sales > 0) cr.status = 'active';
-        else if (cr.clicks > 0) cr.status = 'paused';
-        // Keep campaignName from first campaign that had this creative
-        if (!cr.campaignName) cr.campaignName = safeStr(camp.name) || '';
-      }
-    } catch (err: any) {
-      console.warn(`[Proxy] Skipping campaign ${campId}: ${err.message}`);
-    }
-  }
-
-  let result = Object.values(creativeMap);
+  // SOURCE: Facebook ads-manager only — all metrics come from the API directly
+  const rows = await getAdsManagerAds(beginDate, endDate);
 
   // Filter
+  let result = rows;
   if (search) {
     const term = search.toLowerCase();
     result = result.filter((c: any) => c.name.toLowerCase().includes(term));
   }
 
   // Sort
-  const sortField = sortBy || 'purchases';
   result.sort((a: any, b: any) => {
-    const va = a[sortField] ?? 0;
-    const vb = b[sortField] ?? 0;
+    const va = a[sortBy] ?? 0;
+    const vb = b[sortBy] ?? 0;
     return sortOrder === 'asc' ? va - vb : vb - va;
   });
 
   const total = result.length;
   const start = (page - 1) * pageSize;
-  const rows = result.slice(start, start + pageSize);
+  const paged = result.slice(start, start + pageSize);
 
-  return { rows, total };
+  return { rows: paged, total };
+}
+
+// ── Ads Manager (Facebook rich metrics) ──
+
+export async function getAdsManagerAds(beginDate: string, endDate: string): Promise<any[]> {
+  try {
+    const result = await apiGet('ads-manager/ads', `provider=facebook&beginDate=${beginDate}&endDate=${endDate}&skipTimezone=1`);
+    const ads = result?.data || [];
+
+    return ads.map((ad: any) => {
+      const impressions = parseInt(ad.impressions || 0, 10);
+      const clicks = parseInt(ad.clicks || 0, 10);
+      const spend = parseFloat(ad.spend || 0);
+      const reach = parseInt(ad.reach || 0, 10);
+
+      // Video metrics
+      const videoViews = ad.video_play_actions?.video_view
+        ? parseInt(ad.video_play_actions.video_view, 10)
+        : (typeof ad.actions?.video_view === 'number'
+            ? ad.actions.video_view
+            : parseInt(ad.actions?.video_view || 0, 10));
+      const videoPlays = typeof ad.actions?.video_view === 'number'
+        ? ad.actions.video_view
+        : parseInt(ad.actions?.video_view || 0, 10);
+      const p25 = ad.video_p25_watched_actions?.video_view
+        ? parseInt(ad.video_p25_watched_actions.video_view, 10) : 0;
+      const p50 = ad.video_p50_watched_actions?.video_view
+        ? parseInt(ad.video_p50_watched_actions.video_view, 10) : 0;
+      const p75 = ad.video_p75_watched_actions?.video_view
+        ? parseInt(ad.video_p75_watched_actions.video_view, 10) : 0;
+      const p100 = ad.video_p100_watched_actions?.video_view
+        ? parseInt(ad.video_p100_watched_actions.video_view, 10) : 0;
+
+      // Action-based metrics
+      const getAction = (key: string): number => {
+        const v = ad.actions?.[key];
+        if (typeof v === 'number') return v;
+        return parseInt(v || 0, 10);
+      };
+      const getActionValue = (key: string): number => {
+        const v = ad.action_values?.[key];
+        if (typeof v === 'number') return v;
+        return parseFloat(v || 0);
+      };
+
+      const landingViews = getAction('landing_page_view');
+      const checkouts = getAction('initiate_checkout');
+      const pixelPurchase = getAction('offsite_conversion_fb_pixel_purchase') || getAction('purchase') || getAction('pixel_purchase');
+      const purchaseValue = getActionValue('offsite_conversion_fb_pixel_purchase') || getActionValue('purchase');
+      const sales = getAction('purchase');
+
+      // ROAS from Facebook
+      const roas = ad.purchase_roas?.omni_purchase
+        ? parseFloat(ad.purchase_roas.omni_purchase)
+        : (ad.website_purchase_roas?.offsite_conversion_fb_pixel_purchase
+            ? parseFloat(ad.website_purchase_roas.offsite_conversion_fb_pixel_purchase)
+            : (spend > 0 && purchaseValue > 0 ? purchaseValue / spend : 0));
+
+      // CPA (cost per purchase)
+      const cpa = pixelPurchase > 0 ? spend / pixelPurchase : 0;
+
+      // CPC from Facebook
+      const cpc = parseFloat(ad.cpc || 0);
+
+      // Cost per landing view
+      const cic = landingViews > 0 ? spend / landingViews : 0;
+
+      // Cost per checkout
+      const costPerCheckout = checkouts > 0 ? spend / checkouts : 0;
+
+      // Checkout rate (checkouts / landing_views)
+      const checkoutRate = landingViews > 0 ? (checkouts / landingViews) * 100 : 0;
+
+      // Landing rate (landing_views / clicks)
+      const landingRate = clicks > 0 ? (landingViews / clicks) * 100 : 0;
+
+      // Conv rate (sales / clicks)
+      const convRate = clicks > 0 ? (sales / clicks) * 100 : 0;
+
+      return {
+        id: String(ad.id || ''),
+        name: safeStr(ad.name) || '',
+        status: (ad.status || 'UNKNOWN').toLowerCase(),
+        spend,
+        cpa,
+        roas,
+        impressions,
+        reach,
+        frequency: parseFloat(ad.frequency || 0),
+        clicks,
+        clicks_all: clicks,
+        ctr: parseFloat(ad.ctr || 0),
+        cpc,
+        cpc_all: clicks > 0 ? spend / clicks : 0,
+        cpm: impressions > 0 ? (spend / impressions) * 1000 : 0,
+        landing_views: landingViews,
+        cic,
+        landing_clicks: checkouts,
+        cost_per_checkout: costPerCheckout,
+        checkout_rate: checkoutRate,
+        pixel_purchase: pixelPurchase,
+        revenue: purchaseValue,
+        sales: convRate,
+        play_rate: impressions > 0 ? (videoViews / impressions) * 100 : 0,
+        hook_rate: videoViews > 0 ? (p25 / videoViews) * 100 : 0,
+        body_rate: videoViews > 0 ? (p50 / videoViews) * 100 : 0,
+        completion_rate: videoViews > 0 ? (p100 / videoViews) * 100 : 0,
+        video_plays: videoPlays,
+        video_views: videoViews,
+        video_25: p25,
+        video_50: p50,
+        video_75: p75,
+        video_100: p100,
+        landing_rate: landingRate,
+        avg_watch_time: parseFloat(ad.avg_watch_time || 0),
+        start_date: ad.start_time || '',
+        updated_time: ad.updated_time || '',
+        last_updated: ad.updated_time || ad._fetched_at || '',
+      };
+    });
+  } catch (err: any) {
+    console.warn(`[Proxy] Ads-manager error: ${err.message}`);
+    return [];
+  }
 }
 
 // ── Ad Sets ──
@@ -585,6 +650,15 @@ export async function getSalesByProduct(beginDate: string, endDate: string, _cha
     sales: parseInt(o.custom_purchase_count || o.purchases || 0, 10),
     revenue: parseFloat(o.total_revenue || 0),
   }));
+}
+
+// ── Simplified Dashboard (pass-through) ──
+
+export async function getSimplifiedDashboard(beginDate: string, endDate: string, timezone?: string): Promise<any> {
+  const tz = timezone || 'UTC';
+  const params = `provider=all&timezone=${encodeURIComponent(tz)}&beginDate=${beginDate}&endDate=${endDate}`;
+  const result = await apiGet('simplified-dashboard', params);
+  return result?.data || result;
 }
 
 // ── Health check ──

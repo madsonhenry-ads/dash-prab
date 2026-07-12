@@ -11,6 +11,75 @@ export interface DashboardKpis {
   grossRevenue: number;
 }
 
+// Simplified Dashboard — mirrors EasyTracker's /api/simplified-dashboard payload
+export interface SimplifiedSummaryItem {
+  title: string;
+  key: string;
+  value: number;
+  previousValue?: number;
+}
+
+export interface SimplifiedSpend {
+  total_spent: number;
+  total_clicks: number;
+  by_provider: { provider: string; total_spent: number }[];
+  accounts: { account_id: string; name: string; provider: string; total_spent: number }[];
+}
+
+export interface SimplifiedFunnel {
+  clicks: number;
+  landing_views: number;
+  checkouts_initiated: number;
+  purchases: number;
+  landing_view_rate: number;
+  checkout_rate: number;
+  purchase_rate: number;
+  ad_clicks: number;
+}
+
+export interface SimplifiedDailyItem {
+  date: string;
+  total_revenue: number;
+  purchases: number;
+  leads: number;
+}
+
+export interface SimplifiedProduct {
+  product_name: string;
+  total_revenue: string;
+  purchases: number;
+}
+
+export interface SimplifiedCurrency {
+  name: string;
+  count: number;
+  total_revenue: string;
+}
+
+export interface SimplifiedAudience {
+  deviceTypes: { name: string; count: number }[];
+  browsers: { name: string; count: number }[];
+}
+
+export interface SimplifiedHeatmapItem {
+  day_of_week: number;
+  hour: number;
+  count: number;
+  total_revenue: string;
+}
+
+export interface SimplifiedDashboard {
+  summary: SimplifiedSummaryItem[];
+  spend: SimplifiedSpend;
+  funnel: SimplifiedFunnel;
+  dailySeries: SimplifiedDailyItem[];
+  topProducts: SimplifiedProduct[];
+  topCurrencies: SimplifiedCurrency[];
+  audience: SimplifiedAudience;
+  heatmap: SimplifiedHeatmapItem[];
+  meta: { currency: string; timezone: string; beginDate: string; endDate: string };
+}
+
 export interface FunnelStep {
   label: string;
   value: number;
@@ -83,29 +152,42 @@ export type Timezone = 'UTC' | 'Europe/London' | 'America/Sao_Paulo';
 export interface AdCreative {
   id: string;
   name: string;
-  campaignId: string;
-  campaignName: string;
-  adSetId: string;
   status: 'active' | 'paused' | 'rejected' | 'under_review' | 'no_data';
-  startDate: string;
   spend: number;
-  revenue: number;
-  profit: number;
-  roas: number;
   cpa: number;
-  cpc: number;
-  ctr: number;
-  hookRate: number;
-  holdRate: number;
-  sales: number;
-  addToCart: number;
+  roas: number;
   impressions: number;
+  reach: number;
+  frequency: number;
   clicks: number;
-  bounce_rate: number;
+  clicks_all: number;
+  ctr: number;
+  cpc: number;
+  cpc_all: number;
+  cpm: number;
   landing_views: number;
-  landing_clicks: number;
-  avg_ticket: number;
   cic: number;
+  landing_clicks: number;
+  cost_per_checkout: number;
+  checkout_rate: number;
+  pixel_purchase: number;
+  revenue: number;
+  sales: number;
+  play_rate: number;
+  hook_rate: number;
+  body_rate: number;
+  completion_rate: number;
+  video_plays: number;
+  video_views: number;
+  video_25: number;
+  video_50: number;
+  video_75: number;
+  video_100: number;
+  landing_rate: number;
+  avg_watch_time: number;
+  start_date: string;
+  updated_time: string;
+  last_updated: string;
 }
 
 export interface TrafficChannel {
@@ -156,7 +238,7 @@ export interface HealthStatus {
   uptime: number;
 }
 
-export type Period = 'today' | 'yesterday' | 'last_7' | 'last_30' | 'custom';
+export type Period = 'today' | 'yesterday' | 'last_7' | 'last_30' | 'this_month' | 'custom';
 
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high';

@@ -54,7 +54,7 @@ router.post('/', (req: Request, res: Response) => {
   save('trafficChannels', data.trafficChannels);
 
   // Also save period-suffixed keys (e.g. kpis_last_7, campaigns_last_30)
-  const periods = ['today', 'yesterday', 'last_7', 'last_30'];
+  const periods = ['today', 'yesterday', 'last_7', 'last_30', 'this_month'];
   for (const period of periods) {
     const suffix = `${period}:${data.account || 'all'}`;
     save('kpis', data[`kpis_${period}`], suffix);

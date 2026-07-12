@@ -155,6 +155,33 @@ export interface CreativeRow {
   countries: string[];
   landing_clicks: number;
   landing_views: number;
+  // New ads-manager fields
+  status: string;
+  impressions: number;
+  reach: number;
+  frequency: number;
+  clicks_all: number;
+  cpc_all: number;
+  cpm: number;
+  cpc: number;
+  avg_ticket: number;
+  bounce_rate: number;
+  video_plays: number;
+  video_views: number;
+  video_25: number;
+  video_50: number;
+  video_75: number;
+  video_100: number;
+  avg_watch_time: number;
+  pixel_purchase: number;
+  play_rate: number;
+  body_rate: number;
+  completion_rate: number;
+  landing_rate: number;
+  checkout_rate: number;
+  cost_per_checkout: number;
+  first_seen: string | null;
+  updated_at: string | null;
 }
 
 export async function getCreatives(params: {
@@ -175,15 +202,16 @@ export async function getCreatives(params: {
     values.push(`%${search}%`);
   }
 
-  // Status filter maps PG data to creative statuses
+  // Status filter — use real status column from ads-manager if available,
+  // fall back to inferred status for backward compatibility
   if (status === 'active') {
-    conditions.push(`purchases > 0`);
+    conditions.push(`(status = 'active' OR (status = 'no_data' AND purchases > 0))`);
   } else if (status === 'paused') {
-    conditions.push(`purchases = 0 AND ics > 0`);
-  } else if (status === 'no_data') {
-    conditions.push(`purchases = 0 AND ics = 0 AND clicks = 0`);
+    conditions.push(`(status = 'paused' OR (status = 'no_data' AND purchases = 0 AND ics > 0))`);
   } else if (status === 'rejected') {
-    conditions.push(`purchases = 0 AND ics = 0 AND clicks = 0`);
+    conditions.push(`(status = 'rejected' OR (status = 'no_data' AND purchases = 0 AND ics = 0 AND clicks = 0))`);
+  } else if (status === 'no_data') {
+    conditions.push(`(status = 'no_data' OR status = 'under_review' OR (status IS NULL AND purchases = 0 AND ics = 0 AND clicks = 0))`);
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -204,6 +232,29 @@ export async function getCreatives(params: {
     holdRate: 'lead_to_purchase_cvr',
     landing_clicks: 'landing_clicks',
     landing_views: 'landing_views',
+    impressions: 'impressions',
+    reach: 'reach',
+    frequency: 'frequency',
+    clicks_all: 'clicks_all',
+    cpc_all: 'cpc_all',
+    cpm: 'cpm',
+    cpc: 'cpc',
+    bounce_rate: 'bounce_rate',
+    avg_ticket: 'avg_ticket',
+    video_plays: 'video_plays',
+    video_views: 'video_views',
+    video_25: 'video_25',
+    video_50: 'video_50',
+    video_75: 'video_75',
+    video_100: 'video_100',
+    avg_watch_time: 'avg_watch_time',
+    pixel_purchase: 'pixel_purchase',
+    play_rate: 'play_rate',
+    body_rate: 'body_rate',
+    completion_rate: 'completion_rate',
+    landing_rate: 'landing_rate',
+    checkout_rate: 'checkout_rate',
+    cost_per_checkout: 'cost_per_checkout',
   };
   const sortCol = sortMap[sortBy] || 'purchases';
   const sortDir = sortOrder === 'asc' ? 'ASC' : 'DESC';
@@ -217,7 +268,7 @@ export async function getCreatives(params: {
   // Data
   const offset = (page - 1) * pageSize;
   const rows = await postgresService.query<any>(
-    `SELECT creative, purchases, revenue_usd, revenue_brl, spend_usd, profit_usd, roas, cpa, ics, clicks, conversion_rate, ic_to_purchase_rate, hook_rate, lead_to_purchase_cvr, campaigns, products, countries, landing_clicks, landing_views FROM creatives ${where} ORDER BY ${sortCol} ${sortDir} LIMIT $${idx} OFFSET $${idx + 1}`,
+    `SELECT creative, purchases, revenue_usd, revenue_brl, spend_usd, profit_usd, roas, cpa, ics, clicks, conversion_rate, ic_to_purchase_rate, hook_rate, lead_to_purchase_cvr, campaigns, products, countries, landing_clicks, landing_views, status, impressions, reach, frequency, clicks_all, cpc_all, cpm, cpc, avg_ticket, bounce_rate, video_plays, video_views, video_25, video_50, video_75, video_100, avg_watch_time, pixel_purchase, play_rate, body_rate, completion_rate, landing_rate, checkout_rate, cost_per_checkout, first_seen, updated_at FROM creatives ${where} ORDER BY ${sortCol} ${sortDir} LIMIT $${idx} OFFSET $${idx + 1}`,
     [...values, pageSize, offset]
   );
 
@@ -237,10 +288,10 @@ export async function getCreativesTotals(params: { search?: string; status?: str
     conditions.push(`creative ILIKE $${idx++}`);
     values.push(`%${search}%`);
   }
-  if (status === 'active') conditions.push('purchases > 0');
-  else if (status === 'paused') conditions.push('purchases = 0 AND ics > 0');
-  else if (status === 'no_data') conditions.push('purchases = 0 AND ics = 0 AND clicks = 0');
-  else if (status === 'rejected') conditions.push('purchases = 0 AND ics = 0 AND clicks = 0');
+  if (status === 'active') conditions.push(`(status = 'active' OR (status = 'no_data' AND purchases > 0))`);
+  else if (status === 'paused') conditions.push(`(status = 'paused' OR (status = 'no_data' AND purchases = 0 AND ics > 0))`);
+  else if (status === 'no_data') conditions.push(`(status = 'no_data' OR status = 'under_review' OR (status IS NULL AND purchases = 0 AND ics = 0 AND clicks = 0))`);
+  else if (status === 'rejected') conditions.push(`(status = 'rejected' OR (status = 'no_data' AND purchases = 0 AND ics = 0 AND clicks = 0))`);
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
   const row = await postgresService.queryOne<any>(
@@ -273,7 +324,7 @@ function mapCreativeRow(r: any): CreativeRow {
     ics: parseInt(r.ics, 10),
     clicks: parseInt(r.clicks, 10),
     conversion_rate: parseFloat(r.conversion_rate),
-    ic_to_purchase_rate: parseFloat(r.ic_to_purchase_rate),
+    ic_to_purchase_rate: parseInt(r.ic_to_purchase_rate, 10),
     hook_rate: parseFloat(r.hook_rate || 0),
     lead_to_purchase_cvr: parseFloat(r.lead_to_purchase_cvr || 0),
     campaigns: r.campaigns || [],
@@ -281,6 +332,33 @@ function mapCreativeRow(r: any): CreativeRow {
     countries: r.countries || [],
     landing_clicks: parseInt(r.landing_clicks || 0, 10),
     landing_views: parseInt(r.landing_views || 0, 10),
+    // New fields
+    status: r.status || 'no_data',
+    impressions: parseInt(r.impressions || 0, 10),
+    reach: parseInt(r.reach || 0, 10),
+    frequency: parseFloat(r.frequency || 0),
+    clicks_all: parseInt(r.clicks_all || 0, 10),
+    cpc_all: parseFloat(r.cpc_all || 0),
+    cpm: parseFloat(r.cpm || 0),
+    cpc: parseFloat(r.cpc || 0),
+    avg_ticket: parseFloat(r.avg_ticket || 0),
+    bounce_rate: parseFloat(r.bounce_rate || 0),
+    video_plays: parseInt(r.video_plays || 0, 10),
+    video_views: parseInt(r.video_views || 0, 10),
+    video_25: parseInt(r.video_25 || 0, 10),
+    video_50: parseInt(r.video_50 || 0, 10),
+    video_75: parseInt(r.video_75 || 0, 10),
+    video_100: parseInt(r.video_100 || 0, 10),
+    avg_watch_time: parseFloat(r.avg_watch_time || 0),
+    pixel_purchase: parseInt(r.pixel_purchase || 0, 10),
+    play_rate: parseFloat(r.play_rate || 0),
+    body_rate: parseFloat(r.body_rate || 0),
+    completion_rate: parseFloat(r.completion_rate || 0),
+    landing_rate: parseFloat(r.landing_rate || 0),
+    checkout_rate: parseFloat(r.checkout_rate || 0),
+    cost_per_checkout: parseFloat(r.cost_per_checkout || 0),
+    first_seen: r.first_seen || null,
+    updated_at: r.updated_at || null,
   };
 }
 
