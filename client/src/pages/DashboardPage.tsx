@@ -39,7 +39,7 @@ export function DashboardPage() {
   const currency = d.meta?.currency || 'USD';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
         <PeriodSelector value={period} onChange={setPeriod} beginDate={beginDate} endDate={endDate} onBeginDateChange={setBeginDate} onEndDateChange={setEndDate} />
         <span className="text-xs text-dark-400">
@@ -48,7 +48,7 @@ export function DashboardPage() {
       </div>
 
       {/* KPIs from simplified-dashboard summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
         <KpiCard title="Spent" value={getSummaryValue(d, 'total_spent')} icon="💰" />
         <KpiCard title="Revenue" value={getSummaryValue(d, 'total_revenue')} icon="💵" />
         <KpiCard title="Profit" value={getSummaryValue(d, 'gross_profit')} isNegative={getSummaryValue(d, 'gross_profit') < 0} icon="📈" />
@@ -68,7 +68,7 @@ export function DashboardPage() {
       </div>
 
       {/* Funnel + Daily Series */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <ConversionFunnel data={funnelSteps} />
 
         {/* Daily Series chart */}
@@ -83,7 +83,7 @@ export function DashboardPage() {
       </div>
 
       {/* Spend by Provider + Top Currencies */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <div className="card">
           <h3 className="text-sm font-semibold text-gray-200 mb-3">Spend by Provider</h3>
           <div className="space-y-2">
@@ -146,7 +146,7 @@ export function DashboardPage() {
 
       {/* Audience */}
       {d.audience && (d.audience.deviceTypes?.length > 0 || d.audience.browsers?.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {d.audience.deviceTypes && d.audience.deviceTypes.length > 0 && (
             <div className="card">
               <h3 className="text-sm font-semibold text-gray-200 mb-3">Devices</h3>

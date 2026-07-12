@@ -21,9 +21,9 @@ export function KpiCard({ title, value, type = 'currency', isNegative, icon }: K
     <div className="card hover:border-dark-500 transition-colors">
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs text-dark-400 font-medium uppercase tracking-wider">{title}</span>
-        {icon && <span className="text-lg">{icon}</span>}
+        {icon && <span className="text-base md:text-lg">{icon}</span>}
       </div>
-      <div className={`text-2xl font-bold ${negative ? 'text-brand-red' : 'text-white'}`}>
+      <div className={`text-xl md:text-2xl font-bold ${negative ? 'text-brand-red' : 'text-white'}`}>
         {formatted}
       </div>
     </div>
