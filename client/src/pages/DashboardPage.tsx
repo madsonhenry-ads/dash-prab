@@ -66,6 +66,8 @@ export function DashboardPage() {
         <KpiCard title="ARPU" value={k?.arpu || 0} icon="👤" />
         <KpiCard title="Approved Sales" value={k?.approvedSales || 0} type="number" icon="✅" />
         <KpiCard title="Gross Revenue" value={k?.grossRevenue || 0} icon="💵" />
+        <KpiCard title="Checkouts" value={k?.checkouts || 0} type="number" icon="🛒" />
+        <KpiCard title="Cost per Checkout" value={k?.costPerCheckout || 0} icon="🧾" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

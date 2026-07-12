@@ -1,0 +1,3964 @@
+{
+  "generated_at": "2026-06-10T11:43:35.630610",
+  "overview": {
+    "period": "2026-05-31 to 2026-06-10",
+    "total_clicks": 5030,
+    "initiate_checkouts": 68,
+    "total_purchases": 9,
+    "total_revenue_usd": 1916.2,
+    "total_spent_ads": 3107.9,
+    "profit_usd": -1191.7,
+    "roas": 0.62,
+    "cpa": 345.32,
+    "cpl": 0.6179,
+    "conversion_rate": 0.18,
+    "ic_to_purchase_rate": 13.24,
+    "unique_creatives": 45,
+    "winning_creatives": 8,
+    "avg_ticket": 212.91,
+    "products": [
+      "JellyLean 6 bottles",
+      "Lipotide"
+    ]
+  },
+  "campaigns": [
+    {
+      "id": 3,
+      "name": "LIPOTIDE - PERFECTPAY",
+      "clicks": 2491,
+      "landing_clicks": 55,
+      "total_spent": 1903.22,
+      "total_revenue": 1696.2,
+      "total_purchase": 8,
+      "purchase_leads": 8,
+      "roas": 0.891226,
+      "roi": -10.877355,
+      "cpa": 237.9025,
+      "cpl": 0.764039,
+      "cpc": 0.764039,
+      "gross_profit": -207.02,
+      "avg_ticket": 212.025,
+      "funnel_conversion": 0.0,
+      "bounce_rate": 97.7921,
+      "domain": "https://ey.gelatideburn.com",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    },
+    {
+      "id": 1,
+      "name": "JELLY LEAN",
+      "clicks": 2542,
+      "landing_clicks": 13,
+      "total_spent": 1207.18,
+      "total_revenue": 220.0,
+      "total_purchase": 1,
+      "purchase_leads": 1,
+      "roas": 0.182243,
+      "roi": -81.775709,
+      "cpa": 1207.18,
+      "cpl": 0.474894,
+      "cpc": 0.474894,
+      "gross_profit": -987.18,
+      "avg_ticket": 220.0,
+      "funnel_conversion": 0.0,
+      "bounce_rate": 99.4886,
+      "domain": "https://go.grabjellylean.com",
+      "traffic_channel": "PF-JEFF (Jelly Lean)"
+    }
+  ],
+  "creatives": [
+    {
+      "creative": "AD37-UK",
+      "purchases": 2,
+      "revenue_usd": 400.0,
+      "spend_usd": 161.98,
+      "gross_profit": 238.02,
+      "roas": 2.47,
+      "cpa": 80.99,
+      "cpc": 0.7641,
+      "clicks": 212,
+      "landing_views": 204,
+      "landing_clicks": 6,
+      "bounce_rate": 97.2,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.94,
+      "ics": 6,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.94,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 238.02
+    },
+    {
+      "creative": "IMG2-UK",
+      "purchases": 1,
+      "revenue_usd": 296.2,
+      "spend_usd": 80.22,
+      "gross_profit": 215.98,
+      "roas": 3.69,
+      "cpa": 80.22,
+      "cpc": 0.764,
+      "clicks": 105,
+      "landing_views": 102,
+      "landing_clicks": 2,
+      "bounce_rate": 98.1,
+      "avg_ticket": 296.2,
+      "lead_to_purchase_cvr": 0.95,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.95,
+      "ic_to_purchase_rate": 50.0,
+      "profit_usd": 215.98
+    },
+    {
+      "creative": "IMG02",
+      "purchases": 1,
+      "revenue_usd": 220.0,
+      "spend_usd": 150.07,
+      "gross_profit": 69.93,
+      "roas": 1.47,
+      "cpa": 150.07,
+      "cpc": 0.4749,
+      "clicks": 316,
+      "landing_views": 271,
+      "landing_clicks": 3,
+      "bounce_rate": 99.1,
+      "avg_ticket": 220.0,
+      "lead_to_purchase_cvr": 0.32,
+      "ics": 3,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.32,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 69.93
+    },
+    {
+      "creative": "AD8-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 22.16,
+      "gross_profit": 177.84,
+      "roas": 9.03,
+      "cpa": 22.16,
+      "cpc": 0.7641,
+      "clicks": 29,
+      "landing_views": 27,
+      "landing_clicks": 1,
+      "bounce_rate": 96.6,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 3.45,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 3.45,
+      "ic_to_purchase_rate": 100.0,
+      "profit_usd": 177.84
+    },
+    {
+      "creative": "AD60-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 96.27,
+      "gross_profit": 103.73,
+      "roas": 2.08,
+      "cpa": 96.27,
+      "cpc": 0.764,
+      "clicks": 126,
+      "landing_views": 123,
+      "landing_clicks": 5,
+      "bounce_rate": 96.0,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.79,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.79,
+      "ic_to_purchase_rate": 20.0,
+      "profit_usd": 103.73
+    },
+    {
+      "creative": "IMG10-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 125.3,
+      "gross_profit": 74.7,
+      "roas": 1.6,
+      "cpa": 125.3,
+      "cpc": 0.764,
+      "clicks": 164,
+      "landing_views": 163,
+      "landing_clicks": 5,
+      "bounce_rate": 97.0,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.61,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.61,
+      "ic_to_purchase_rate": 20.0,
+      "profit_usd": 74.7
+    },
+    {
+      "creative": "AD9-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 138.29,
+      "gross_profit": 61.71,
+      "roas": 1.45,
+      "cpa": 138.29,
+      "cpc": 0.764,
+      "clicks": 181,
+      "landing_views": 179,
+      "landing_clicks": 6,
+      "bounce_rate": 96.7,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.55,
+      "ics": 6,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.55,
+      "ic_to_purchase_rate": 16.67,
+      "profit_usd": 61.71
+    },
+    {
+      "creative": "IMG5-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 158.16,
+      "gross_profit": 41.84,
+      "roas": 1.26,
+      "cpa": 158.16,
+      "cpc": 0.7641,
+      "clicks": 207,
+      "landing_views": 202,
+      "landing_clicks": 3,
+      "bounce_rate": 98.6,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.48,
+      "ics": 3,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.48,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 41.84
+    },
+    {
+      "creative": "IMG13-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 112.31,
+      "gross_profit": -112.31,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 147,
+      "landing_views": 146,
+      "landing_clicks": 2,
+      "bounce_rate": 98.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -112.31
+    },
+    {
+      "creative": "AD10-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 97.03,
+      "gross_profit": -97.03,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 127,
+      "landing_views": 121,
+      "landing_clicks": 1,
+      "bounce_rate": 99.2,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -97.03
+    },
+    {
+      "creative": "IMG9-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 37.44,
+      "gross_profit": -37.44,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 49,
+      "landing_views": 49,
+      "landing_clicks": 2,
+      "bounce_rate": 95.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -37.44
+    },
+    {
+      "creative": "IMG8-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 47.37,
+      "gross_profit": -47.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 62,
+      "landing_views": 59,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -47.37
+    },
+    {
+      "creative": "IMG7-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 106.2,
+      "gross_profit": -106.2,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 139,
+      "landing_views": 137,
+      "landing_clicks": 1,
+      "bounce_rate": 99.3,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -106.2
+    },
+    {
+      "creative": "IMG6-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 57.3,
+      "gross_profit": -57.3,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 75,
+      "landing_views": 71,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -57.3
+    },
+    {
+      "creative": "IMG4-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 88.63,
+      "gross_profit": -88.63,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 116,
+      "landing_views": 113,
+      "landing_clicks": 1,
+      "bounce_rate": 99.1,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -88.63
+    },
+    {
+      "creative": "IMG3-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 54.25,
+      "gross_profit": -54.25,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 71,
+      "landing_views": 70,
+      "landing_clicks": 1,
+      "bounce_rate": 98.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -54.25
+    },
+    {
+      "creative": "AD11-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 48.9,
+      "gross_profit": -48.9,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 64,
+      "landing_views": 63,
+      "landing_clicks": 1,
+      "bounce_rate": 98.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -48.9
+    },
+    {
+      "creative": "AD42-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 29.03,
+      "gross_profit": -29.03,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 38,
+      "landing_views": 38,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -29.03
+    },
+    {
+      "creative": "IMG11-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 56.54,
+      "gross_profit": -56.54,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 74,
+      "landing_views": 71,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -56.54
+    },
+    {
+      "creative": "AD12-LIPOUK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 23.69,
+      "gross_profit": -23.69,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7642,
+      "clicks": 31,
+      "landing_views": 26,
+      "landing_clicks": 1,
+      "bounce_rate": 96.8,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -23.69
+    },
+    {
+      "creative": "IMG1-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 73.35,
+      "gross_profit": -73.35,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 96,
+      "landing_views": 93,
+      "landing_clicks": 1,
+      "bounce_rate": 99.0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -73.35
+    },
+    {
+      "creative": "AD12-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 91.68,
+      "gross_profit": -91.68,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 120,
+      "landing_views": 116,
+      "landing_clicks": 4,
+      "bounce_rate": 96.7,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -91.68
+    },
+    {
+      "creative": "AD8",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 47.37,
+      "gross_profit": -47.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 62,
+      "landing_views": 60,
+      "landing_clicks": 5,
+      "bounce_rate": 91.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -47.37
+    },
+    {
+      "creative": "AD37-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 13.75,
+      "gross_profit": -13.75,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 18,
+      "landing_views": 16,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -13.75
+    },
+    {
+      "creative": "AD60-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 13.75,
+      "gross_profit": -13.75,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 18,
+      "landing_views": 18,
+      "landing_clicks": 1,
+      "bounce_rate": 94.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -13.75
+    },
+    {
+      "creative": "AD42-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 120.72,
+      "gross_profit": -120.72,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 158,
+      "landing_views": 155,
+      "landing_clicks": 4,
+      "bounce_rate": 97.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -120.72
+    },
+    {
+      "creative": "AD1",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 79.31,
+      "gross_profit": -79.31,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 167,
+      "landing_views": 105,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -79.31
+    },
+    {
+      "creative": "IMG08",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 57.46,
+      "gross_profit": -57.46,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 121,
+      "landing_views": 100,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -57.46
+    },
+    {
+      "creative": "IMG07",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 71.23,
+      "gross_profit": -71.23,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 150,
+      "landing_views": 118,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -71.23
+    },
+    {
+      "creative": "IMG06",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 22.32,
+      "gross_profit": -22.32,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 47,
+      "landing_views": 42,
+      "landing_clicks": 1,
+      "bounce_rate": 97.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -22.32
+    },
+    {
+      "creative": "IMG05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 53.66,
+      "gross_profit": -53.66,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 113,
+      "landing_views": 92,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -53.66
+    },
+    {
+      "creative": "IMG04",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 159.56,
+      "gross_profit": -159.56,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 336,
+      "landing_views": 271,
+      "landing_clicks": 2,
+      "bounce_rate": 99.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 2 bottles",
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -159.56
+    },
+    {
+      "creative": "IMG03",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 76.93,
+      "gross_profit": -76.93,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 162,
+      "landing_views": 145,
+      "landing_clicks": 4,
+      "bounce_rate": 97.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles",
+        "JellyLean 3 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -76.93
+    },
+    {
+      "creative": "IMG01",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 123.47,
+      "gross_profit": -123.47,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 260,
+      "landing_views": 224,
+      "landing_clicks": 1,
+      "bounce_rate": 99.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -123.47
+    },
+    {
+      "creative": "AD2",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 82.63,
+      "gross_profit": -82.63,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 174,
+      "landing_views": 113,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -82.63
+    },
+    {
+      "creative": "AD08",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 34.67,
+      "gross_profit": -34.67,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 73,
+      "landing_views": 45,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -34.67
+    },
+    {
+      "creative": "AD07",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 35.14,
+      "gross_profit": -35.14,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 74,
+      "landing_views": 39,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -35.14
+    },
+    {
+      "creative": "AD06",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 29.44,
+      "gross_profit": -29.44,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4748,
+      "clicks": 62,
+      "landing_views": 42,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -29.44
+    },
+    {
+      "creative": "AD05_P1_B05_HK05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 12.82,
+      "gross_profit": -12.82,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4748,
+      "clicks": 27,
+      "landing_views": 24,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -12.82
+    },
+    {
+      "creative": "AD05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 31.82,
+      "gross_profit": -31.82,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 67,
+      "landing_views": 34,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -31.82
+    },
+    {
+      "creative": "AD04",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 92.6,
+      "gross_profit": -92.6,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 195,
+      "landing_views": 123,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -92.6
+    },
+    {
+      "creative": "AD03",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 88.81,
+      "gross_profit": -88.81,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 187,
+      "landing_views": 124,
+      "landing_clicks": 1,
+      "bounce_rate": 99.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 2 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -88.81
+    },
+    {
+      "creative": "AD02_P1_B02_HK02",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 2.37,
+      "gross_profit": -2.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.474,
+      "clicks": 5,
+      "landing_views": 4,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -2.37
+    },
+    {
+      "creative": "AD01_P1_B01_HK01",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 1.9,
+      "gross_profit": -1.9,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.475,
+      "clicks": 4,
+      "landing_views": 3,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -1.9
+    },
+    {
+      "creative": "",
+      "purchases": 0,
+      "revenue_usd": 0,
+      "spend_usd": 0,
+      "gross_profit": 0,
+      "roas": 0,
+      "cpa": 0,
+      "cpc": 0,
+      "clicks": 1,
+      "landing_views": 0,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 3,
+      "campaigns": [
+        "LIPOTIDE - PERFECTPAY",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "Portugal"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": 0
+    }
+  ],
+  "creatives_idle": [
+    {
+      "creative": "IMG13-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 112.31,
+      "gross_profit": -112.31,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 147,
+      "landing_views": 146,
+      "landing_clicks": 2,
+      "bounce_rate": 98.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -112.31
+    },
+    {
+      "creative": "AD10-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 97.03,
+      "gross_profit": -97.03,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 127,
+      "landing_views": 121,
+      "landing_clicks": 1,
+      "bounce_rate": 99.2,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -97.03
+    },
+    {
+      "creative": "IMG9-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 37.44,
+      "gross_profit": -37.44,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 49,
+      "landing_views": 49,
+      "landing_clicks": 2,
+      "bounce_rate": 95.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -37.44
+    },
+    {
+      "creative": "IMG8-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 47.37,
+      "gross_profit": -47.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 62,
+      "landing_views": 59,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -47.37
+    },
+    {
+      "creative": "IMG7-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 106.2,
+      "gross_profit": -106.2,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 139,
+      "landing_views": 137,
+      "landing_clicks": 1,
+      "bounce_rate": 99.3,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -106.2
+    },
+    {
+      "creative": "IMG6-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 57.3,
+      "gross_profit": -57.3,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 75,
+      "landing_views": 71,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -57.3
+    },
+    {
+      "creative": "IMG4-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 88.63,
+      "gross_profit": -88.63,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 116,
+      "landing_views": 113,
+      "landing_clicks": 1,
+      "bounce_rate": 99.1,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -88.63
+    },
+    {
+      "creative": "IMG3-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 54.25,
+      "gross_profit": -54.25,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 71,
+      "landing_views": 70,
+      "landing_clicks": 1,
+      "bounce_rate": 98.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -54.25
+    },
+    {
+      "creative": "AD11-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 48.9,
+      "gross_profit": -48.9,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 64,
+      "landing_views": 63,
+      "landing_clicks": 1,
+      "bounce_rate": 98.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -48.9
+    },
+    {
+      "creative": "AD42-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 29.03,
+      "gross_profit": -29.03,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 38,
+      "landing_views": 38,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -29.03
+    },
+    {
+      "creative": "IMG11-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 56.54,
+      "gross_profit": -56.54,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 74,
+      "landing_views": 71,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -56.54
+    },
+    {
+      "creative": "AD12-LIPOUK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 23.69,
+      "gross_profit": -23.69,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7642,
+      "clicks": 31,
+      "landing_views": 26,
+      "landing_clicks": 1,
+      "bounce_rate": 96.8,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -23.69
+    },
+    {
+      "creative": "IMG1-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 73.35,
+      "gross_profit": -73.35,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 96,
+      "landing_views": 93,
+      "landing_clicks": 1,
+      "bounce_rate": 99.0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -73.35
+    },
+    {
+      "creative": "AD12-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 91.68,
+      "gross_profit": -91.68,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 120,
+      "landing_views": 116,
+      "landing_clicks": 4,
+      "bounce_rate": 96.7,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -91.68
+    },
+    {
+      "creative": "AD8",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 47.37,
+      "gross_profit": -47.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.764,
+      "clicks": 62,
+      "landing_views": 60,
+      "landing_clicks": 5,
+      "bounce_rate": 91.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -47.37
+    },
+    {
+      "creative": "AD37-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 13.75,
+      "gross_profit": -13.75,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 18,
+      "landing_views": 16,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -13.75
+    },
+    {
+      "creative": "AD60-TEC",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 13.75,
+      "gross_profit": -13.75,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7639,
+      "clicks": 18,
+      "landing_views": 18,
+      "landing_clicks": 1,
+      "bounce_rate": 94.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -13.75
+    },
+    {
+      "creative": "AD42-UK",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 120.72,
+      "gross_profit": -120.72,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.7641,
+      "clicks": 158,
+      "landing_views": 155,
+      "landing_clicks": 4,
+      "bounce_rate": 97.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -120.72
+    },
+    {
+      "creative": "AD1",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 79.31,
+      "gross_profit": -79.31,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 167,
+      "landing_views": 105,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -79.31
+    },
+    {
+      "creative": "IMG08",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 57.46,
+      "gross_profit": -57.46,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 121,
+      "landing_views": 100,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -57.46
+    },
+    {
+      "creative": "IMG07",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 71.23,
+      "gross_profit": -71.23,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 150,
+      "landing_views": 118,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -71.23
+    },
+    {
+      "creative": "IMG06",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 22.32,
+      "gross_profit": -22.32,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 47,
+      "landing_views": 42,
+      "landing_clicks": 1,
+      "bounce_rate": 97.9,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -22.32
+    },
+    {
+      "creative": "IMG05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 53.66,
+      "gross_profit": -53.66,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 113,
+      "landing_views": 92,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -53.66
+    },
+    {
+      "creative": "IMG04",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 159.56,
+      "gross_profit": -159.56,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 336,
+      "landing_views": 271,
+      "landing_clicks": 2,
+      "bounce_rate": 99.4,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 2,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 2 bottles",
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -159.56
+    },
+    {
+      "creative": "IMG03",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 76.93,
+      "gross_profit": -76.93,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 162,
+      "landing_views": 145,
+      "landing_clicks": 4,
+      "bounce_rate": 97.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 4,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles",
+        "JellyLean 3 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -76.93
+    },
+    {
+      "creative": "IMG01",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 123.47,
+      "gross_profit": -123.47,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 260,
+      "landing_views": 224,
+      "landing_clicks": 1,
+      "bounce_rate": 99.6,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -123.47
+    },
+    {
+      "creative": "AD2",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 82.63,
+      "gross_profit": -82.63,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 174,
+      "landing_views": 113,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -82.63
+    },
+    {
+      "creative": "AD08",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 34.67,
+      "gross_profit": -34.67,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 73,
+      "landing_views": 45,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -34.67
+    },
+    {
+      "creative": "AD07",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 35.14,
+      "gross_profit": -35.14,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 74,
+      "landing_views": 39,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -35.14
+    },
+    {
+      "creative": "AD06",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 29.44,
+      "gross_profit": -29.44,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4748,
+      "clicks": 62,
+      "landing_views": 42,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -29.44
+    },
+    {
+      "creative": "AD05_P1_B05_HK05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 12.82,
+      "gross_profit": -12.82,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4748,
+      "clicks": 27,
+      "landing_views": 24,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -12.82
+    },
+    {
+      "creative": "AD05",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 31.82,
+      "gross_profit": -31.82,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 67,
+      "landing_views": 34,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -31.82
+    },
+    {
+      "creative": "AD04",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 92.6,
+      "gross_profit": -92.6,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 195,
+      "landing_views": 123,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -92.6
+    },
+    {
+      "creative": "AD03",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 88.81,
+      "gross_profit": -88.81,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.4749,
+      "clicks": 187,
+      "landing_views": 124,
+      "landing_clicks": 1,
+      "bounce_rate": 99.5,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 1,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 2 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": -88.81
+    },
+    {
+      "creative": "AD02_P1_B02_HK02",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 2.37,
+      "gross_profit": -2.37,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.474,
+      "clicks": 5,
+      "landing_views": 4,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -2.37
+    },
+    {
+      "creative": "AD01_P1_B01_HK01",
+      "purchases": 0,
+      "revenue_usd": 0.0,
+      "spend_usd": 1.9,
+      "gross_profit": -1.9,
+      "roas": 0.0,
+      "cpa": 0,
+      "cpc": 0.475,
+      "clicks": 4,
+      "landing_views": 3,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 0,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0,
+      "profit_usd": -1.9
+    },
+    {
+      "creative": "",
+      "purchases": 0,
+      "revenue_usd": 0,
+      "spend_usd": 0,
+      "gross_profit": 0,
+      "roas": 0,
+      "cpa": 0,
+      "cpc": 0,
+      "clicks": 1,
+      "landing_views": 0,
+      "landing_clicks": 0,
+      "bounce_rate": 0,
+      "avg_ticket": 0,
+      "lead_to_purchase_cvr": 0,
+      "ics": 3,
+      "campaigns": [
+        "LIPOTIDE - PERFECTPAY",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "Portugal"
+      ],
+      "conversion_rate": 0.0,
+      "ic_to_purchase_rate": 0.0,
+      "profit_usd": 0
+    }
+  ],
+  "creatives_winning": [
+    {
+      "creative": "AD37-UK",
+      "purchases": 2,
+      "revenue_usd": 400.0,
+      "spend_usd": 161.98,
+      "gross_profit": 238.02,
+      "roas": 2.47,
+      "cpa": 80.99,
+      "cpc": 0.7641,
+      "clicks": 212,
+      "landing_views": 204,
+      "landing_clicks": 6,
+      "bounce_rate": 97.2,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.94,
+      "ics": 6,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.94,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 238.02
+    },
+    {
+      "creative": "IMG2-UK",
+      "purchases": 1,
+      "revenue_usd": 296.2,
+      "spend_usd": 80.22,
+      "gross_profit": 215.98,
+      "roas": 3.69,
+      "cpa": 80.22,
+      "cpc": 0.764,
+      "clicks": 105,
+      "landing_views": 102,
+      "landing_clicks": 2,
+      "bounce_rate": 98.1,
+      "avg_ticket": 296.2,
+      "lead_to_purchase_cvr": 0.95,
+      "ics": 2,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.95,
+      "ic_to_purchase_rate": 50.0,
+      "profit_usd": 215.98
+    },
+    {
+      "creative": "IMG02",
+      "purchases": 1,
+      "revenue_usd": 220.0,
+      "spend_usd": 150.07,
+      "gross_profit": 69.93,
+      "roas": 1.47,
+      "cpa": 150.07,
+      "cpc": 0.4749,
+      "clicks": 316,
+      "landing_views": 271,
+      "landing_clicks": 3,
+      "bounce_rate": 99.1,
+      "avg_ticket": 220.0,
+      "lead_to_purchase_cvr": 0.32,
+      "ics": 3,
+      "campaigns": [
+        "PF-JEFF (Jelly Lean)",
+        "JELLY LEAN"
+      ],
+      "products": [
+        "JellyLean 6 bottles"
+      ],
+      "countries": [
+        "United States"
+      ],
+      "conversion_rate": 0.32,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 69.93
+    },
+    {
+      "creative": "AD8-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 22.16,
+      "gross_profit": 177.84,
+      "roas": 9.03,
+      "cpa": 22.16,
+      "cpc": 0.7641,
+      "clicks": 29,
+      "landing_views": 27,
+      "landing_clicks": 1,
+      "bounce_rate": 96.6,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 3.45,
+      "ics": 1,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 3.45,
+      "ic_to_purchase_rate": 100.0,
+      "profit_usd": 177.84
+    },
+    {
+      "creative": "AD60-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 96.27,
+      "gross_profit": 103.73,
+      "roas": 2.08,
+      "cpa": 96.27,
+      "cpc": 0.764,
+      "clicks": 126,
+      "landing_views": 123,
+      "landing_clicks": 5,
+      "bounce_rate": 96.0,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.79,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom",
+        "United States"
+      ],
+      "conversion_rate": 0.79,
+      "ic_to_purchase_rate": 20.0,
+      "profit_usd": 103.73
+    },
+    {
+      "creative": "IMG10-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 125.3,
+      "gross_profit": 74.7,
+      "roas": 1.6,
+      "cpa": 125.3,
+      "cpc": 0.764,
+      "clicks": 164,
+      "landing_views": 163,
+      "landing_clicks": 5,
+      "bounce_rate": 97.0,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.61,
+      "ics": 5,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "3 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.61,
+      "ic_to_purchase_rate": 20.0,
+      "profit_usd": 74.7
+    },
+    {
+      "creative": "AD9-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 138.29,
+      "gross_profit": 61.71,
+      "roas": 1.45,
+      "cpa": 138.29,
+      "cpc": 0.764,
+      "clicks": 181,
+      "landing_views": 179,
+      "landing_clicks": 6,
+      "bounce_rate": 96.7,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.55,
+      "ics": 6,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "1 POTE - LIPOTIDE",
+        "3 POTES - LIPOTIDE",
+        "6 POTES - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.55,
+      "ic_to_purchase_rate": 16.67,
+      "profit_usd": 61.71
+    },
+    {
+      "creative": "IMG5-UK",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "spend_usd": 158.16,
+      "gross_profit": 41.84,
+      "roas": 1.26,
+      "cpa": 158.16,
+      "cpc": 0.7641,
+      "clicks": 207,
+      "landing_views": 202,
+      "landing_clicks": 3,
+      "bounce_rate": 98.6,
+      "avg_ticket": 200.0,
+      "lead_to_purchase_cvr": 0.48,
+      "ics": 3,
+      "campaigns": [
+        "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE",
+        "LIPOTIDE - PERFECTPAY"
+      ],
+      "products": [
+        "6 POTES - LIPOTIDE",
+        "1 POTE - LIPOTIDE"
+      ],
+      "countries": [
+        "United Kingdom"
+      ],
+      "conversion_rate": 0.48,
+      "ic_to_purchase_rate": 33.33,
+      "profit_usd": 41.84
+    }
+  ],
+  "purchases": [
+    {
+      "purchase_id": 16,
+      "lead_id": 5944,
+      "date": "2026-06-10T09:53:26",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "product": "Lipotide",
+      "currency": "USD",
+      "value_usd": 200.0,
+      "value_brl": 1034.97,
+      "value_gbp": 149.41,
+      "value_eur": 173.06,
+      "value_cad": 278.85,
+      "creative": "AD8-UK",
+      "sub4": "USDL1-CP13 - 1-1-1 - 10/06/26 - AD8-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "device_type": "Mobile",
+      "device_model": "Galaxy S20 FE",
+      "browser": "Instagram 432.1",
+      "landing": "(LIPOTIDE) VSL",
+      "offer_name": "6 POTES - LIPOTIDE",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    },
+    {
+      "purchase_id": 15,
+      "lead_id": 5878,
+      "date": "2026-06-10T05:51:49",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "product": "Lipotide",
+      "currency": "USD",
+      "value_usd": 200.0,
+      "value_brl": 1035.42,
+      "value_gbp": 149.51,
+      "value_eur": 173.14,
+      "value_cad": 279.07,
+      "creative": "AD37-UK",
+      "sub4": "USDL1-CP9 - 1-1-1 - 06/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "device_type": "Tablet",
+      "device_model": "iPad 10 10.9\" WiFi",
+      "browser": "Facebook 564",
+      "landing": "(LIPOTIDE) VSL",
+      "offer_name": "6 POTES - LIPOTIDE",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    },
+    {
+      "purchase_id": 13,
+      "lead_id": 3163,
+      "date": "2026-06-07T22:59:12",
+      "campaign": "JELLY LEAN",
+      "product": "JellyLean 6 bottles",
+      "currency": "USD",
+      "value_usd": 220.0,
+      "value_brl": 1115.69,
+      "value_gbp": 163.52,
+      "value_eur": 188.75,
+      "value_cad": 306.01,
+      "creative": "IMG02",
+      "sub4": "0073-CP1-JELLY-IMG02",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "th",
+      "country": "United States",
+      "country_code": "US",
+      "device_type": "Mobile",
+      "device_model": "iPhone 16 Plus",
+      "browser": "Threads 432.1",
+      "landing": "(JELLY LEAN) VSL3-ML2",
+      "offer_name": "JellyLean 6 bottles",
+      "traffic_channel": "PF-JEFF (Jelly Lean)"
+    },
+    {
+      "purchase_id": 12,
+      "lead_id": 3161,
+      "date": "2026-06-07T22:23:05",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "product": "Lipotide",
+      "currency": "USD",
+      "value_usd": 200.0,
+      "value_brl": 1017.69,
+      "value_gbp": 148.86,
+      "value_eur": 171.78,
+      "value_cad": 279.08,
+      "creative": "AD37-UK",
+      "sub4": "USDL1-CP9 - 1-1-1 - 06/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "device_type": "Mobile",
+      "device_model": "Galaxy A6",
+      "browser": "Facebook 564",
+      "landing": "(LIPOTIDE) VSL",
+      "offer_name": "3 POTES - LIPOTIDE",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    },
+    {
+      "purchase_id": 11,
+      "lead_id": 3155,
+      "date": "2026-06-07T22:14:21",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "product": "Lipotide",
+      "currency": "USD",
+      "value_usd": 200.0,
+      "value_brl": 1017.69,
+      "value_gbp": 148.86,
+      "value_eur": 171.78,
+      "value_cad": 279.08,
+      "creative": "AD9-UK",
+      "sub4": "USDL1-CP8 - 1-1-1 - 05/06/26 - AD9-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "device_type": "Mobile",
+      "device_model": "iPhone 14",
+      "browser": "Facebook 564",
+      "landing": "(LIPOTIDE) VSL",
+      "offer_name": "6 POTES - LIPOTIDE",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    },
+    {
+      "purchase_id": 10,
+      "lead_id": 2018,
+      "date": "2026-06-06T15:13:05",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "product": "Lipotide",
+      "currency": "USD",
+      "value_usd": 200.0,
+      "value_brl": 1013.96,
+      "value_gbp": 148.61,
+      "value_eur": 171.72,
+      "value_cad": 278.47,
+      "creative": "AD60-UK",
+      "sub4": "USDL1-CP11 - 1-1-1 - 06/06/26 - AD602-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "device_type": "Mobile",
+      "device_model": "iPhone 11",
+      "browser": "Facebook 564",
+      "landing": "(LIPOTIDE) VSL",
+      "offer_name": "6 POTES - LIPOTIDE",
+      "traffic_channel": "GIANT METRIX - PRABHAT I FACEBOOK I PERFIL 02 ANUNCIANTE"
+    }
+  ],
+  "initiate_checkouts": [
+    {
+      "lead_id": 5903,
+      "date": "2026-06-10T08:11:59",
+      "creative": "IMG10-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP15 - 1-1-1 - 10/06/26 - IMG10-UK - EMILY",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5837,
+      "date": "2026-06-09T20:47:57",
+      "creative": "AD42-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP10-OK - 1-1-1 - 09/06/26 - AD42-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5801,
+      "date": "2026-06-09T19:22:18",
+      "creative": "IMG03",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0074-CP1-JELLY-IMG03",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5769,
+      "date": "2026-06-09T19:00:03",
+      "creative": "AD60-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP11-OK - 1-1-1 - 09/06/26 - AD60-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5724,
+      "date": "2026-06-09T18:28:57",
+      "creative": "AD9-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP12 - 1-1-1 - 09/06/26 - AD9-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5680,
+      "date": "2026-06-09T18:02:46",
+      "creative": "AD9-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL1-CP12 - 1-1-1 - 09/06/26 - AD9-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5673,
+      "date": "2026-06-09T17:59:55",
+      "creative": "AD42-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP10-OK - 1-1-1 - 09/06/26 - AD42-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5590,
+      "date": "2026-06-09T17:09:02",
+      "creative": "AD60-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP11-OK - 1-1-1 - 09/06/26 - AD60-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5544,
+      "date": "2026-06-09T16:54:19",
+      "creative": "AD37-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL1-CP9-OK - 1-1-1 - 09/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5503,
+      "date": "2026-06-09T16:35:19",
+      "creative": "AD42-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP10-OK - 1-1-1 - 09/06/26 - AD42-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5334,
+      "date": "2026-06-09T14:23:22",
+      "creative": "AD37-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL1-CP9 - 1-1-1 - 06/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 5089,
+      "date": "2026-06-09T09:40:00",
+      "creative": "AD37-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP9 - 1-1-1 - 06/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 4906,
+      "date": "2026-06-09T02:52:14",
+      "creative": "IMG03",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0074-CP1-JELLY-IMG03",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "an"
+    },
+    {
+      "lead_id": 4862,
+      "date": "2026-06-09T02:09:08",
+      "creative": "IMG02",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0073-CP1-JELLY-IMG02",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 4176,
+      "date": "2026-06-08T16:14:07",
+      "creative": "AD60-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP11 - 1-1-1 - 06/06/26 - AD602-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3888,
+      "date": "2026-06-08T13:23:43",
+      "creative": "AD8",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD5-CP2- 1-1-1 - 08/06/26 - AD8",
+      "sub5": "UK +20 - WOMAN - IVETE",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3684,
+      "date": "2026-06-08T10:44:30",
+      "creative": "AD03",
+      "offer": "JellyLean 2 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0074-CP3-JELLY-AD03— 08/06 - CAT",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 3610,
+      "date": "2026-06-08T08:23:01",
+      "creative": "IMG13-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "AD6-CP2- 1-1-1 - 08/06/26 - IMG13",
+      "sub5": "UK +20 - WOMAN - EMILY",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3596,
+      "date": "2026-06-08T07:53:54",
+      "creative": "AD8",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD5-CP2- 1-1-1 - 08/06/26 - AD8",
+      "sub5": "UK +20 - WOMAN - IVETE",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3588,
+      "date": "2026-06-08T07:46:05",
+      "creative": "AD8",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD5-CP2- 1-1-1 - 08/06/26 - AD8",
+      "sub5": "UK +20 - WOMAN - IVETE",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3558,
+      "date": "2026-06-08T06:50:06",
+      "creative": "AD9-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL1-CP8 - 1-1-1 - 05/06/26 - AD9-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 3437,
+      "date": "2026-06-08T03:29:25",
+      "creative": "IMG13-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD6-CP2- 1-1-1 - 08/06/26 - IMG13",
+      "sub5": "UK +20 - WOMAN - EMILY",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3408,
+      "date": "2026-06-08T02:32:33",
+      "creative": "IMG03",
+      "offer": "JellyLean 3 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0074-CP1-JELLY-IMG03",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "an"
+    },
+    {
+      "lead_id": 3394,
+      "date": "2026-06-08T02:07:26",
+      "creative": "AD8",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD5-CP2- 1-1-1 - 08/06/26 - AD8",
+      "sub5": "UK +20 - WOMAN - IVETE",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3368,
+      "date": "2026-06-08T01:36:00",
+      "creative": "AD8",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AD5-CP2- 1-1-1 - 08/06/26 - AD8",
+      "sub5": "UK +20 - WOMAN - IVETE",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 3358,
+      "date": "2026-06-08T01:20:57",
+      "creative": "IMG04",
+      "offer": "JellyLean 2 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0075-CP1-JELLY-IMG04",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "th"
+    },
+    {
+      "lead_id": 3314,
+      "date": "2026-06-08T00:12:41",
+      "creative": "IMG01",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0072-CP1-JELLY-IMG01",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3187,
+      "date": "2026-06-07T21:53:48",
+      "creative": "AD10-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP7 - 1-1-1 - 05/06/26 - AD10-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3085,
+      "date": "2026-06-07T20:08:17",
+      "creative": "IMG02",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0073-CP1-JELLY-IMG02",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 3071,
+      "date": "2026-06-07T20:00:58",
+      "creative": "IMG03",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0074-CP1-JELLY-IMG03",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 2621,
+      "date": "2026-06-07T11:31:50",
+      "creative": "IMG06",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0073-CP2-JELLY-IMG06 — 07/06",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 2493,
+      "date": "2026-06-07T06:23:18",
+      "creative": "AD60-TEC",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "AD6-CP1 - 1-1-1 - 07/06/26 - AD60-TEC - CAT",
+      "sub5": "UK +20 - WOMAN - EMILY",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 2463,
+      "date": "2026-06-07T04:37:01",
+      "creative": "AD60-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP11 - 1-1-1 - 06/06/26 - AD602-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 2349,
+      "date": "2026-06-06T22:28:33",
+      "creative": "IMG04",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "United States",
+      "device": "Mobile",
+      "sub4": "0075-CP1-JELLY-IMG04",
+      "sub5": "CJ1-USA-9-WOMAN-20+",
+      "sub7": "an"
+    },
+    {
+      "lead_id": 2334,
+      "date": "2026-06-06T21:55:17",
+      "creative": "AD9-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP8 - 1-1-1 - 05/06/26 - AD9-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 2131,
+      "date": "2026-06-06T17:37:11",
+      "creative": "AD37-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP9 - 1-1-1 - 06/06/26 - AD37-UK - CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 2056,
+      "date": "2026-06-06T14:57:16",
+      "creative": "AD12-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP5 - 1-1-1 - 03/06/26 - AD12-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 2026,
+      "date": "2026-06-06T14:19:15",
+      "creative": "AD9-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL1-CP8 - 1-1-1 - 05/06/26 - AD9-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1944,
+      "date": "2026-06-06T09:03:16",
+      "creative": "AD11-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP6 - 1-1-1 - 05/06/26 - AD11-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1833,
+      "date": "2026-06-06T01:35:42",
+      "creative": "AD12-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP5 - 1-1-1 - 03/06/26 - AD12-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1798,
+      "date": "2026-06-05T23:43:12",
+      "creative": "AD42-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP8 - 1-1-1 - 05/06/26 - AD42-UK – CAT",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1619,
+      "date": "2026-06-05T15:38:24",
+      "creative": "IMG5-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP1 - 1-1-1 - 03/06/26 - IMG5-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1595,
+      "date": "2026-06-05T13:52:16",
+      "creative": "",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "Portugal",
+      "device": "Desktop",
+      "sub4": "",
+      "sub5": "",
+      "sub7": ""
+    },
+    {
+      "lead_id": 1578,
+      "date": "2026-06-05T12:56:30",
+      "creative": "",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "Portugal",
+      "device": "Mobile",
+      "sub4": "",
+      "sub5": "",
+      "sub7": ""
+    },
+    {
+      "lead_id": 1556,
+      "date": "2026-06-05T11:43:44",
+      "creative": "IMG10-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP4 - 1-1-1 - 03/06/26 - IMG10-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1447,
+      "date": "2026-06-05T06:58:00",
+      "creative": "AD12-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP5 - 1-1-2 - 04/06/26 - IMG2/AD12-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1424,
+      "date": "2026-06-05T06:06:36",
+      "creative": "IMG9-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP3 - 1-1-1 - 03/06/26 - IMG9-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1381,
+      "date": "2026-06-04T22:21:33",
+      "creative": "IMG5-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP1 - 1-1-1 - 03/06/26 - IMG5-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1268,
+      "date": "2026-06-04T18:03:25",
+      "creative": "AD12-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP5 - 1-1-2 - 04/06/26 - IMG2/AD12-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1240,
+      "date": "2026-06-04T17:15:19",
+      "creative": "IMG10-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP4 - 1-1-1 - 03/06/26 - IMG10-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1188,
+      "date": "2026-06-04T16:08:59",
+      "creative": "IMG9-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL3-CP3 - 1-1-1 - 03/06/26 - IMG9-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1145,
+      "date": "2026-06-04T15:18:06",
+      "creative": "IMG5-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP1 - 1-1-1 - 03/06/26 - IMG5-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 1085,
+      "date": "2026-06-04T13:24:33",
+      "creative": "IMG10-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "USDL3-CP4 - 1-1-1 - 03/06/26 - IMG10-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 1061,
+      "date": "2026-06-04T12:42:03",
+      "creative": "IMG10-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP4 - 1-1-1 - 03/06/26 - IMG10-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 979,
+      "date": "2026-06-04T09:10:26",
+      "creative": "IMG4-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL1-CP3 - 1-1-1 - 03/06/26 - IMG4-UK - ISABELA COLLINS",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 820,
+      "date": "2026-06-03T18:48:48",
+      "creative": "IMG7-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "USDL3-CP2 - 1-1-1 - 03/06/26 - IMG7-UK",
+      "sub5": "UK +20 - WOMAN",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 699,
+      "date": "2026-06-03T09:44:10",
+      "creative": "IMG1-UK",
+      "offer": "1 POTE - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Tablet",
+      "sub4": "AC1-CP1 - 1-1 - 01/06/26 - IMG2-UK",
+      "sub5": "UK +20",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 626,
+      "date": "2026-06-03T05:02:39",
+      "creative": "IMG3-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AC1-CP2 - 1-1-1 - 01/06/26 - IMG3-UK",
+      "sub5": "UK +20",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 613,
+      "date": "2026-06-03T03:24:02",
+      "creative": "AD12-LIPOUK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AC1-CP3 - 1-1-1 - 01/06/26 - AD12-UK",
+      "sub5": "UK +20",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 518,
+      "date": "2026-06-02T08:23:18",
+      "creative": "IMG2-UK",
+      "offer": "6 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AC1-CP1 - 1-1 - 01/06/26 - IMG2-UK",
+      "sub5": "UK +20",
+      "sub7": "ig"
+    },
+    {
+      "lead_id": 500,
+      "date": "2026-06-02T06:38:03",
+      "creative": "IMG2-UK",
+      "offer": "3 POTES - LIPOTIDE",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "country": "United Kingdom",
+      "device": "Mobile",
+      "sub4": "AC1-CP1 - 1-1 - 01/06/26 - IMG2-UK",
+      "sub5": "UK +20",
+      "sub7": "fb"
+    },
+    {
+      "lead_id": 451,
+      "date": "2026-05-31T10:24:41",
+      "creative": "",
+      "offer": "JellyLean 6 bottles",
+      "campaign": "JELLY LEAN",
+      "country": "Portugal",
+      "device": "Desktop",
+      "sub4": "",
+      "sub5": "",
+      "sub7": ""
+    }
+  ],
+  "offers": [
+    {
+      "id": 6,
+      "name": "6 POTES - LIPOTIDE",
+      "checkout": "PERFECTPAY CUSTOM",
+      "clicks": 27,
+      "landing_clicks": 27,
+      "total_spent": 20.63,
+      "total_revenue": 1296.2,
+      "total_purchase": 6,
+      "roas": 62.830829,
+      "roi": 6183.082889,
+      "cpa": 3.438333,
+      "cpc": 0.764074,
+      "gross_profit": 1275.57,
+      "avg_ticket": 216.033333,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "6 POTES - LIPOTIDE",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    },
+    {
+      "id": 3,
+      "name": "JellyLean 6 bottles",
+      "checkout": "DIGISTORE - JELLY LEAN",
+      "clicks": 10,
+      "landing_clicks": 10,
+      "total_spent": 4.75,
+      "total_revenue": 220.0,
+      "total_purchase": 1,
+      "roas": 46.315789,
+      "roi": 4531.578947,
+      "cpa": 4.75,
+      "cpc": 0.475,
+      "gross_profit": 215.25,
+      "avg_ticket": 220.0,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "JellyLean 6 bottles",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    },
+    {
+      "id": 5,
+      "name": "3 POTES - LIPOTIDE",
+      "checkout": "PERFECTPAY CUSTOM",
+      "clicks": 17,
+      "landing_clicks": 17,
+      "total_spent": 12.99,
+      "total_revenue": 400.0,
+      "total_purchase": 2,
+      "roas": 30.792918,
+      "roi": 2979.291763,
+      "cpa": 6.495,
+      "cpc": 0.764118,
+      "gross_profit": 387.01,
+      "avg_ticket": 200.0,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "3 POTES - LIPOTIDE",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    },
+    {
+      "id": 4,
+      "name": "1 POTE - LIPOTIDE",
+      "checkout": "PERFECTPAY CUSTOM",
+      "clicks": 11,
+      "landing_clicks": 11,
+      "total_spent": 8.4,
+      "total_revenue": 0.0,
+      "total_purchase": 0,
+      "roas": 0.0,
+      "roi": -100.0,
+      "cpa": 0.0,
+      "cpc": 0.763636,
+      "gross_profit": -8.4,
+      "avg_ticket": 0.0,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "1 POTE - LIPOTIDE",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    },
+    {
+      "id": 1,
+      "name": "JellyLean 2 bottles",
+      "checkout": "DIGISTORE - JELLY LEAN",
+      "clicks": 2,
+      "landing_clicks": 2,
+      "total_spent": 0.95,
+      "total_revenue": 0.0,
+      "total_purchase": 0,
+      "roas": 0.0,
+      "roi": -100.0,
+      "cpa": 0.0,
+      "cpc": 0.475,
+      "gross_profit": -0.95,
+      "avg_ticket": 0.0,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "JellyLean 2 bottles",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    },
+    {
+      "id": 2,
+      "name": "JellyLean 3 bottles",
+      "checkout": "DIGISTORE - JELLY LEAN",
+      "clicks": 1,
+      "landing_clicks": 1,
+      "total_spent": 0.47,
+      "total_revenue": 0.0,
+      "total_purchase": 0,
+      "roas": 0.0,
+      "roi": -100.0,
+      "cpa": 0.0,
+      "cpc": 0.47,
+      "gross_profit": -0.47,
+      "avg_ticket": 0.0,
+      "funnel_conversion": 0.0,
+      "epc": 0.0,
+      "product": "JellyLean 3 bottles",
+      "purchase_count_api": 0,
+      "purchase_value_api": 0.0
+    }
+  ],
+  "countries": [
+    {
+      "country": "United Kingdom",
+      "purchases": 5,
+      "revenue_usd": 1000.0,
+      "clicks": 2446,
+      "ics": 53,
+      "cvr": 0.2
+    },
+    {
+      "country": "United States",
+      "purchases": 1,
+      "revenue_usd": 220.0,
+      "clicks": 2583,
+      "ics": 12,
+      "cvr": 0.04
+    },
+    {
+      "country": "Portugal",
+      "purchases": 0,
+      "revenue_usd": 0,
+      "clicks": 4,
+      "ics": 3,
+      "cvr": 0.0
+    }
+  ],
+  "devices": [
+    {
+      "device": "Mobile",
+      "purchases": 5,
+      "revenue_usd": 1020.0,
+      "clicks": 4355
+    },
+    {
+      "device": "Tablet",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "clicks": 626
+    },
+    {
+      "device": "Desktop",
+      "purchases": 0,
+      "revenue_usd": 0,
+      "clicks": 52
+    }
+  ],
+  "daily": [
+    {
+      "date": "2026-06-06",
+      "purchases": 1,
+      "revenue_usd": 200.0,
+      "revenue_brl": 1013.96,
+      "clicks": 471,
+      "unique_creatives": 1
+    },
+    {
+      "date": "2026-06-07",
+      "purchases": 3,
+      "revenue_usd": 620.0,
+      "revenue_brl": 3151.07,
+      "clicks": 703,
+      "unique_creatives": 3
+    },
+    {
+      "date": "2026-06-10",
+      "purchases": 2,
+      "revenue_usd": 400.0,
+      "revenue_brl": 2070.3900000000003,
+      "clicks": 194,
+      "unique_creatives": 2
+    }
+  ],
+  "ad_accounts": [
+    {
+      "id": "act_1297143432624390",
+      "name": "0075 - 70198 - grabjellylean - Nadmedia 25",
+      "spend": 356.04,
+      "impressions": 7805,
+      "clicks": 1377,
+      "cpc": 0.258562,
+      "cpm": 45.616912,
+      "ctr": 17.642537,
+      "reach": 5978,
+      "frequency": 1.305621,
+      "video_plays": 20,
+      "video_views": 48,
+      "hook_rate": 2.1,
+      "hold_rate": 2.1
+    },
+    {
+      "id": "act_2141758316669180",
+      "name": "0072 - 70198 - grabjellylean - Nadmedia 24",
+      "spend": 295.11,
+      "impressions": 6302,
+      "clicks": 1140,
+      "cpc": 0.258868,
+      "cpm": 46.827991,
+      "ctr": 18.089495,
+      "reach": 4722,
+      "frequency": 1.334604,
+      "video_plays": 54,
+      "video_views": 118,
+      "hook_rate": 7.6,
+      "hold_rate": 1.7
+    },
+    {
+      "id": "act_27172018349097936",
+      "name": "0073 - 70198 - grabjellylean - Nadmedia 25",
+      "spend": 325.03,
+      "impressions": 8647,
+      "clicks": 2242,
+      "cpc": 0.144973,
+      "cpm": 37.588759,
+      "ctr": 25.928068,
+      "reach": 4845,
+      "frequency": 1.784727,
+      "video_plays": 21,
+      "video_views": 41,
+      "hook_rate": 7.3,
+      "hold_rate": 2.4
+    },
+    {
+      "id": "act_36821183200802156",
+      "name": "0074 - 70198 - grabjellylean - Nadmedia 25",
+      "spend": 319.62,
+      "impressions": 7207,
+      "clicks": 1535,
+      "cpc": 0.208222,
+      "cpm": 44.34855,
+      "ctr": 21.298737,
+      "reach": 5119,
+      "frequency": 1.407892,
+      "video_plays": 67,
+      "video_views": 108,
+      "hook_rate": 40.7,
+      "hold_rate": 27.8
+    },
+    {
+      "id": "act_1724702521992182",
+      "name": "USDL 3",
+      "spend": 399.28,
+      "impressions": 4056,
+      "clicks": 825,
+      "cpc": 0.483976,
+      "cpm": 98.441815,
+      "ctr": 20.340237,
+      "reach": 3249,
+      "frequency": 1.248384,
+      "video_plays": 106,
+      "video_views": 173,
+      "hook_rate": 16.2,
+      "hold_rate": 6.9
+    },
+    {
+      "id": "act_4357843441132786",
+      "name": "USDL 1",
+      "spend": 1562.8,
+      "impressions": 13807,
+      "clicks": 1796,
+      "cpc": 0.870156,
+      "cpm": 113.188962,
+      "ctr": 13.007895,
+      "reach": 10445,
+      "frequency": 1.321877,
+      "video_plays": 5039,
+      "video_views": 7837,
+      "hook_rate": 18.3,
+      "hold_rate": 9.0
+    }
+  ],
+  "cancelled_rejected": [
+    {
+      "lead_id": 3610,
+      "date": "2026-06-08T09:30:17",
+      "type": "cancelled",
+      "product": "Lipotide",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "value_usd": 200.0
+    },
+    {
+      "lead_id": 1798,
+      "date": "2026-06-06T00:43:28",
+      "type": "rejected",
+      "product": "Lipotide",
+      "campaign": "LIPOTIDE - PERFECTPAY",
+      "value_usd": 200.0
+    }
+  ],
+  "company_revenue": {
+    "total_revenue_brl": "9748.81",
+    "total_revenue_usd": "1916.20",
+    "total_revenue_eur": "1648.64",
+    "total_revenue_gbp": "1426.22",
+    "total_revenue_cad": "2666.08",
+    "total_revenue_clp": "1726772.43"
+  }
+}

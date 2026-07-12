@@ -59,7 +59,7 @@ router.get('/kpis', async (req: AuthRequest, res: any) => {
       const cached = cacheService.get<any>('kpis', suffix);
       if (cached) return res.json({ success: true, data: cached });
     } catch {}
-    res.json({ success: true, data: { adSpend: 0, profit: 0, roas: 0, netRevenue: 0, cpa: 0, margin: 0, roi: 0, arpu: 0, approvedSales: 0, grossRevenue: 0 } });
+    res.json({ success: true, data: { adSpend: 0, profit: 0, roas: 0, netRevenue: 0, cpa: 0, margin: 0, roi: 0, arpu: 0, approvedSales: 0, grossRevenue: 0, checkouts: 0, costPerCheckout: 0 } });
   }
 });
 

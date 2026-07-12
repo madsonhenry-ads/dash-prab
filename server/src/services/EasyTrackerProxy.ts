@@ -119,6 +119,8 @@ export async function getKpis(beginDate: string, endDate: string, channels?: str
   const summary: Record<string, number> = {};
   (data.summary || []).forEach((s: any) => { summary[s.key] = parseFloat(s.value) || 0; });
 
+  const checkouts = parseInt(data.funnel?.offers || 0, 10);
+
   const kpis = {
     adSpend: summary.total_spent || 0,
     profit: summary.gross_profit || 0,
@@ -130,6 +132,8 @@ export async function getKpis(beginDate: string, endDate: string, channels?: str
     arpu: summary.avg_ticket || 0,
     approvedSales: data.funnel?.purchases || 0,
     grossRevenue: summary.total_revenue || 0,
+    checkouts,
+    costPerCheckout: checkouts > 0 ? (summary.total_spent || 0) / checkouts : 0,
   };
 
   return kpis;
