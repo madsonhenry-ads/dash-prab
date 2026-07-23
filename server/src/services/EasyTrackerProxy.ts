@@ -255,74 +255,73 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
     const ads = result?.data || [];
 
     return ads.map((ad: any) => {
+      const ext = ad.extra || {};
+
+      // Spend is in cents — convert to dollars
+      const spend = parseFloat(ad.spend || 0) / 100;
       const impressions = parseInt(ad.impressions || 0, 10);
       const clicks = parseInt(ad.clicks || 0, 10);
-      const spend = parseFloat(ad.spend || 0);
-      const reach = parseInt(ad.reach || 0, 10);
 
-      // Video metrics
-      const videoViews = ad.video_play_actions?.video_view
-        ? parseInt(ad.video_play_actions.video_view, 10)
-        : (typeof ad.actions?.video_view === 'number'
-            ? ad.actions.video_view
-            : parseInt(ad.actions?.video_view || 0, 10));
-      const videoPlays = typeof ad.actions?.video_view === 'number'
-        ? ad.actions.video_view
-        : parseInt(ad.actions?.video_view || 0, 10);
-      const p25 = ad.video_p25_watched_actions?.video_view
-        ? parseInt(ad.video_p25_watched_actions.video_view, 10) : 0;
-      const p50 = ad.video_p50_watched_actions?.video_view
-        ? parseInt(ad.video_p50_watched_actions.video_view, 10) : 0;
-      const p75 = ad.video_p75_watched_actions?.video_view
-        ? parseInt(ad.video_p75_watched_actions.video_view, 10) : 0;
-      const p100 = ad.video_p100_watched_actions?.video_view
-        ? parseInt(ad.video_p100_watched_actions.video_view, 10) : 0;
+      // Metrics from extra
+      const reach = parseInt(ext.reach || 0, 10);
+      const frequency = parseFloat(ext.frequency || 0);
+      const ctr = parseFloat(ext.ctr || ext.unique_inline_link_click_ctr || 0);
+      const cpc = parseInt(ext.cost_per_action_type?.link_click || ext.cost_per_inline_link_click || 0, 10) / 100;
+      const cpm = impressions > 0 ? (spend / impressions) * 1000 : 0;
 
-      // Action-based metrics
-      const getAction = (key: string): number => {
-        const v = ad.actions?.[key];
-        if (typeof v === 'number') return v;
-        return parseInt(v || 0, 10);
-      };
-      const getActionValue = (key: string): number => {
-        const v = ad.action_values?.[key];
-        if (typeof v === 'number') return v;
-        return parseFloat(v || 0);
-      };
+      // Actions from extra.actions (flat object, no array)
+      const actions = ext.actions || {};
+      const getAction = (key: string): number => parseInt(actions[key] || 0, 10);
 
       const landingViews = getAction('landing_page_view');
-      const checkouts = getAction('initiate_checkout');
-      const pixelPurchase = getAction('offsite_conversion_fb_pixel_purchase') || getAction('purchase') || getAction('pixel_purchase');
-      const purchaseValue = getActionValue('offsite_conversion_fb_pixel_purchase') || getActionValue('purchase');
+      // Initiate checkout from multiple naming conventions
+      const checkouts = getAction('initiate_checkout')
+        || getAction('offsite_conversion_fb_pixel_initiate_checkout')
+        || getAction('offsite_initiate_checkout_add_20_s_calls')
+        || getAction('offsite_initiate_checkout');
+      // Pixel purchase: only actual purchase events, not generic custom events
+      const pixelPurchase = getAction('offsite_conversion_fb_pixel_purchase')
+        || getAction('purchase')
+        || parseInt(ad.easytracker_purchase_count || 0, 10);
       const sales = getAction('purchase');
 
-      // ROAS from Facebook
-      const roas = ad.purchase_roas?.omni_purchase
-        ? parseFloat(ad.purchase_roas.omni_purchase)
-        : (ad.website_purchase_roas?.offsite_conversion_fb_pixel_purchase
-            ? parseFloat(ad.website_purchase_roas.offsite_conversion_fb_pixel_purchase)
-            : (spend > 0 && purchaseValue > 0 ? purchaseValue / spend : 0));
+      // Revenue comes from easytracker_purchase_sum (top-level, in cents)
+      const purchaseValue = parseFloat(ad.easytracker_purchase_sum || 0) / 100;
+      const conversionCount = parseInt(ad.easytracker_purchase_count || 0, 10);
 
-      // CPA (cost per purchase)
+      // ROAS from extra (null in current data, fallback to calculated)
+      const roas = ext.purchase_roas?.omni_purchase
+        ? parseFloat(ext.purchase_roas.omni_purchase)
+        : (spend > 0 && purchaseValue > 0 ? purchaseValue / spend : 0);
+
+      // CPA
       const cpa = pixelPurchase > 0 ? spend / pixelPurchase : 0;
 
-      // CPC from Facebook
-      const cpc = parseFloat(ad.cpc || 0);
+      // Video metrics from extra (direct numbers, not nested)
+      const videoViews = parseInt(ext.video_plays || 0, 10)
+        || getAction('video_view');
+      const videoPlays = videoViews;
+      const p25 = parseInt(ext.video_p25 || 0, 10);
+      const p50 = parseInt(ext.video_p50 || 0, 10);
+      const p75 = parseInt(ext.video_p75 || 0, 10);
+      const p100 = parseInt(ext.video_p100 || 0, 10);
+
+      // Derived rates from extra (already calculated by EasyTracker)
+      const playRate = parseFloat(ext.play_rate || 0);
+      const hookRate = parseFloat(ext.hook_rate || 0);
+      const bodyRate = parseFloat(ext.body_rate || 0);
+      const completionRate = parseFloat(ext.completion_rate || 0);
+      const landingRate = parseFloat(ext.landing_rate || 0);
+      const checkoutRate = parseFloat(ext.checkout_rate || 0);
+      const convRate = parseFloat(ext.creative_conversion_rate || 0);
 
       // Cost per landing view
       const cic = landingViews > 0 ? spend / landingViews : 0;
-
       // Cost per checkout
       const costPerCheckout = checkouts > 0 ? spend / checkouts : 0;
 
-      // Checkout rate (checkouts / landing_views)
-      const checkoutRate = landingViews > 0 ? (checkouts / landingViews) * 100 : 0;
-
-      // Landing rate (landing_views / clicks)
-      const landingRate = clicks > 0 ? (landingViews / clicks) * 100 : 0;
-
-      // Conv rate (sales / clicks)
-      const convRate = clicks > 0 ? (sales / clicks) * 100 : 0;
+      // Average watch time
+      const avgWatchTime = parseInt(ext.video_avg_time || 0, 10);
 
       return {
         id: String(ad.id || ''),
@@ -333,13 +332,13 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
         roas,
         impressions,
         reach,
-        frequency: parseFloat(ad.frequency || 0),
+        frequency,
         clicks,
         clicks_all: clicks,
-        ctr: parseFloat(ad.ctr || 0),
+        ctr,
         cpc,
         cpc_all: clicks > 0 ? spend / clicks : 0,
-        cpm: impressions > 0 ? (spend / impressions) * 1000 : 0,
+        cpm,
         landing_views: landingViews,
         cic,
         landing_clicks: checkouts,
@@ -348,10 +347,10 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
         pixel_purchase: pixelPurchase,
         revenue: purchaseValue,
         sales: convRate,
-        play_rate: impressions > 0 ? (videoViews / impressions) * 100 : 0,
-        hook_rate: videoViews > 0 ? (p25 / videoViews) * 100 : 0,
-        body_rate: videoViews > 0 ? (p50 / videoViews) * 100 : 0,
-        completion_rate: videoViews > 0 ? (p100 / videoViews) * 100 : 0,
+        play_rate: playRate,
+        hook_rate: hookRate,
+        body_rate: bodyRate,
+        completion_rate: completionRate,
         video_plays: videoPlays,
         video_views: videoViews,
         video_25: p25,
@@ -359,7 +358,7 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
         video_75: p75,
         video_100: p100,
         landing_rate: landingRate,
-        avg_watch_time: parseFloat(ad.avg_watch_time || 0),
+        avg_watch_time: avgWatchTime,
         start_date: ad.start_time || '',
         updated_time: ad.updated_time || '',
         last_updated: ad.updated_time || ad._fetched_at || '',

@@ -117,9 +117,9 @@ router.get('/export', async (req: AuthRequest, res: any) => {
     const proxyResult = await proxy.getCreatives(beginDate, endDate, { sortBy: 'spend', sortOrder: 'desc', page: 1, pageSize: 10000 });
     const data = proxyResult.rows;
 
-    const headers = ['Name', 'Status', 'Spend', 'CPA', 'ROAS', 'Impressions', 'Reach', 'Clicks', 'CTR', 'CPC', 'CPM', 'Pixel Purchase', 'Revenue', 'Play Rate', 'Hook Rate', 'Body Rate', 'Completion Rate'];
-    const rows = data.map(c => [c.name, c.status, c.spend, c.cpa, c.roas, c.impressions, c.reach, c.clicks, c.ctr, c.cpc, c.cpm, c.pixel_purchase, c.revenue, c.play_rate, c.hook_rate, c.body_rate, c.completion_rate]);
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const headers = ['Name', 'Status', 'Spent', 'CPA', 'ROAS', 'Impressions', 'Reach', 'Freq.', 'Clicks', 'Clicks (All)', 'CTR', 'CPC', 'CPC (All)', 'CPM', 'Landing Views', 'Cost per Landing', 'Checkouts', 'Cost per Checkout', 'Checkout Rate', 'Pixel Purchase', 'Purchase Value', 'Conv. Rate', 'Play Rate', 'Hook Rate', 'Body Rate', 'Completion Rate', 'Video Plays', 'Video 25%', 'Video 50%', 'Video 75%', 'Video 100%', 'Landing Rate', 'Avg Watch Time', 'Last Updated'];
+    const rows = data.map((c: any) => [c.name, c.status, c.spend, c.cpa, c.roas, c.impressions, c.reach, c.frequency, c.clicks, c.clicks_all, c.ctr, c.cpc, c.cpc_all, c.cpm, c.landing_views, c.cic, c.landing_clicks, c.cost_per_checkout, c.checkout_rate, c.pixel_purchase, c.revenue, c.sales, c.play_rate, c.hook_rate, c.body_rate, c.completion_rate, c.video_plays, c.video_25, c.video_50, c.video_75, c.video_100, c.landing_rate, c.avg_watch_time, c.last_updated]);
+    const csvContent = [headers.join(','), ...rows.map((r: any) => r.join(','))].join('\n');
 
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=creatives-report.csv');

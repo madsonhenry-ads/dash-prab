@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCreatives } from '../hooks/useCreatives';
+import { api } from '../services/api';
 import { PeriodSelector } from '../components/shared/PeriodSelector';
 import { TableSkeleton } from '../components/shared/LoadingSkeleton';
 import { ErrorState } from '../components/shared/ErrorState';
@@ -90,15 +91,18 @@ export function CreativesPage() {
     else { setSortBy(column); setSortOrder('desc'); }
   };
 
-  const handleExport = () => {
-    const headers = COLUMNS.map(c => c.label);
-    const rows = (data?.data || []).map((row: any) => COLUMNS.map(c => {
-      const v = row[c.key];
-      if (v === undefined || v === null) return '';
-      return typeof v === 'number' ? v.toFixed(2) : v;
-    }));
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-    downloadCsv(`creatives-${period}.csv`, csv);
+  const handleExport = async () => {
+    try {
+      const blob = await api.creatives.export({ period, ...(period === 'custom' ? { beginDate, endDate } : {}) });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `creatives-${period}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      alert('Erro ao exportar: ' + e.message);
+    }
   };
 
   const renderCell = (row: any, key: string) => {

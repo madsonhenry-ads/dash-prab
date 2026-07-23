@@ -43,7 +43,15 @@ export const api = {
   },
   creatives: {
     list: (p?: Record<string, string>) => request<{ data: import('../types').AdCreative[]; meta: import('../types').MetaData; footer: any; source: string }>(`/creatives?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`),
-    export: (p?: Record<string, string>) => `${API_BASE}/creatives/export?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`,
+    export: async (p?: Record<string, string>) => {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/creatives/export?${new URLSearchParams({ timezone: localStorage.getItem('trafficboard_timezone') || 'UTC', ...p }).toString()}`, {
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      });
+      if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/login'; throw new Error('Sessão expirada'); }
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+      return res.blob();
+    },
   },
   tools: {
     list: (period?: string) => {
