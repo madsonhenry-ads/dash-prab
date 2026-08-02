@@ -289,13 +289,22 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
       const purchaseValue = parseFloat(ad.easytracker_purchase_sum || 0) / 100;
       const conversionCount = parseInt(ad.easytracker_purchase_count || 0, 10);
 
+      // Conversions = easytracker purchase count
+      const conversions = conversionCount;
+
+      // Profit = revenue - spend (fallback if gross_profit not available)
+      const profit = parseFloat(ext.gross_profit || 0) / 100 || (purchaseValue - spend);
+
       // ROAS from extra (null in current data, fallback to calculated)
       const roas = ext.purchase_roas?.omni_purchase
         ? parseFloat(ext.purchase_roas.omni_purchase)
         : (spend > 0 && purchaseValue > 0 ? purchaseValue / spend : 0);
 
       // CPA
-      const cpa = pixelPurchase > 0 ? spend / pixelPurchase : 0;
+      const cpa = conversions > 0 ? spend / conversions : 0;
+
+      // Quality ranking from extra
+      const qualityRanking = safeStr(ext.quality_ranking || '');
 
       // Video metrics from extra (direct numbers, not nested)
       const videoViews = parseInt(ext.video_plays || 0, 10)
@@ -327,26 +336,25 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
         id: String(ad.id || ''),
         name: safeStr(ad.name) || '',
         status: (ad.status || 'UNKNOWN').toLowerCase(),
+        creative: safeStr(ad.creative_name || ad.name || ''),
+        // ── Spend & reach ──
         spend,
-        cpa,
-        roas,
         impressions,
-        reach,
-        frequency,
         clicks,
-        clicks_all: clicks,
-        ctr,
         cpc,
-        cpc_all: clicks > 0 ? spend / clicks : 0,
         cpm,
+        // ── Conversions & revenue ──
+        conversions,
+        cpa,
+        checkouts,
+        cost_per_checkout: costPerCheckout,
+        profit,
+        revenue: purchaseValue,
+        // ── Landing / CTR ──
         landing_views: landingViews,
         cic,
-        landing_clicks: checkouts,
-        cost_per_checkout: costPerCheckout,
-        checkout_rate: checkoutRate,
-        pixel_purchase: pixelPurchase,
-        revenue: purchaseValue,
-        sales: convRate,
+        ctr,
+        // ── Video funnel ──
         play_rate: playRate,
         hook_rate: hookRate,
         body_rate: bodyRate,
@@ -357,10 +365,14 @@ export async function getAdsManagerAds(beginDate: string, endDate: string): Prom
         video_50: p50,
         video_75: p75,
         video_100: p100,
-        landing_rate: landingRate,
+        // ── Purchase & ROAS ──
+        pixel_purchase: pixelPurchase,
+        roas,
         avg_watch_time: avgWatchTime,
-        start_date: ad.start_time || '',
-        updated_time: ad.updated_time || '',
+        landing_rate: landingRate,
+        checkout_rate: checkoutRate,
+        quality_ranking: qualityRanking,
+        creative_conversion_rate: convRate,
         last_updated: ad.updated_time || ad._fetched_at || '',
       };
     });

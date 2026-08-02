@@ -7,30 +7,25 @@ import { ErrorState } from '../components/shared/ErrorState';
 import { formatCurrency, formatNumber, downloadCsv } from '../utils/format';
 import type { Period, AdCreative } from '../types';
 
-// Columns exactly matching EasyTracker's Ads Manager
+// Columns exactly matching EasyTracker Ads Manager — ordered as defined in the UI
 const COLUMNS = [
-  { key: 'status', label: 'ACTIVE' },
+  { key: 'status', label: 'STATUS' },
   { key: 'name', label: 'AD' },
+  { key: 'creative', label: 'CREATIVE' },
   { key: 'spend', label: 'SPENT' },
-  { key: 'cpa', label: 'CPA' },
-  { key: 'roas', label: 'ROAS' },
   { key: 'impressions', label: 'IMPRESSIONS' },
-  { key: 'reach', label: 'REACH' },
-  { key: 'frequency', label: 'FREQ.' },
   { key: 'clicks', label: 'CLICKS' },
-  { key: 'clicks_all', label: 'CLICKS (ALL)' },
-  { key: 'ctr', label: 'CTR' },
   { key: 'cpc', label: 'CPC' },
-  { key: 'cpc_all', label: 'CPC (ALL)' },
   { key: 'cpm', label: 'CPM' },
-  { key: 'landing_views', label: 'LANDING VIEWS' },
-  { key: 'cic', label: 'COST PER LANDING' },
-  { key: 'landing_clicks', label: 'CHECKOUTS' },
-  { key: 'cost_per_checkout', label: 'COST PER CHECKOUT' },
-  { key: 'checkout_rate', label: 'CHECKOUT RATE' },
-  { key: 'pixel_purchase', label: 'PIXEL PURCHASE' },
-  { key: 'revenue', label: 'PURCHASE VALUE' },
-  { key: 'sales', label: 'CONV. RATE' },
+  { key: 'conversions', label: 'CONVERSIONS' },
+  { key: 'cpa', label: 'CPA' },
+  { key: 'checkouts', label: 'INIT. CHECKOUT' },
+  { key: 'cost_per_checkout', label: 'COST/CHECKOUT' },
+  { key: 'profit', label: 'PROFIT' },
+  { key: 'revenue', label: 'REVENUE' },
+  { key: 'landing_views', label: 'LANDING PAGE VIEWS' },
+  { key: 'cic', label: 'COST/LANDING VIEW' },
+  { key: 'ctr', label: 'CTR' },
   { key: 'play_rate', label: 'PLAY RATE' },
   { key: 'hook_rate', label: 'HOOK RATE' },
   { key: 'body_rate', label: 'BODY RATE' },
@@ -40,9 +35,14 @@ const COLUMNS = [
   { key: 'video_50', label: 'VIDEO 50%' },
   { key: 'video_75', label: 'VIDEO 75%' },
   { key: 'video_100', label: 'VIDEO 100%' },
-  { key: 'landing_rate', label: 'LANDING RATE' },
+  { key: 'pixel_purchase', label: 'PIXEL PURCHASES' },
+  { key: 'roas', label: 'ROAS' },
   { key: 'avg_watch_time', label: 'AVG WATCH TIME' },
-  { key: 'last_updated', label: 'LAST UPDATED' },
+  { key: 'landing_rate', label: 'LANDING RATE' },
+  { key: 'checkout_rate', label: 'CHECKOUT RATE' },
+  { key: 'quality_ranking', label: 'QUALITY RANKING' },
+  { key: 'creative_conversion_rate', label: 'CREATIVE CONV. RATE' },
+  { key: 'last_updated', label: 'UPDATED AT' },
 ];
 
 const STATUS_FILTERS = [
@@ -50,11 +50,13 @@ const STATUS_FILTERS = [
   { value: 'active', label: 'Active' },
   { value: 'paused', label: 'Paused' },
   { value: 'rejected', label: 'Rejected' },
+  { value: 'under_review', label: 'Under Review' },
+  { value: 'no_data', label: 'No Data' },
 ];
 
-const PERCENT_COLS = ['ctr', 'play_rate', 'hook_rate', 'body_rate', 'completion_rate', 'checkout_rate', 'landing_rate', 'sales'];
-const CURRENCY_COLS = ['spend', 'cpa', 'cpc', 'cpc_all', 'cpm', 'cic', 'cost_per_checkout', 'revenue'];
-const INT_COLS = ['impressions', 'reach', 'clicks', 'clicks_all', 'pixel_purchase', 'landing_views', 'landing_clicks', 'video_plays', 'video_25', 'video_50', 'video_75', 'video_100'];
+const PERCENT_COLS = ['ctr', 'play_rate', 'hook_rate', 'body_rate', 'completion_rate', 'checkout_rate', 'landing_rate', 'creative_conversion_rate'];
+const CURRENCY_COLS = ['spend', 'cpa', 'cpc', 'cpm', 'cic', 'cost_per_checkout', 'revenue', 'profit'];
+const INT_COLS = ['impressions', 'clicks', 'conversions', 'checkouts', 'pixel_purchase', 'landing_views', 'video_plays', 'video_25', 'video_50', 'video_75', 'video_100'];
 
 function formatSeconds(sec: number): string {
   if (!sec) return '0s';
@@ -82,9 +84,22 @@ export function CreativesPage() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('spend');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>(() => {
+    try { return JSON.parse(localStorage.getItem('creative_status_overrides') || '{}'); } catch { return {}; }
+  });
 
   const dateParams = period === 'custom' ? { beginDate, endDate } : undefined;
   const { data, isLoading, error, refetch } = useCreatives({ period, page, pageSize: 50, status, search, sortBy, sortOrder, ...dateParams });
+
+  const saveOverride = (id: string, newStatus: string) => {
+    const next = { ...statusOverrides, [id]: newStatus };
+    setStatusOverrides(next);
+    localStorage.setItem('creative_status_overrides', JSON.stringify(next));
+    setEditingStatusId(null);
+  };
+
+  const effectiveStatus = (row: any) => statusOverrides[row.id] || row.status;
 
   const handleSort = (column: string) => {
     if (sortBy === column) setSortOrder(o => o === 'desc' ? 'asc' : 'desc');
@@ -105,23 +120,57 @@ export function CreativesPage() {
     }
   };
 
+  const StatusBadge = ({ value, rowId }: { value: string; rowId: string }) => {
+    const statusColor: Record<string, string> = {
+      active: 'bg-green-900/40 text-green-400',
+      paused: 'bg-yellow-900/40 text-yellow-400',
+      rejected: 'bg-red-900/40 text-red-400',
+      under_review: 'bg-blue-900/40 text-blue-400',
+      no_data: 'bg-dark-700 text-dark-300',
+    };
+    const color = statusColor[(value || '').toLowerCase()] || statusColor.no_data;
+
+    if (editingStatusId === rowId) {
+      return (
+        <select
+          autoFocus
+          value={value}
+          onChange={e => saveOverride(rowId, e.target.value)}
+          onBlur={() => setEditingStatusId(null)}
+          className="bg-dark-800 text-white text-xs rounded border border-dark-600 px-1 py-0.5"
+        >
+          {STATUS_FILTERS.filter(s => s.value).map(s => (
+            <option key={s.value} value={s.value}>{s.label}</option>
+          ))}
+        </select>
+      );
+    }
+
+    return (
+      <span
+        onClick={() => setEditingStatusId(rowId)}
+        className={`px-2 py-0.5 rounded text-xs font-medium cursor-pointer ${color}`}
+        title="Click to change status"
+      >
+        {(value || '—').toUpperCase()}
+      </span>
+    );
+  };
+
   const renderCell = (row: any, key: string) => {
     const val = row[key];
 
     if (key === 'status') {
-      const isActive = (val || '').toLowerCase() === 'active';
-      return <span className={`px-2 py-0.5 rounded text-xs font-medium ${isActive ? 'bg-green-900/40 text-green-400' : 'bg-dark-700 text-dark-300'}`}>{(val || '—').toUpperCase()}</span>;
+      return <StatusBadge value={effectiveStatus(row)} rowId={row.id} />;
     }
 
-    if (key === 'name') return <span className="text-gray-200">{val || '—'}</span>;
+    if (key === 'name' || key === 'creative') return <span className="text-gray-200">{val || '—'}</span>;
 
     if (PERCENT_COLS.includes(key)) return <span>{(val || 0).toFixed(2)}%</span>;
 
     if (CURRENCY_COLS.includes(key)) return <span>{formatCurrency(val || 0)}</span>;
 
     if (INT_COLS.includes(key)) return <span>{formatNumber(val || 0)}</span>;
-
-    if (key === 'frequency') return <span>{(val || 0).toFixed(2)}</span>;
 
     if (key === 'roas') return <span className={(val || 0) < 1 ? 'text-brand-red' : 'text-brand-green'}>{(val || 0).toFixed(2)}</span>;
 
@@ -185,17 +234,38 @@ export function CreativesPage() {
           {data?.footer && (
             <tfoot className="border-t border-dark-600">
               <tr>
-                <td className="px-3 py-3 font-medium text-white" colSpan={2}>Totals / Averages</td>
+                <td className="px-3 py-3 font-medium text-white" colSpan={3}>Totals / Averages</td>
                 <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.spend)}</td>
-                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpa)}</td>
-                <td className="px-3 py-3 font-medium text-white">{(data.footer.roas || 0).toFixed(2)}</td>
                 <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.impressions)}</td>
                 <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.clicks)}</td>
-                <td className="px-3 py-3 text-dark-400" colSpan={3}>—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.conversions)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpa)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.checkouts)}</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.profit)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.revenue)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.landing_views)}</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
                 <td className="px-3 py-3 font-medium text-white">{(data.footer.ctr || 0).toFixed(2)}%</td>
-                <td className="px-3 py-3 text-dark-400" colSpan={2}>—</td>
-                <td className="px-3 py-3 font-medium text-white">{formatCurrency(data.footer.cpm)}</td>
-                <td className="px-3 py-3 text-dark-400" colSpan={COLUMNS.length - 13}>—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.video_plays)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.video_25)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.video_50)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.video_75)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.video_100)}</td>
+                <td className="px-3 py-3 font-medium text-white">{formatNumber(data.footer.pixel_purchase)}</td>
+                <td className="px-3 py-3 font-medium text-white">{(data.footer.roas || 0).toFixed(2)}</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
+                <td className="px-3 py-3 text-dark-400">—</td>
               </tr>
             </tfoot>
           )}

@@ -35,26 +35,21 @@ router.get('/', async (req: AuthRequest, res: any) => {
       id: r.id,
       name: safeStr(r.name),
       status: (r.status as Creative['status']) || 'no_data',
+      creative: safeStr(r.creative || r.name),
       spend: r.spend || 0,
-      cpa: r.cpa || 0,
-      roas: r.roas || 0,
       impressions: r.impressions || 0,
-      reach: r.reach || 0,
-      frequency: r.frequency || 0,
       clicks: r.clicks || 0,
-      clicks_all: r.clicks_all || 0,
-      ctr: r.ctr || 0,
       cpc: r.cpc || 0,
-      cpc_all: r.cpc_all || 0,
       cpm: r.cpm || 0,
+      conversions: r.conversions || r.pixel_purchase || 0,
+      cpa: r.cpa || 0,
+      checkouts: r.checkouts || r.landing_clicks || 0,
+      cost_per_checkout: r.cost_per_checkout || 0,
+      profit: r.profit || 0,
+      revenue: r.revenue || 0,
       landing_views: r.landing_views || 0,
       cic: r.cic || 0,
-      landing_clicks: r.landing_clicks || 0,
-      cost_per_checkout: r.cost_per_checkout || 0,
-      checkout_rate: r.checkout_rate || 0,
-      pixel_purchase: r.pixel_purchase || 0,
-      revenue: r.revenue || 0,
-      sales: r.sales || 0,
+      ctr: r.ctr || 0,
       play_rate: r.play_rate || 0,
       hook_rate: r.hook_rate || 0,
       body_rate: r.body_rate || 0,
@@ -65,29 +60,51 @@ router.get('/', async (req: AuthRequest, res: any) => {
       video_50: r.video_50 || 0,
       video_75: r.video_75 || 0,
       video_100: r.video_100 || 0,
-      landing_rate: r.landing_rate || 0,
+      pixel_purchase: r.pixel_purchase || 0,
+      roas: r.roas || 0,
       avg_watch_time: r.avg_watch_time || 0,
-      start_date: r.start_date || '',
-      updated_time: r.updated_time || '',
-      last_updated: r.last_updated || r.updated_time || '',
+      landing_rate: r.landing_rate || 0,
+      checkout_rate: r.checkout_rate || 0,
+      quality_ranking: safeStr(r.quality_ranking || ''),
+      creative_conversion_rate: r.creative_conversion_rate || 0,
+      last_updated: r.last_updated || '',
     }));
 
     const total = proxyResult.total;
 
-    // Footer totals
+    // Footer totals / averages
+    const withValue = (arr: Creative[], key: keyof Creative) => arr.filter(c => (c[key] as number) > 0);
+    const avg = (arr: Creative[], key: keyof Creative) =>
+      withValue(arr, key).reduce((s, c) => s + ((c[key] as number) || 0), 0) / (withValue(arr, key).length || 1);
+
     const footer = {
       spend: data.reduce((s, c) => s + c.spend, 0),
-      cpa: data.filter(c => c.cpa > 0).reduce((s, c) => s + c.cpa, 0) / (data.filter(c => c.cpa > 0).length || 1),
-      roas: data.reduce((s, c) => s + c.roas, 0) / (data.length || 1),
       impressions: data.reduce((s, c) => s + (c.impressions || 0), 0),
       clicks: data.reduce((s, c) => s + (c.clicks || 0), 0),
-      ctr: data.reduce((s, c) => s + (c.ctr || 0), 0) / (data.length || 1),
-      cpm: data.reduce((s, c) => s + (c.cpm || 0), 0) / (data.length || 1),
-      pixel_purchase: data.reduce((s, c) => s + (c.pixel_purchase || 0), 0),
+      conversions: data.reduce((s, c) => s + (c.conversions || 0), 0),
+      cpa: avg(data, 'cpa'),
+      checkouts: data.reduce((s, c) => s + (c.checkouts || 0), 0),
+      cost_per_checkout: avg(data, 'cost_per_checkout'),
+      profit: data.reduce((s, c) => s + (c.profit || 0), 0),
       revenue: data.reduce((s, c) => s + (c.revenue || 0), 0),
-      play_rate: data.reduce((s, c) => s + (c.play_rate || 0), 0) / (data.length || 1),
-      body_rate: data.reduce((s, c) => s + (c.body_rate || 0), 0) / (data.length || 1),
-      completion_rate: data.reduce((s, c) => s + (c.completion_rate || 0), 0) / (data.length || 1),
+      landing_views: data.reduce((s, c) => s + (c.landing_views || 0), 0),
+      cic: avg(data, 'cic'),
+      ctr: avg(data, 'ctr'),
+      play_rate: avg(data, 'play_rate'),
+      hook_rate: avg(data, 'hook_rate'),
+      body_rate: avg(data, 'body_rate'),
+      completion_rate: avg(data, 'completion_rate'),
+      video_plays: data.reduce((s, c) => s + (c.video_plays || 0), 0),
+      video_25: data.reduce((s, c) => s + (c.video_25 || 0), 0),
+      video_50: data.reduce((s, c) => s + (c.video_50 || 0), 0),
+      video_75: data.reduce((s, c) => s + (c.video_75 || 0), 0),
+      video_100: data.reduce((s, c) => s + (c.video_100 || 0), 0),
+      pixel_purchase: data.reduce((s, c) => s + (c.pixel_purchase || 0), 0),
+      roas: avg(data, 'roas'),
+      avg_watch_time: avg(data, 'avg_watch_time'),
+      landing_rate: avg(data, 'landing_rate'),
+      checkout_rate: avg(data, 'checkout_rate'),
+      creative_conversion_rate: avg(data, 'creative_conversion_rate'),
     };
 
     const totalPages = Math.ceil(total / pageSize);
@@ -117,8 +134,8 @@ router.get('/export', async (req: AuthRequest, res: any) => {
     const proxyResult = await proxy.getCreatives(beginDate, endDate, { sortBy: 'spend', sortOrder: 'desc', page: 1, pageSize: 10000 });
     const data = proxyResult.rows;
 
-    const headers = ['Name', 'Status', 'Spent', 'CPA', 'ROAS', 'Impressions', 'Reach', 'Freq.', 'Clicks', 'Clicks (All)', 'CTR', 'CPC', 'CPC (All)', 'CPM', 'Landing Views', 'Cost per Landing', 'Checkouts', 'Cost per Checkout', 'Checkout Rate', 'Pixel Purchase', 'Purchase Value', 'Conv. Rate', 'Play Rate', 'Hook Rate', 'Body Rate', 'Completion Rate', 'Video Plays', 'Video 25%', 'Video 50%', 'Video 75%', 'Video 100%', 'Landing Rate', 'Avg Watch Time', 'Last Updated'];
-    const rows = data.map((c: any) => [c.name, c.status, c.spend, c.cpa, c.roas, c.impressions, c.reach, c.frequency, c.clicks, c.clicks_all, c.ctr, c.cpc, c.cpc_all, c.cpm, c.landing_views, c.cic, c.landing_clicks, c.cost_per_checkout, c.checkout_rate, c.pixel_purchase, c.revenue, c.sales, c.play_rate, c.hook_rate, c.body_rate, c.completion_rate, c.video_plays, c.video_25, c.video_50, c.video_75, c.video_100, c.landing_rate, c.avg_watch_time, c.last_updated]);
+    const headers = ['Status','AD','Creative','Spent','Impressions','Clicks','CPC','CPM','Conversions','CPA','Init. Checkout','Cost/Checkout','Profit','Revenue','Landing Page Views','Cost/Landing View','CTR','Play Rate','Hook Rate','Body Rate','Completion Rate','Video Plays','Video 25%','Video 50%','Video 75%','Video 100%','Pixel Purchases','ROAS','Avg Watch Time','Landing Rate','Checkout Rate','Quality Ranking','Creative Conv. Rate','Updated At'];
+    const rows = data.map((c: any) => [c.status, c.name, c.creative, c.spend, c.impressions, c.clicks, c.cpc, c.cpm, c.conversions, c.cpa, c.checkouts, c.cost_per_checkout, c.profit, c.revenue, c.landing_views, c.cic, c.ctr, c.play_rate, c.hook_rate, c.body_rate, c.completion_rate, c.video_plays, c.video_25, c.video_50, c.video_75, c.video_100, c.pixel_purchase, c.roas, c.avg_watch_time, c.landing_rate, c.checkout_rate, c.quality_ranking, c.creative_conversion_rate, c.last_updated]);
     const csvContent = [headers.join(','), ...rows.map((r: any) => r.join(','))].join('\n');
 
     res.setHeader('Content-Type', 'text/csv');
